@@ -1,32 +1,6 @@
 /**
  * =============================================================================
- * Zombie Mod for Day of Defeat Source
- *
- * By: Andersso
- *
- * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
- * =============================================================================
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, version 3.0, as published by the
- * Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * As a special exception, AlliedModders LLC gives you permission to link the
- * code of this program (as well as its derivative works) to "Half-Life 2," the
- * "Source Engine," the "SourcePawn JIT," and any Game MODs that run on software
- * by the Valve Corporation.  You must obey the GNU General Public License in
- * all respects for all other code used.  Additionally, AlliedModders LLC grants
- * this exception to all derivative works.  AlliedModders LLC defines further
- * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
- * or <http://www.sourcemod.net/license.php>.
+ * Zombie Mod for Day of Defeat Source - Phase 1.5
  */
 
 enum
@@ -46,16 +20,11 @@ enum
 	ConVar_Size
 }
 
-enum SetVar
-{
-	ConVarHandle,  // Handle of the convar
-	
-	Value_Int,  // Int value
-	Value_Bool,  // Bool value
-	Value_Float // Float value
-}
-
-int g_ConVars[ConVar_Size][SetVar];
+// Properly typed storage for ConVars
+Handle g_ConVarHandles[ConVar_Size];
+int g_ConVarInts[ConVar_Size];
+bool g_ConVarBools[ConVar_Size];
+float g_ConVarFloats[ConVar_Size];
 
 void InitConVars()
 {
@@ -75,7 +44,7 @@ void InitConVars()
 
 void AddConVar(int conVar, Handle conVarHandle)
 {
-	g_ConVars[conVar][ConVarHandle] = conVarHandle;
+	g_ConVarHandles[conVar] = conVarHandle;
 	
 	UpdateConVarValue(conVar);
 	
@@ -84,16 +53,16 @@ void AddConVar(int conVar, Handle conVarHandle)
 
 void UpdateConVarValue(int conVar)
 {
-	g_ConVars[conVar][Value_Int] = GetConVarInt(g_ConVars[conVar][ConVarHandle]);
-	g_ConVars[conVar][Value_Bool] = GetConVarBool(g_ConVars[conVar][ConVarHandle]);
-	g_ConVars[conVar][Value_Float] = GetConVarFloat(g_ConVars[conVar][ConVarHandle]);
+	g_ConVarInts[conVar] = GetConVarInt(g_ConVarHandles[conVar]);
+	g_ConVarBools[conVar] = GetConVarBool(g_ConVarHandles[conVar]);
+	g_ConVarFloats[conVar] = GetConVarFloat(g_ConVarHandles[conVar]);
 }
 
 public void OnConVarChange(Handle conVar, const char[] oldValue, const char[] newValue)
 {
 	for (int i = 0; i < ConVar_Size; i++)
 	{
-		if (conVar == g_ConVars[i][ConVarHandle])
+		if (conVar == g_ConVarHandles[i])
 		{
 			UpdateConVarValue(i);
 			
@@ -110,7 +79,7 @@ void ConVarChanged(int conVar)
 	{
 		case ConVar_Enabled:
 		{
-			if (g_bModActive && !g_ConVars[conVar][Value_Bool])
+			if (g_bModActive && !g_ConVarBools[conVar])
 			{
 				g_bModActive = false;
 				

@@ -161,7 +161,7 @@ bool HumanReward_PistolAmmo(int client)
 {
 	int maxAmmo = 56;
 	
-	if (g_ClientInfo[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
+	if (g_ClientInfo_Int[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
 	{
 		maxAmmo += 10;
 	}
@@ -198,9 +198,9 @@ bool HumanReward_PistolAmmo(int client)
 
 bool HumanReward_Health(int client)
 {
-	if (g_ClientInfo[client][ClientInfo_DamageScale] > 0.6)
+	if (g_ClientInfo_Float[client][ClientInfo_DamageScale] > 0.6)
 	{
-		g_ClientInfo[client][ClientInfo_DamageScale] -= 0.1;
+		g_ClientInfo_Float[client][ClientInfo_DamageScale] -= 0.1;
 		
 		ZM_PrintToChat(client, "You received 10%% damage resistance for killing a zombie.");
 		
@@ -209,7 +209,7 @@ bool HumanReward_Health(int client)
 	
 	if (GetClientHealth(client) <= 90)
 	{
-		g_ClientInfo[client][ClientInfo_Health] += 10.0;
+		g_ClientInfo_Float[client][ClientInfo_Health] += 10.0;
 		SetEntityHealth(client, GetClientHealth(client) + 10);
 		
 		ZM_PrintToChat(client, "You received 10%% health for killing a zombie.");
@@ -224,7 +224,7 @@ void GiveZombieReward(int client)
 {
 	float LMV = GetPlayerLaggedMovementValue(client);
 	
-	if (LMV < g_ConVars[ConVar_Zombie_MaxSpeed][Value_Float])
+	if (LMV < g_ConVarFloats[ConVar_Zombie_MaxSpeed])
 	{
 		SetPlayerLaggedMovementValue(client, LMV * 1.1);
 		

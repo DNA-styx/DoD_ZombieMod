@@ -188,7 +188,7 @@ public int Handler_Main(Menu menu, MenuAction action, int client, int param)
 		{
 			if (param == Menu_Main_EquipClass)
 			{
-				return g_ClientInfo[client][ClientInfo_HasCustomClass] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+				return g_ClientInfo_Bool[client][ClientInfo_HasCustomClass] ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 			}
 		}
 		
@@ -244,7 +244,7 @@ public int Handler_Primary(Menu menu, MenuAction action, int client, int param)
 		{
 			if (IsPlayerValid(client))
 			{
-				g_ClientInfo[client][ClientInfo_PrimaryWeapon] = param;
+				g_ClientInfo_Int[client][ClientInfo_PrimaryWeapon] = param;
 				
 				DisplayMenu(g_EquipMenu[Menu_Pistol], client, MENU_TIME_FOREVER);
 			}
@@ -270,7 +270,7 @@ public int Handler_Pistol(Menu menu, MenuAction action, int client, int param)
 		{
 			if (IsPlayerValid(client))
 			{
-				g_ClientInfo[client][ClientInfo_Pistol] = param;
+				g_ClientInfo_Int[client][ClientInfo_Pistol] = param;
 				DisplayMenu(g_EquipMenu[Menu_Equipment], client, MENU_TIME_FOREVER);
 			}
 		}
@@ -295,7 +295,7 @@ public int Handler_Equipment(Menu menu, MenuAction action, int client, int param
 		{
 			if (IsPlayerValid(client))
 			{
-				g_ClientInfo[client][ClientInfo_EquipmentItem] = param;
+				g_ClientInfo_Int[client][ClientInfo_EquipmentItem] = param;
 				
 				DisplayMenu(g_EquipMenu[Menu_KeepCustomClass], client, MENU_TIME_FOREVER);
 			}
@@ -359,7 +359,7 @@ public int Handler_KeepCustomClass(Menu menu, MenuAction action, int client, int
 		{
 			if (IsPlayerValid(client))
 			{
-				g_ClientInfo[client][ClientInfo_ShouldAutoEquip] = param ? false : true;
+				g_ClientInfo_Bool[client][ClientInfo_ShouldAutoEquip] = param ? false : true;
 				
 				Menu_PerformEquip(client);
 			}
@@ -379,8 +379,8 @@ public int Handler_KeepCustomClass(Menu menu, MenuAction action, int client, int
 
 Menu_PerformEquip(client)
 {
-	g_ClientInfo[client][ClientInfo_HasCustomClass] = true;
-	g_ClientInfo[client][ClientInfo_HasEquipped] = true;
+	g_ClientInfo_Bool[client][ClientInfo_HasCustomClass] = true;
+	g_ClientInfo_Bool[client][ClientInfo_HasEquipped] = true;
 	
 	RemoveWeapons(client);
 	
@@ -389,7 +389,7 @@ Menu_PerformEquip(client)
 	Menu_Equip_Primary(client);
 	Menu_Equip_Pistol(client);
 	
-	switch (g_ClientInfo[client][ClientInfo_EquipmentItem])
+	switch (g_ClientInfo_Int[client][ClientInfo_EquipmentItem])
 	{
 		case Menu_Equipment_PistolAmmo:
 		{
@@ -405,7 +405,7 @@ Menu_PerformEquip(client)
 
 Menu_Equip_Primary(client)
 {
-	switch (g_ClientInfo[client][ClientInfo_PrimaryWeapon])
+	switch (g_ClientInfo_Int[client][ClientInfo_PrimaryWeapon])
 	{
 		case Menu_Primary_Garand:
 		{
@@ -489,7 +489,7 @@ Menu_Equip_Primary(client)
 
 Menu_Equip_PrimaryAmmo(client)
 {
-	switch (g_ClientInfo[client][ClientInfo_PrimaryWeapon])
+	switch (g_ClientInfo_Int[client][ClientInfo_PrimaryWeapon])
 	{
 		case Menu_Primary_Garand:
 		{
@@ -557,7 +557,7 @@ Menu_Equip_PrimaryAmmo(client)
 
 Menu_Equip_Pistol(client)
 {
-	switch (g_ClientInfo[client][ClientInfo_Pistol])
+	switch (g_ClientInfo_Int[client][ClientInfo_Pistol])
 	{
 		case Menu_Pistol_Colt:
 		{
@@ -575,7 +575,7 @@ Menu_Equip_Pistol(client)
 
 Menu_Equip_PistolAmmo(client)
 {
-	switch (g_ClientInfo[client][ClientInfo_Pistol])
+	switch (g_ClientInfo_Int[client][ClientInfo_Pistol])
 	{
 		case Menu_Pistol_Colt:
 		{

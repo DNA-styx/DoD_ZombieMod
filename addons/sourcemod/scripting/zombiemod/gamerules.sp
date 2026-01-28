@@ -157,10 +157,11 @@ public Action Timer_CreateRoundTimer(Handle timer)
 {
 	if ((g_iRoundTimer = CreateEntityByName("dod_round_timer")) != -1)
 	{
-		SetTimeRemaining(g_iRoundTimer, g_ConVars[ConVar_Zombie_RoundTime][Value_Int]);
+		SetTimeRemaining(g_iRoundTimer, g_ConVarInts[ConVar_Zombie_RoundTime]);
 		
 		PauseTimer(g_iRoundTimer);
 	}
+	return Plugin_Continue;
 }
 
 public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast)
@@ -209,7 +210,7 @@ bool CheckWinConditions()
 
 RoundEnd(winningTeam)
 {
-	bool winLimitReached = ++g_iRoundWins >= g_ConVars[ConVar_WinLimit][Value_Int];
+	bool winLimitReached = ++g_iRoundWins >= g_ConVarInts[ConVar_WinLimit];
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -250,12 +251,12 @@ RoundEnd(winningTeam)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
-				if (g_ClientInfo[i][ClientInfo_KillsAsHuman])
+				if (g_ClientInfo_Int[i][ClientInfo_KillsAsHuman])
 				{
 					PushArrayCell(topHumanKills, i);
 				}
 				
-				if (g_ClientInfo[i][ClientInfo_KillsAsZombie])
+				if (g_ClientInfo_Int[i][ClientInfo_KillsAsZombie])
 				{
 					PushArrayCell(topZombieKills, i);
 				}
@@ -283,7 +284,7 @@ RoundEnd(winningTeam)
 				int client = GetArrayCell(topHumanKills, i);
 				
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i++, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
+				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i++, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsHuman]);
 				
 				DrawPanelText(topScorePanel, buffer);
 			}
@@ -311,7 +312,7 @@ RoundEnd(winningTeam)
 				int client = GetArrayCell(topZombieKills, i);
 				
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i + 1, buffer, g_ClientInfo[client][ClientInfo_KillsAsZombie]);
+				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i + 1, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsZombie]);
 				
 				DrawPanelText(topScorePanel, buffer);
 			}
@@ -343,12 +344,12 @@ RoundEnd(winningTeam)
 
 public SortByKillsAsHuman(client, target, Handlearray, Handlehandle)
 {
-	return g_ClientInfo[client][ClientInfo_KillsAsHuman] >= g_ClientInfo[target][ClientInfo_KillsAsHuman];
+	return g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] >= g_ClientInfo_Int[target][ClientInfo_KillsAsHuman];
 }
 
 public SortByKillsAsZombie(client, target, Handlearray, Handlehandle)
 {
-	return g_ClientInfo[client][ClientInfo_KillsAsZombie] >= g_ClientInfo[target][ClientInfo_KillsAsZombie];
+	return g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] >= g_ClientInfo_Int[target][ClientInfo_KillsAsZombie];
 }
 
 public MenuHandler_Dummy(Handlepanel, MenuAction:menuAction, param1, param2)
@@ -374,7 +375,7 @@ public Action Timer_RoundTimerThink(Handle timer)
 	
 	int timeRemaining = RoundFloat(GetTimeRemaining(g_iRoundTimer)) - 1;
 	
-	if (!g_bBlockChangeClass && (g_ConVars[ConVar_Zombie_RoundTime][Value_Int] - timeRemaining == 60))
+	if (!g_bBlockChangeClass && (g_ConVarInts[ConVar_Zombie_RoundTime] - timeRemaining == 60))
 	{
 		g_bBlockChangeClass = true;
 	}
@@ -383,7 +384,7 @@ public Action Timer_RoundTimerThink(Handle timer)
 	{
 		int lastHuman = GetClientOfUserId(g_iLastHuman);
 		
-		int interval = g_ConVars[ConVar_Beacon_Interval][Value_Int];
+		int interval = g_ConVarInts[ConVar_Beacon_Interval];
 		
 		if (lastHuman && g_iBeaconTicks++ % (interval * 2) >= interval)
 		{
@@ -431,11 +432,12 @@ public Action Timer_EndGame(Handle timer)
 	{
 		LogError("Unable to create entity: \"game_end\" !");
 	}
+	return Plugin_Continue;
 }
 
 public Action Timer_RestartRound(Handle timer)
 {
-	if (g_ConVars[ConVar_MinPlayers][Value_Int] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
+	if (g_ConVarInts[ConVar_MinPlayers] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
 	{
 		g_iLastHuman = g_iBeaconTicks = g_bBlockChangeClass = false;
 		
@@ -496,4 +498,5 @@ public Action Timer_RestartRound(Handle timer)
 	g_bRoundEnded = false;
 	
 	SetRoundState(DoDRoundState_Restart);
+	return Plugin_Continue;
 } 

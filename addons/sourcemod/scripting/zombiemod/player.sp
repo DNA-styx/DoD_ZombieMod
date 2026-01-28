@@ -52,13 +52,13 @@ public void OnClientPutInServer(int client)
 	}
 	#endif
 	
-	g_ClientInfo[client][ClientInfo_KillsAsHuman] = 
-	g_ClientInfo[client][ClientInfo_KillsAsZombie] = 
-	g_ClientInfo[client][ClientInfo_Critter] = 
-	g_ClientInfo[client][ClientInfo_IsCritial] = 
-	g_ClientInfo[client][ClientInfo_SelectedClass] = 
-	g_ClientInfo[client][ClientInfo_HasCustomClass] = 
-	g_ClientInfo[client][ClientInfo_ShouldAutoEquip] = false;
+	g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] = 
+	g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] = 
+	g_ClientInfo_Int[client][ClientInfo_Critter] = 
+	g_ClientInfo_Bool[client][ClientInfo_IsCritical] = 
+	g_ClientInfo_Bool[client][ClientInfo_SelectedClass] = 
+	g_ClientInfo_Bool[client][ClientInfo_HasCustomClass] = 
+	g_ClientInfo_Bool[client][ClientInfo_ShouldAutoEquip] = false;
 	
 	EmitSoundToClient(client, g_szSounds[Sound_JoinServer]);
 }
@@ -68,9 +68,9 @@ public void OnClientDisconnect_Post(int client)
 	if (g_bModActive)
 	{
 		// If the disconnected player was critical, give the critter the kill and reward.
-		if (g_ClientInfo[client][ClientInfo_IsCritial])
+		if (g_ClientInfo_Bool[client][ClientInfo_IsCritical])
 		{
-			int critAttacker = GetClientOfUserId(g_ClientInfo[client][ClientInfo_Critter]);
+			int critAttacker = GetClientOfUserId(g_ClientInfo_Int[client][ClientInfo_Critter]);
 			
 			if (critAttacker)
 			{
@@ -83,7 +83,7 @@ public void OnClientDisconnect_Post(int client)
 		int numAxis = GetTeamClientCount(Team_Axis);
 		
 		// Restart if there are not enough players.
-		if (numAllies + numAxis <= g_ConVars[ConVar_MinPlayers][Value_Int])
+		if (numAllies + numAxis <= g_ConVarInts[ConVar_MinPlayers])
 		{
 			g_bRoundEnded = true;
 			
@@ -116,17 +116,17 @@ SetPlayerModel(client, model)
 
 public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	if (g_ConVars[ConVar_Enabled][Value_Bool])
+	if (g_ConVarBools[ConVar_Enabled])
 	{
 		int clientUserId = GetEventInt(event, "userid");
 		int client = GetClientOfUserId(clientUserId);
 		
-		g_ClientInfo[client][ClientInfo_Health] = MAX_HEALTH;
-		g_ClientInfo[client][ClientInfo_WeaponCanUse] = true;
+		g_ClientInfo_Float[client][ClientInfo_Health] = MAX_HEALTH;
+		g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = true;
 		
 		if (!g_bModActive)
 		{
-			if (!g_bRoundEnded && g_ConVars[ConVar_MinPlayers][Value_Int] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
+			if (!g_bRoundEnded && g_ConVarInts[ConVar_MinPlayers] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
 			{
 				g_bRoundEnded = true;
 				
@@ -143,12 +143,12 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 			{
 				case Team_Allies:
 				{
-					g_ClientInfo[client][ClientInfo_DamageScale] = 1.0;
-					g_ClientInfo[client][ClientInfo_HasEquipped] = false;
+					g_ClientInfo_Float[client][ClientInfo_DamageScale] = 1.0;
+					g_ClientInfo_Bool[client][ClientInfo_HasEquipped] = false;
 					
 					if (!g_bRoundEnded)
 					{
-						if (!g_ClientInfo[client][ClientInfo_ShouldAutoEquip])
+						if (!g_ClientInfo_Bool[client][ClientInfo_ShouldAutoEquip])
 						{
 							CreateTimer(1.0, Timer_ShowEquipMenu, clientUserId, TIMER_FLAG_NO_MAPCHANGE);
 						}
@@ -196,8 +196,8 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				}
 				case Team_Axis:
 				{
-					g_ClientInfo[client][ClientInfo_DamageScale] = FloatDiv(MAX_HEALTH, g_ConVars[ConVar_Zombie_Health][Value_Float]);
-					g_ClientInfo[client][ClientInfo_IsCritial] = false;
+					g_ClientInfo_Float[client][ClientInfo_DamageScale] = (MAX_HEALTH / g_ConVarFloats[ConVar_Zombie_Health]);
+					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = false;
 					
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
@@ -206,7 +206,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					
 					SetPlayerModel(client, Model_Zombie_Default);
 					
-					SetPlayerLaggedMovementValue(client, g_ConVars[ConVar_Zombie_Speed][Value_Float]);
+					SetPlayerLaggedMovementValue(client, g_ConVarFloats[ConVar_Zombie_Speed]);
 				}
 			}
 		}
@@ -219,6 +219,7 @@ public Action Timer_ShowEquipMenu(Handle timer, int client)
 	{
 		DisplayMenu(g_EquipMenu[Menu_Main], client, 30);
 	}
+	return Plugin_Continue;
 }
 
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
@@ -246,7 +247,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 		{
 			PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieDeath]);
 			
-			int critAttacker = GetClientOfUserId(g_ClientInfo[client][ClientInfo_Critter]);
+			int critAttacker = GetClientOfUserId(g_ClientInfo_Int[client][ClientInfo_Critter]);
 			
 			if (critAttacker)
 			{
@@ -254,7 +255,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 				{
 					AddPlayerKills(critAttacker, 1);
 					
-					SetEventInt(event, "attacker", g_ClientInfo[client][ClientInfo_Critter]);
+					SetEventInt(event, "attacker", g_ClientInfo_Int[client][ClientInfo_Critter]);
 					SetEventString(event, "weapon", "crit");
 					
 					if (attacker)
@@ -265,18 +266,19 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 				
 				GiveHumanReward(critAttacker);
 				
-				g_ClientInfo[client][ClientInfo_Critter] = 0;
+				g_ClientInfo_Int[client][ClientInfo_Critter] = 0;
 				
-				g_ClientInfo[attacker][ClientInfo_KillsAsHuman]++;
+				g_ClientInfo_Int[attacker][ClientInfo_KillsAsHuman]++;
 			}
 			else if (attacker && attacker != client)
 			{
 				GiveHumanReward(attacker);
 				
-				g_ClientInfo[attacker][ClientInfo_KillsAsHuman]++;
+				g_ClientInfo_Int[attacker][ClientInfo_KillsAsHuman]++;
 			}
 		}
 	}
+	return Plugin_Continue;
 }
 
 public Action Timer_SwitchToZombieTeam(Handle timer, int data)
@@ -291,26 +293,27 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 	
 	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)
 	{
-		g_ClientInfo[attacker][ClientInfo_Critter] = 0;
-		g_ClientInfo[attacker][ClientInfo_KillsAsZombie]++;
+		g_ClientInfo_Int[attacker][ClientInfo_Critter] = 0;
+		g_ClientInfo_Int[attacker][ClientInfo_KillsAsZombie]++;
 		
 		if (IsPlayerAlive(attacker))
 		{
-			if (g_ClientInfo[attacker][ClientInfo_IsCritial] && g_ConVars[ConVar_Zombie_CritReward][Value_Int])
+			if (g_ClientInfo_Bool[attacker][ClientInfo_IsCritical] && g_ConVarInts[ConVar_Zombie_CritReward])
 			{
-				int newHealth = GetClientHealth(attacker) + g_ConVars[ConVar_Zombie_CritReward][Value_Int];
+				int newHealth = GetClientHealth(attacker) + g_ConVarInts[ConVar_Zombie_CritReward];
 				
 				SetEntityHealth(attacker, newHealth);
-				g_ClientInfo[attacker][ClientInfo_Health] = FloatMul(g_ClientInfo[attacker][ClientInfo_DamageScale], float(newHealth));
+				g_ClientInfo_Float[attacker][ClientInfo_Health] = (g_ClientInfo_Float[attacker][ClientInfo_DamageScale] * float(newHealth));
 				
-				g_ClientInfo[attacker][ClientInfo_IsCritial] = false;
+				g_ClientInfo_Bool[attacker][ClientInfo_IsCritical] = false;
 				
-				ZM_PrintToChat(attacker, "You received a %ihp boost for your kill!", g_ConVars[ConVar_Zombie_CritReward][Value_Int]);
+				ZM_PrintToChat(attacker, "You received a %ihp boost for your kill!", g_ConVarInts[ConVar_Zombie_CritReward]);
 			}
 			
 			GiveZombieReward(attacker);
 		}
 	}
+	return Plugin_Continue;
 }
 
 public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
@@ -321,6 +324,7 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 		
 		SetEventBroadcast(event, true);
 	}
+	return Plugin_Continue;
 }
 
 public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcast)
@@ -333,7 +337,7 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 		int attacker = GetClientOfUserId(attackerUserId);
 		
 		if (GetClientTeam(client) == Team_Axis && attacker
-			 && !g_ClientInfo[client][ClientInfo_IsCritial]
+			 && !g_ClientInfo_Bool[client][ClientInfo_IsCritical]
 			 && GetEventInt(event, "hitgroup") == 1)
 		{
 			switch (GetEventInt(event, "weapon"))
@@ -352,10 +356,10 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					// Don't change this, when a players health is 1 the game sometimes fucks up and the players view-offset drops down to the floor, like if you were a crushed midget.
 					// Plus, the health bar looks bad.
 					SetEntityHealth(client, 2);
-					g_ClientInfo[client][ClientInfo_Health] = FloatMul(g_ClientInfo[client][ClientInfo_DamageScale], 2.0);
+					g_ClientInfo_Float[client][ClientInfo_Health] = (g_ClientInfo_Float[client][ClientInfo_DamageScale] * 2.0);
 					
-					g_ClientInfo[client][ClientInfo_Critter] = attackerUserId;
-					g_ClientInfo[client][ClientInfo_IsCritial] = true;
+					g_ClientInfo_Int[client][ClientInfo_Critter] = attackerUserId;
+					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = true;
 					
 					float vecVelocity[3], vecClientEyePos[3], vecAttackerEyePos[3];
 					
@@ -382,7 +386,7 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 
 public ActionOnPopHelmet(client, floatvecVelocity[3], floatvecOrigin[3])
 {
-	return g_bModActive && !g_ClientInfo[client][ClientInfo_IsCritial] && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
+	return g_bModActive && !g_ClientInfo_Bool[client][ClientInfo_IsCritical] && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
 }
 
 public ActionOnJoinClass(client, &playerClass)
@@ -414,9 +418,9 @@ public Action OnEnterPlayerState(int client, int &playerState)
 	{
 		// This prevents the class selection menu to pop up on all team changes.
 		// It is however displayed once for allied players, allowing them to decide witch class to.
-		if (GetClientTeam(client) == Team_Allies && !g_ClientInfo[client][ClientInfo_SelectedClass])
+		if (GetClientTeam(client) == Team_Allies && !g_ClientInfo_Bool[client][ClientInfo_SelectedClass])
 		{
-			g_ClientInfo[client][ClientInfo_SelectedClass] = true;
+			g_ClientInfo_Bool[client][ClientInfo_SelectedClass] = true;
 			return Plugin_Continue;
 		}
 		
@@ -439,7 +443,7 @@ public Action OnVoiceCommand(int client, int &voiceCommand)
 
 public Action OnPlayerRespawn(int client)
 {
-	g_ClientInfo[client][ClientInfo_WeaponCanUse] = false;
+	g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = false;
 }
 
 public Action OnNormalSoundPlayed(int clients[64], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags)
@@ -460,7 +464,7 @@ public Action OnNormalSoundPlayed(int clients[64], int &numClients, char sample[
 
 public Action OnWeaponCanUse(int client, int weapon)
 {
-	if (g_bModActive && g_ClientInfo[client][ClientInfo_WeaponCanUse])
+	if (g_bModActive && g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse])
 	{
 		char className[MAX_WEAPON_LENGTH];
 		GetEdictClassname(weapon, className, sizeof(className));
@@ -502,19 +506,19 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 			return Plugin_Handled;
 		}
 		
-		if (g_ClientInfo[client][ClientInfo_DamageScale] != 1.0)
+		if (g_ClientInfo_Float[client][ClientInfo_DamageScale] != 1.0)
 		{
 			static damageAccumulatorOffset;
 			
-			if (!damageAccumulatorOffset && (damageAccumulatorOffset = FindDataMapOffs(client, "m_flDamageAccumulator")) == -1)
+			if (!damageAccumulatorOffset && (damageAccumulatorOffset = FindDataMapInfo(client, "m_flDamageAccumulator")) == -1)
 			{
 				LogError("Error: Failed to obtain offset: \"m_flDamageAccumulator\"!");
 				return Plugin_Continue;
 			}
 			
-			damage *= g_ClientInfo[client][ClientInfo_DamageScale];
+			damage *= g_ClientInfo_Float[client][ClientInfo_DamageScale];
 			
-			float newHealth = g_ClientInfo[client][ClientInfo_Health] - damage;
+			float newHealth = g_ClientInfo_Float[client][ClientInfo_Health] - damage;
 			
 			// Is the player supposed to die?
 			if (newHealth <= 0.0)
@@ -528,15 +532,15 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 			// Will the health go down to zero?
 			if (float(GetEntData(client, g_iOffset_Health)) + GetEntDataFloat(client, damageAccumulatorOffset) - damage <= 0)
 			{
-				g_ClientInfo[client][ClientInfo_Health] = newHealth;
+				g_ClientInfo_Float[client][ClientInfo_Health] = newHealth;
 				
 				return Plugin_Handled;
 			}
 			
 			// Correct the players health.
-			SetEntData(client, g_iOffset_Health, RoundFloat(g_ClientInfo[client][ClientInfo_Health]), _, true);
+			SetEntData(client, g_iOffset_Health, RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]), _, true);
 			
-			g_ClientInfo[client][ClientInfo_Health] = newHealth;
+			g_ClientInfo_Float[client][ClientInfo_Health] = newHealth;
 			
 			return Plugin_Changed;
 		}

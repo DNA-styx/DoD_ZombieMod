@@ -38,7 +38,7 @@ void InitCommands()
 
 void ShowTimeleft()
 {
-	ZM_PrintToChatAll("Rounds played: %i of %i before map-change.", g_iRoundWins, g_ConVars[ConVar_WinLimit][Value_Int]);
+	ZM_PrintToChatAll("Rounds played: %i of %i before map-change.", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
@@ -56,11 +56,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		 && (StrEqual(text[1], "equipmenu", false)
 			 || StrEqual(text, "equipmenu", false)))
 	{
-		g_ClientInfo[client][ClientInfo_ShouldAutoEquip] = false;
+		g_ClientInfo_Bool[client][ClientInfo_ShouldAutoEquip] = false;
 		
 		if (!g_bBlockChangeClass)
 		{
-			if (!g_ClientInfo[client][ClientInfo_HasEquipped])
+			if (!g_ClientInfo_Bool[client][ClientInfo_HasEquipped])
 			{
 				DisplayMenu(g_EquipMenu[Menu_Main], client, 30);
 			}
