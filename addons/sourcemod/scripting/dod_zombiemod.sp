@@ -52,17 +52,17 @@
 #include "zombiemod/player.sp"
 #include "zombiemod/commands.sp"
 
-public Plugin:myinfo =
+public Plugin myinfo = 
 {
-	name        = PLUGIN_NAME,
-	author      = "Andersso, Root, Colster",
-	description = "Zombie Mod for Day of Defeat: Source",
-	version     = PLUGIN_VERSION,
-	url         = "http://www.dodsplugins.com/"
+	name = PLUGIN_NAME, 
+	author = "Andersso, Root, Colster, claude.ai guided by DNA.styx", 
+	description = "Zombie Mod for Day of Defeat: Source", 
+	version = PLUGIN_VERSION, 
+	url = "https://github.com/DNA-styx/DoD_ZombieMod"
 };
 
 
-public OnPluginStart()
+public void OnPluginStart()
 {
 	InitOffsets();
 	InitConVars();
@@ -70,63 +70,65 @@ public OnPluginStart()
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
-
+	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
-
-#if defined _steamtools_included
+	
+	#if defined _steamtools_included
 	g_bUseSteamTools = LibraryExists("SteamTools");
-#endif
-
-#if defined _SENDPROXYMANAGER_INC_
-	g_bUseSendProxy =  LibraryExists("sendproxy");
-#endif
+	#endif
+	
+	#if defined _SENDPROXYMANAGER_INC_
+	g_bUseSendProxy = LibraryExists("sendproxy");
+	#endif
 }
 
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	MarkNativeAsOptional("SendProxy_Hook");
+	
+	return APLRes_Success;
 }
 
-public OnConfigsExecuted()
+public void OnConfigsExecuted()
 {
-#if defined _steamtools_included
+	#if defined _steamtools_included
 	if (g_bUseSteamTools)
 	{
 		Steam_SetGameDescription(PLUGIN_NAME);
 	}
-#endif
-
+	#endif
+	
 	g_iRoundWins = g_iNumZombieSpawns = g_bModActive = g_bRoundEnded = false;
-
-	g_hRoundTimer = INVALID_HANDLE;
-
+	
+	g_hRoundTimer = null;
+	
 	g_iZombie = -1;
-
+	
 	LoadConfig();
-
-	new entity = -1;
-
+	
+	int entity = -1;
+	
 	if (!g_bWhiteListed[WhiteList_Environment])
 	{
 		SetLightStyle(0, "c");
 		DispatchKeyValue(0, "skyname", "sky_borealis01");
-
+		
 		if ((entity = FindEntityByClassname(entity, "env_sun")) != -1)
 		{
 			AcceptEntityInput(entity, "TurnOff");
 		}
 	}
-
+	
 	PrecacheSound(SOUND_BLIP);
-
+	
 	g_iBeamSprite = PrecacheModel("materials/sprites/laser.vmt");
 	g_iHaloSprite = PrecacheModel("materials/sprites/halo01.vmt");
-
+	
 	while ((entity = FindEntityByClassname(entity, "info_player_axis")) != -1)
 	{
 		GetEntityOrigin(entity, g_vecZombieSpawnOrigin[g_iNumZombieSpawns++]);
-
+		
 		if (g_iNumZombieSpawns >= MAX_SPAWNPOINTS)
 		{
 			LogError("Spawn point limit reached!");

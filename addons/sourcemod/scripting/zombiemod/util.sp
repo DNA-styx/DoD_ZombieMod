@@ -29,20 +29,20 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-ZM_PrintToChat(client, const String:format[], any:...)
+void ZM_PrintToChat(int client, const char[] format, any ...)
 {
-	decl String:buffer[192];
+	char buffer[192];
 	VFormat(buffer, sizeof(buffer), format, 3);
-
+	
 	PrintToChat(client, ZM_PRINT_FORMAT, buffer);
 }
 
-ZM_PrintToChatAll(const String:format[], any:...)
+void ZM_PrintToChatAll(const char[] format, any ...)
 {
-	decl String:buffer[192];
+	char buffer[192];
 	VFormat(buffer, sizeof(buffer), format, 2);
-
-	for (new i = 1; i <= MaxClients; i++)
+	
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i))
 		{
@@ -51,38 +51,38 @@ ZM_PrintToChatAll(const String:format[], any:...)
 	}
 }
 
-bool:IsInZombieSpawn(client)
+bool IsInZombieSpawn(int client)
 {
-	decl Float:vecOrigin[3];
+	float vecOrigin[3];
 	GetClientAbsOrigin(client, vecOrigin);
-
-	for (new i; i < g_iNumZombieSpawns; i++)
+	
+	for (int i = 0; i < g_iNumZombieSpawns; i++)
 	{
 		if (GetVectorDistance(vecOrigin, g_vecZombieSpawnOrigin[i], false) <= 400.0)
 		{
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
-ScreenOverlay(client, const String:material[])
+void ScreenOverlay(int client, const char[] material)
 {
-	return ClientCommand(client, "r_screenoverlay \"%s\"", material);
+	ClientCommand(client, "r_screenoverlay \"%s\"", material);
 }
 
-RemoveScreenOverlay(client)
+void RemoveScreenOverlay(int client)
 {
-	return ClientCommand(client, "r_screenoverlay 0");
+	ClientCommand(client, "r_screenoverlay 0");
 }
 
-RemoveWeapons(client)
+void RemoveWeapons(int client)
 {
-	for (new i; i < Slot_Size; i++)
+	for (int i = 0; i < Slot_Size; i++)
 	{
-		new weapon = GetPlayerWeaponSlot(client, i);
-
+		int weapon = GetPlayerWeaponSlot(client, i);
+		
 		if (weapon != INVALID_WEAPON)
 		{
 			RemovePlayerItem(client, weapon);
@@ -91,92 +91,91 @@ RemoveWeapons(client)
 	}
 }
 
-FlashTimer(timeRemaining)
+void FlashTimer(int timeRemaining)
 {
-	new Handle:event = CreateEvent("dod_timer_flash", true);
-
-	if (event != INVALID_HANDLE)
+	Event event = CreateEvent("dod_timer_flash", true);
+	
+	if (event != null)
 	{
-		SetEventInt(event, "time_remaining", timeRemaining);
-
-		FireEvent(event);
+		event.SetInt("time_remaining", timeRemaining);
+		event.Fire();
 	}
 }
 
-GetPlayerPistol(client)
+int GetPlayerPistol(int client)
 {
-	new weapon = GetPlayerWeaponSlot(client, Slot_Secondary);
-
+	int weapon = GetPlayerWeaponSlot(client, Slot_Secondary);
+	
 	if (weapon != INVALID_WEAPON)
 	{
-		decl String:className[MAX_WEAPON_LENGTH];
+		char className[MAX_WEAPON_LENGTH];
 		GetEdictClassname(weapon, className, sizeof(className));
-
+		
 		if (StrEqual(className[7], "colt"))
 		{
 			return Pistol_Colt;
 		}
-
+		
 		if (StrEqual(className[7], "p38"))
 		{
 			return Pistol_P38;
 		}
 	}
-
+	
 	return Pistol_Invalid;
 }
 
-PlaySoundFromPlayer(client, const String:sample[])
+void PlaySoundFromPlayer(int client, const char[] sample)
 {
-	decl Float:vecPosition[3];
+	float vecPosition[3];
 	GetClientEyePosition(client, vecPosition);
-
+	
 	EmitAmbientSound(sample, vecPosition, client, SNDLEVEL_SCREAMING);
 }
 
-AddPlayerKills(client, amount)
+void AddPlayerKills(int client, int amount)
 {
-	static fragOffset;
-
-	if ((fragOffset = FindDataMapOffs(client, "m_iFrags")) == -1)
+	static int fragOffset;
+	
+	if ((fragOffset = FindDataMapInfo(client, "m_iFrags")) == -1)
 	{
 		LogError("Unable to find datamap offset: \"m_iFrags\" !");
-
+		
 		return;
 	}
-
+	
 	SetEntData(client, fragOffset, GetEntData(client, fragOffset) + amount, _, true);
 }
 
-GetHumanCount()
+int GetHumanCount()
 {
-	new numHumans;
-
-	for (new i = 1; i <= MaxClients; i++)
+	int numHumans;
+	
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && !IsClientSourceTV(i) && GetClientTeam(i) == Team_Allies)
 		{
 			numHumans++;
 		}
 	}
-
+	
 	return numHumans;
 }
 
-SelectZombie()
+void SelectZombie()
 {
-	new Handle:clientArray = CreateArray();
-
-	for (new i = 1; i <= MaxClients; i++)
+	Handle clientArray = CreateArray();
+	
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (i != g_iZombie && IsClientInGame(i) && !IsClientSourceTV(i) && GetClientTeam(i) > Team_Spectator)
 		{
 			PushArrayCell(clientArray, i);
 		}
 	}
-
-	new arraySize = GetArraySize(clientArray);
-
+	
+	int arraySize = GetArraySize(clientArray);
+	
 	if (arraySize)
 	{
 		g_iZombie = GetArrayCell(clientArray, arraySize >= 2 ? GetURandomInt() % (arraySize - 1) : 0);
@@ -185,6 +184,6 @@ SelectZombie()
 	{
 		LogError("Failed to select zombie");
 	}
-
+	
 	CloseHandle(clientArray);
 }

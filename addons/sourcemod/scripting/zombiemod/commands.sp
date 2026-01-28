@@ -29,35 +29,35 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-InitCommands()
+void InitCommands()
 {
 	AddCommandListener(CommandListener_TimeLeft, "timeleft");
 	AddCommandListener(CommandListener_JoinTeam, "jointeam");
 	AddCommandListener(CommandListener_DropAmmo, "dropammo");
 }
 
-ShowTimeleft()
+void ShowTimeleft()
 {
 	ZM_PrintToChatAll("Rounds played: %i of %i before map-change.", g_iRoundWins, g_ConVars[ConVar_WinLimit][Value_Int]);
 }
 
-public Action:OnClientSayCommand(client, const String:command[], const String:sArgs[])
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
-	decl String:text[13];
+	char text[13];
 	Format(text, sizeof(text), sArgs); // strcopy is evil
 	StripQuotes(text);
-
-	if (StrEqual(text,    "timeleft", false)
-	||  StrEqual(text[1], "timeleft", false))
+	
+	if (StrEqual(text, "timeleft", false)
+		 || StrEqual(text[1], "timeleft", false))
 	{
 		ShowTimeleft();
 	}
 	else if (GetClientTeam(client) == Team_Allies
-	&& (StrEqual(text[1], "equipmenu", false)
-	|| StrEqual(text,     "equipmenu", false)))
+		 && (StrEqual(text[1], "equipmenu", false)
+			 || StrEqual(text, "equipmenu", false)))
 	{
 		g_ClientInfo[client][ClientInfo_ShouldAutoEquip] = false;
-
+		
 		if (!g_bBlockChangeClass)
 		{
 			if (!g_ClientInfo[client][ClientInfo_HasEquipped])
@@ -73,35 +73,35 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		{
 			ZM_PrintToChat(client, "90 seconds has passed, you cannot equip any more!");
 		}
-
+		
 		return Plugin_Handled;
 	}
-
+	
 	return Plugin_Continue;
 }
 
-public Action:CommandListener_TimeLeft(client, const String:command[], numArgs)
+public Action CommandListener_TimeLeft(int client, const char[] command, int numArgs)
 {
 	ShowTimeleft();
-
+	
 	return Plugin_Handled;
 }
 
-RedisplayTeamSelection(client, const String:message[])
+void RedisplayTeamSelection(int client, const char[] message)
 {
 	PrintCenterText(client, message);
 	ClientCommand(client, "changeteam");
 }
 
-public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
+public Action CommandListener_JoinTeam(int client, const char[] command, int numArgs)
 {
 	if (client && 0 < numArgs < 2)
 	{
-		decl String:arg[8];
+		char arg[8];
 		GetCmdArg(1, arg, sizeof(arg));
-
-		new desiredTeam = StringToInt(arg);
-
+		
+		int desiredTeam = StringToInt(arg);
+		
 		if (g_bModActive)
 		{
 			switch (desiredTeam)
@@ -109,17 +109,17 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 				case Team_Unassigned: // Auto-assign
 				{
 					RedisplayTeamSelection(client, "You cannot Auto-Assign");
-
+					
 					return Plugin_Handled;
 				}
-
+				
 				case Team_Spectator:
 				{
 					RedisplayTeamSelection(client, "You cannot join Spectators");
-
+					
 					return Plugin_Handled;
 				}
-
+				
 				case Team_Allies:
 				{
 					switch (GetClientTeam(client))
@@ -127,23 +127,23 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 						case Team_Unassigned, Team_Spectator:
 						{
 							ChangeClientTeam(client, Team_Axis);
-
+							
 							return Plugin_Handled;
 						}
-
+						
 						case Team_Axis:
 						{
 							RedisplayTeamSelection(client, "You cannot join Humans at this time");
-
+							
 							return Plugin_Handled;
 						}
 					}
 				}
-
+				
 				case Team_Axis:
 				{
 					ChangeClientTeam(client, Team_Axis);
-
+					
 					return Plugin_Handled;
 				}
 			}
@@ -151,15 +151,15 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 		else if (desiredTeam == Team_Allies) // Bypass team balance.
 		{
 			ChangeClientTeam(client, Team_Allies);
-
+			
 			return Plugin_Handled;
 		}
 	}
-
+	
 	return Plugin_Continue;
 }
 
-public Action:CommandListener_DropAmmo(client, const String:command[], numArgs)
+public Action CommandListener_DropAmmo(int client, const char[] command, int numArgs)
 {
 	return g_bModActive && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
 }

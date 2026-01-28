@@ -29,47 +29,47 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-new	bool:g_bModActive,
+bool g_bModActive;
 #if defined _steamtools_included
-	bool:g_bUseSteamTools,
+bool g_bUseSteamTools;
 #endif
 #if defined _SENDPROXYMANAGER_INC_
-	bool:g_bUseSendProxy,
+bool g_bUseSendProxy;
 #endif
-	bool:g_bRoundEnded,
-	bool:g_bBlockChangeClass,
-	g_iZombie,
-	g_iLastHuman,
-	g_iRoundWins,
-	g_iBeamSprite,
-	g_iHaloSprite,
-	g_iRoundTimer,
-	g_iBeaconTicks,
-	g_iNumZombieSpawns,
-	Handle:g_hRoundTimer,
-	Float:g_vecZombieSpawnOrigin[MAX_SPAWNPOINTS][3];
+bool g_bRoundEnded;
+bool g_bBlockChangeClass;
+int g_iZombie;
+int g_iLastHuman;
+int g_iRoundWins;
+int g_iBeamSprite;
+int g_iHaloSprite;
+int g_iRoundTimer;
+int g_iBeaconTicks;
+int g_iNumZombieSpawns;
+Handle g_hRoundTimer;
+float g_vecZombieSpawnOrigin[MAX_SPAWNPOINTS][3];
 
 enum ClientInfo
 {
-	ClientInfo_KillsAsHuman,         // Total number of kills the player has as human.
-	ClientInfo_KillsAsZombie,        // Total number of kills the player has as zombie.
-
-	bool:ClientInfo_IsCritial,       // True if zombie is critical (only has 2 hp), false otherwise
-	ClientInfo_Critter,              // Userid of the attacker that scored the crirital hit on the player.
-
-	bool:ClientInfo_SelectedClass,   // True if player has selected a player class, false otherwise.
-
-	ClientInfo_Pistol,               // The type of pistol the player has.
-	ClientInfo_PrimaryWeapon,        // The type of primary wepaon the player has.
-	ClientInfo_EquipmentItem,        // The type of equipment item the player has.
-	bool:ClientInfo_HasCustomClass,  // True if the player has created a custom class, false otherwise.
-	bool:ClientInfo_HasEquipped,     // True if the player has equipped once during the current round.
-	bool:ClientInfo_ShouldAutoEquip, // True if the player has chosen to auto-equip with the custom class.
-
-	Float:ClientInfo_DamageScale,    // The value that the damaged done to the player should be scaled down to.
-	Float:ClientInfo_Health,         // The amount of health relative to the damage scale.
-
-	bool:ClientInfo_WeaponCanUse     // If true the WeaponCanUse() hook will run, false otherwise.
+	ClientInfo_KillsAsHuman,  // Total number of kills the player has as human.
+	ClientInfo_KillsAsZombie,  // Total number of kills the player has as zombie.
+	
+	ClientInfo_IsCritial,  // True if zombie is critical (only has 2 hp), false otherwise
+	ClientInfo_Critter,  // Userid of the attacker that scored the crirital hit on the player.
+	
+	ClientInfo_SelectedClass,  // True if player has selected a player class, false otherwise.
+	
+	ClientInfo_Pistol,  // The type of pistol the player has.
+	ClientInfo_PrimaryWeapon,  // The type of primary wepaon the player has.
+	ClientInfo_EquipmentItem,  // The type of equipment item the player has.
+	ClientInfo_HasCustomClass,  // True if the player has created a custom class, false otherwise.
+	ClientInfo_HasEquipped,  // True if the player has equipped once during the current round.
+	ClientInfo_ShouldAutoEquip,  // True if the player has chosen to auto-equip with the custom class.
+	
+	ClientInfo_DamageScale,  // The value that the damaged done to the player should be scaled down to.
+	ClientInfo_Health,  // The amount of health relative to the damage scale.
+	
+	ClientInfo_WeaponCanUse // If true the WeaponCanUse() hook will run, false otherwise.
 };
 
-new	g_ClientInfo[DOD_MAXPLAYERS + 1][ClientInfo];
+int g_ClientInfo[DOD_MAXPLAYERS + 1][ClientInfo];

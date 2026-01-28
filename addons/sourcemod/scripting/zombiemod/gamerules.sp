@@ -35,106 +35,106 @@ InitGameRules()
 	HookEvent("dod_round_active", Event_RoundActive, EventHookMode_PostNoCopy);
 }
 
-public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
+public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	if (g_bModActive)
 	{
-		static const String:objectiveKillEnts[][] =
+		static const char objectiveKillEnts[][] = 
 		{
-			"dod_round_timer",
-			"dod_bomb_target",
+			"dod_round_timer", 
+			"dod_bomb_target", 
 			"dod_capture_area"
 		};
-
-		static const String:teamBlockerKillEnts[][] =
+		
+		static const char teamBlockerKillEnts[][] = 
 		{
-			"func_team_wall",
+			"func_team_wall", 
 			"func_teamblocker"
 		};
-
-		new entity = -1;
-
+		
+		int entity = -1;
+		
 		if (!g_bWhiteListed[WhiteList_Objectives])
 		{
 			SetNumControlPoints(0);
-
+			
 			// Remove all objective related entities
-			for (new i; i < sizeof(objectiveKillEnts); i++)
+			for (int i; i < sizeof(objectiveKillEnts); i++)
 			{
 				while ((entity = FindEntityByClassname(entity, objectiveKillEnts[i])) != -1)
 				{
 					AcceptEntityInput(entity, "Kill");
 				}
 			}
-
+			
 			entity = -1;
-
+			
 			// Disable all bomb dispensers
 			while ((entity = FindEntityByClassname(entity, "dod_bomb_dispenser")) != -1)
 			{
 				AcceptEntityInput(entity, "Disable");
 			}
-
+			
 			entity = -1;
-
+			
 			// Hide all control point flags.
 			while ((entity = FindEntityByClassname(entity, "dod_control_point")) != -1)
 			{
 				AcceptEntityInput(entity, "HideModel");
 			}
-
+			
 			entity = -1;
-
+			
 			// Stop flag wave sound on all control points
 			while ((entity = FindEntityByClassname(entity, "ambient_generic")) != -1)
 			{
-				decl String:soundFileName[PLATFORM_MAX_PATH];
+				char soundFileName[PLATFORM_MAX_PATH];
 				GetEntPropString(entity, Prop_Data, "m_iszSound", soundFileName, sizeof(soundFileName));
-
+				
 				if (StrEqual(soundFileName, "ambient/flag.wav"))
 				{
 					AcceptEntityInput(entity, "StopSound");
 				}
 			}
-
-			if (g_hRoundTimer != INVALID_HANDLE)
+			
+			if (g_hRoundTimer != null)
 			{
 				KillTimer(g_hRoundTimer);
-
-				g_hRoundTimer = INVALID_HANDLE;
+				
+				g_hRoundTimer = null;
 			}
-
+			
 			CreateTimer(0.1, Timer_CreateRoundTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
-
+		
 		// Remove HDR tone-mapping controllers
 		if (!g_bWhiteListed[WhiteList_Environment])
 		{
 			entity = -1;
-
+			
 			while ((entity = FindEntityByClassname(entity, "env_tonemap_controller")) != -1)
 			{
 				AcceptEntityInput(entity, "Kill");
 			}
 		}
-
+		
 		// Remove trigger_hurts
 		if (!g_bWhiteListed[WhiteList_TriggerHurts])
 		{
 			entity = -1;
-
+			
 			while ((entity = FindEntityByClassname(entity, "trigger_hurt")) != -1)
 			{
 				AcceptEntityInput(entity, "Kill");
 			}
 		}
-
+		
 		// Remove team blockers
 		if (!g_bWhiteListed[WhiteList_TeamBlockers])
 		{
 			entity = -1;
-
-			for (new i; i < sizeof(teamBlockerKillEnts); i++)
+			
+			for (int i; i < sizeof(teamBlockerKillEnts); i++)
 			{
 				while ((entity = FindEntityByClassname(entity, teamBlockerKillEnts[i])) != -1)
 				{
@@ -142,9 +142,9 @@ public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
 				}
 			}
 		}
-
+		
 		entity = -1;
-
+		
 		// Remove scoring entities
 		while ((entity = FindEntityByClassname(entity, "dod_scoring")) != -1)
 		{
@@ -153,49 +153,49 @@ public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
 	}
 }
 
-public Action:Timer_CreateRoundTimer(Handle:timer)
+public Action Timer_CreateRoundTimer(Handle timer)
 {
 	if ((g_iRoundTimer = CreateEntityByName("dod_round_timer")) != -1)
 	{
 		SetTimeRemaining(g_iRoundTimer, g_ConVars[ConVar_Zombie_RoundTime][Value_Int]);
-
+		
 		PauseTimer(g_iRoundTimer);
 	}
 }
 
-public Event_RoundActive(Handle:event, String:name[], bool:dontBroadcast)
+public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast)
 {
 	if (g_bModActive)
 	{
 		ResumeTimer(g_iRoundTimer);
-
-		g_hRoundTimer = CreateTimer(1.0, Timer_RoundTimerThink, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		
+		g_hRoundTimer = CreateTimer(1.0, Timer_RoundTimerThink, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
 }
 
-bool:CheckWinConditions()
+bool CheckWinConditions()
 {
 	if (g_bRoundEnded)
 	{
 		return true;
 	}
-
-	new numHumans = GetHumanCount();
-
+	
+	int numHumans = GetHumanCount();
+	
 	if (!numHumans)
 	{
 		RoundEnd(Team_Axis);
 	}
 	else if (numHumans == 1 && !g_iLastHuman)
 	{
-		for (new i = 1; i <= MaxClients; i++)
+		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				ZM_PrintToChat(i, "The last man standing has been beaconed!");
-
+				
 				EmitSoundToClient(i, g_szSounds[Sound_LastManStanding]);
-
+				
 				if (!g_iLastHuman && GetClientTeam(i) == Team_Allies)
 				{
 					g_iLastHuman = GetClientUserId(i);
@@ -203,15 +203,15 @@ bool:CheckWinConditions()
 			}
 		}
 	}
-
+	
 	return g_bRoundEnded;
 }
 
 RoundEnd(winningTeam)
 {
-	new bool:winLimitReached = ++g_iRoundWins >= g_ConVars[ConVar_WinLimit][Value_Int];
-
-	for (new i = 1; i <= MaxClients; i++)
+	bool winLimitReached = ++g_iRoundWins >= g_ConVars[ConVar_WinLimit][Value_Int];
+	
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && !IsClientSourceTV(i))
 		{
@@ -219,7 +219,7 @@ RoundEnd(winningTeam)
 			{
 				StopSound(i, SNDCHAN_AUTO, g_szSounds[Sound_LastManStanding]);
 			}
-
+			
 			if (winLimitReached)
 			{
 				EmitSoundToClient(i, g_szSounds[Sound_End]);
@@ -237,16 +237,16 @@ RoundEnd(winningTeam)
 			}
 		}
 	}
-
+	
 	g_bRoundEnded = true;
-
+	
 	if (winLimitReached)
 	{
-		decl String:buffer[64];
-
-		new Handle:topHumanKills = CreateArray(), Handle:topZombieKills = CreateArray();
-
-		for (new i = 1; i <= MaxClients; i++)
+		char buffer[64];
+		
+		Handle topHumanKills = CreateArray(), topZombieKills = CreateArray();
+		
+		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
@@ -254,37 +254,37 @@ RoundEnd(winningTeam)
 				{
 					PushArrayCell(topHumanKills, i);
 				}
-
+				
 				if (g_ClientInfo[i][ClientInfo_KillsAsZombie])
 				{
 					PushArrayCell(topZombieKills, i);
 				}
 			}
 		}
-
-		new Handle:topScorePanel = CreatePanel();
-
+		
+		Handle topScorePanel = CreatePanel();
+		
 		SetPanelTitle(topScorePanel, "Top scores");
 		DrawPanelText(topScorePanel, "\n \nHumans:");
-
-		new topHumanArraySize = GetArraySize(topHumanKills);
-
+		
+		int topHumanArraySize = GetArraySize(topHumanKills);
+		
 		if (topHumanArraySize)
 		{
 			SortADTArrayCustom(topHumanKills, SortByKillsAsHuman);
-
+			
 			if (topHumanArraySize > SCOREBOARD_MAX_ELEMENTS)
 			{
 				topHumanArraySize = SCOREBOARD_MAX_ELEMENTS;
 			}
-
-			for (new i; i < topHumanArraySize; i++)
+			
+			for (int i; i < topHumanArraySize; i++)
 			{
-				new client = GetArrayCell(topHumanKills, i);
-
+				int client = GetArrayCell(topHumanKills, i);
+				
 				GetClientName(client, buffer, sizeof(buffer));
 				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i++, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
-
+				
 				DrawPanelText(topScorePanel, buffer);
 			}
 		}
@@ -292,27 +292,27 @@ RoundEnd(winningTeam)
 		{
 			DrawPanelText(topScorePanel, "<None>");
 		}
-
+		
 		DrawPanelText(topScorePanel, "\n \nZombies:");
-
-		new topZombieArraySize = GetArraySize(topZombieKills);
-
+		
+		int topZombieArraySize = GetArraySize(topZombieKills);
+		
 		if (topZombieArraySize)
 		{
 			SortADTArrayCustom(topZombieKills, SortByKillsAsZombie);
-
+			
 			if (topZombieArraySize > SCOREBOARD_MAX_ELEMENTS)
 			{
 				topZombieArraySize = SCOREBOARD_MAX_ELEMENTS;
 			}
-
-			for (new i; i < topZombieArraySize; i++)
+			
+			for (int i; i < topZombieArraySize; i++)
 			{
-				new client = GetArrayCell(topZombieKills, i);
-
+				int client = GetArrayCell(topZombieKills, i);
+				
 				GetClientName(client, buffer, sizeof(buffer));
 				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i + 1, buffer, g_ClientInfo[client][ClientInfo_KillsAsZombie]);
-
+				
 				DrawPanelText(topScorePanel, buffer);
 			}
 		}
@@ -320,19 +320,19 @@ RoundEnd(winningTeam)
 		{
 			DrawPanelText(topScorePanel, "<None>");
 		}
-
-		for (new i = 1; i <= MaxClients; i++)
+		
+		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				SendPanelToClient(topScorePanel, i, MenuHandler_Dummy, 10);
 			}
 		}
-
+		
 		CloseHandle(topHumanKills);
 		CloseHandle(topZombieKills);
 		CloseHandle(topScorePanel);
-
+		
 		CreateTimer(10.0, Timer_EndGame, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	else
@@ -341,88 +341,88 @@ RoundEnd(winningTeam)
 	}
 }
 
-public SortByKillsAsHuman(client, target, Handle:array, Handle:handle)
+public SortByKillsAsHuman(client, target, Handlearray, Handlehandle)
 {
 	return g_ClientInfo[client][ClientInfo_KillsAsHuman] >= g_ClientInfo[target][ClientInfo_KillsAsHuman];
 }
 
-public SortByKillsAsZombie(client, target, Handle:array, Handle:handle)
+public SortByKillsAsZombie(client, target, Handlearray, Handlehandle)
 {
 	return g_ClientInfo[client][ClientInfo_KillsAsZombie] >= g_ClientInfo[target][ClientInfo_KillsAsZombie];
 }
 
-public MenuHandler_Dummy(Handle:panel, MenuAction:menuAction, param1, param2)
+public MenuHandler_Dummy(Handlepanel, MenuAction:menuAction, param1, param2)
 {
 	return;
 }
 
-public Action:OnAddWaveTime(index, &Float:delay)
+public ActionOnAddWaveTime(index, &floatdelay)
 {
 	return g_bModActive ? Plugin_Handled : Plugin_Continue;
 }
 
-public Action:Timer_RoundTimerThink(Handle:timer)
+public Action Timer_RoundTimerThink(Handle timer)
 {
 	if (g_bRoundEnded)
 	{
 		PauseTimer(g_iRoundTimer);
-
-		g_hRoundTimer = INVALID_HANDLE;
-
+		
+		g_hRoundTimer = null;
+		
 		return Plugin_Stop;
 	}
-
-	new timeRemaining = RoundFloat(GetTimeRemaining(g_iRoundTimer)) - 1;
-
+	
+	int timeRemaining = RoundFloat(GetTimeRemaining(g_iRoundTimer)) - 1;
+	
 	if (!g_bBlockChangeClass && (g_ConVars[ConVar_Zombie_RoundTime][Value_Int] - timeRemaining == 60))
 	{
 		g_bBlockChangeClass = true;
 	}
-
+	
 	if (g_iLastHuman)
 	{
-		new lastHuman = GetClientOfUserId(g_iLastHuman);
-
-		new interval = g_ConVars[ConVar_Beacon_Interval][Value_Int];
-
+		int lastHuman = GetClientOfUserId(g_iLastHuman);
+		
+		int interval = g_ConVars[ConVar_Beacon_Interval][Value_Int];
+		
 		if (lastHuman && g_iBeaconTicks++ % (interval * 2) >= interval)
 		{
-			decl Float:vecPosition[3];
+			float vecPosition[3];
 			GetClientAbsOrigin(lastHuman, vecPosition);
-
+			
 			vecPosition[2] += 10.0;
-
+			
 			TE_SetupBeamRingPoint(vecPosition, 10.0, 550.0, g_iBeamSprite, g_iHaloSprite, 0, 10, 0.6, 10.0, 0.5, { 0, 255, 0, 255 }, 10, 0);
 			TE_SendToAll();
-
+			
 			EmitAmbientSound(SOUND_BLIP, vecPosition, lastHuman, SNDLEVEL_RAIDSIREN);
 		}
 	}
-
+	
 	switch (timeRemaining)
 	{
 		case 0:
 		{
 			RoundEnd(Team_Allies);
-
-			g_hRoundTimer = INVALID_HANDLE;
-
+			
+			g_hRoundTimer = null;
+			
 			return Plugin_Stop;
 		}
-
+		
 		case 60, 120:
 		{
 			FlashTimer(timeRemaining);
 		}
 	}
-
+	
 	return Plugin_Continue;
 }
 
-public Action:Timer_EndGame(Handle:timer)
+public Action Timer_EndGame(Handle timer)
 {
-	new entity = CreateEntityByName("game_end", -1);
-
+	int entity = CreateEntityByName("game_end", -1);
+	
 	if (entity != -1)
 	{
 		AcceptEntityInput(entity, "EndGame");
@@ -433,32 +433,32 @@ public Action:Timer_EndGame(Handle:timer)
 	}
 }
 
-public Action:Timer_RestartRound(Handle:timer)
+public Action Timer_RestartRound(Handle timer)
 {
 	if (g_ConVars[ConVar_MinPlayers][Value_Int] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
 	{
 		g_iLastHuman = g_iBeaconTicks = g_bBlockChangeClass = false;
-
+		
 		g_bModActive = true;
-
+		
 		SelectZombie();
-
-		for (new i = 1; i <= MaxClients; i++)
+		
+		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				RemoveScreenOverlay(i);
-
+				
 				if (i != g_iZombie && GetClientTeam(i) > Team_Spectator)
 				{
 					// This prevents the players from committing suicide
 					SetPlayerState(i, PlayerState_ObserverMode);
-
+					
 					ChangeClientTeam(i, Team_Allies);
 				}
 			}
 		}
-
+		
 		if (GetClientTeam(g_iZombie) != Team_Axis)
 		{
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
@@ -467,33 +467,33 @@ public Action:Timer_RestartRound(Handle:timer)
 	}
 	else
 	{
-		for (new i = 1; i <= MaxClients; i++)
+		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				RemoveScreenOverlay(i);
 			}
 		}
-
-		if (g_hRoundTimer != INVALID_HANDLE)
+		
+		if (g_hRoundTimer != null)
 		{
 			KillTimer(g_hRoundTimer);
-
-			g_hRoundTimer = INVALID_HANDLE;
+			
+			g_hRoundTimer = null;
 		}
-
-		new entity = FindEntityByClassname(-1, "dod_round_timer");
-
+		
+		int entity = FindEntityByClassname(-1, "dod_round_timer");
+		
 		// Round-timers are preserved on round restarts, and therefore it needs to get removed when the mod is inactive.
 		if (entity != -1)
 		{
 			AcceptEntityInput(entity, "Kill");
 		}
-
+		
 		g_bModActive = false;
 	}
-
+	
 	g_bRoundEnded = false;
-
+	
 	SetRoundState(DoDRoundState_Restart);
-}
+} 
