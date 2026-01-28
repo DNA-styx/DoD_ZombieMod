@@ -1,0 +1,82 @@
+"Games"
+{
+    "#default"
+    {
+        "Offsets"
+        {
+            "g_pObjectiveResource"
+            {
+                "windows" "67"
+            }
+        }
+        "Signatures"
+        {
+            "CreateStandardEntities"
+            {
+                "library"    "server"
+                "windows"    "\x6A\x00\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x6A\x00\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\xA3\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x6A\x00\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\xA3\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x83\xC4\x30\xC3"
+            }
+            "g_pObjectiveResource"
+            {
+                "library"    "server"
+                "linux"      "@g_pObjectiveResource"
+            }
+            "VoiceCommand"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x81\xEC\xB0\x00\x00\x00\x53\x8B\xD9\x8B\x03"
+                "linux"      "@_ZN10CDODPlayer12VoiceCommandEi"
+            }
+            "JoinClass"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x83\xF8\x01"
+                "linux"      "@_ZN10CDODPlayer23HandleCommand_JoinClassEi"
+            }
+            "PopHelmet"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x8D\x8F\x2A\x2A\x2A\x2A"
+                "linux"      "@_ZN10CDODPlayer9PopHelmetE6VectorS0_"
+            }
+            "SetWinningTeam"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x8B\x0D\x2A\x2A\x2A\x2A\x81\xEC\x80\x00\x00\x00"
+                "linux"      "@_ZN13CDODGameRules14SetWinningTeamEi"
+            }
+            "DODRespawn"
+            {
+                "library"    "server"
+                "windows"    "\x56\x8B\xF1\x8B\x06\x8B\x80\x2A\x2A\x2A\x2A\xFF\xD0\x84\xC0\x74\x2A\x80\xBE\x2A\x2A\x2A\x2A\x00\x8D\x8E\x2A\x2A\x2A\x2A"
+                "linux"      "@_ZN10CDODPlayer10DODRespawnEv"
+            }
+            "AddWaveTime"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x8B\x45\x2A\x83\xEC\x08\x56\x8B\xF1"
+                "linux"      "@_ZN13CDODGameRules11AddWaveTimeEif"
+            }
+            "RoundState"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x56\x8B\xF1\x57\x8B\x7D\x2A\x39\xBE\x2A\x2A\x2A\x2A"
+                // or it could be "windows" "\x53\x56\x8B\xD9\xE8\x2A\x2A\x2A\x2A\xBE\x01\x00\x00\x00"
+                "linux"      "@_ZN13CDODGameRules11State_EnterE13DODRoundState"
+            }
+            "PlayerState"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\x53\x56\x8B\xF1\x57\x8B\x7D\x2A\x8D\x9E\x2A\x2A\x2A\x2A"
+                "linux"      "@_ZN10CDODPlayer11State_EnterE14DODPlayerState"
+            }
+            "BombTargetState"
+            {
+                "library"    "server"
+                "windows"    "\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x53\x56\x57\x8B\xF9"
+                // or it could be "windows" "\x55\x8B\xEC\x53\x56\x8B\xF1\x57\x8B\x8E\x2A\x2A\x2A\x2A"
+                "linux"      "@_ZN14CDODBombTarget11State_EnterE15BombTargetState"
+            }
+        }
+    }
+}
