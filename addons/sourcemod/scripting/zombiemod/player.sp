@@ -197,6 +197,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				case Team_Axis:
 				{
 					g_ClientInfo_Float[client][ClientInfo_DamageScale] = (MAX_HEALTH / g_ConVarFloats[ConVar_Zombie_Health]);
+					g_ClientInfo_Float[client][ClientInfo_Health] = g_ConVarFloats[ConVar_Zombie_Health];
 					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = false;
 					
 					RemoveWeapons(client);
@@ -567,3 +568,95 @@ public ActionSendProxy_TeamNum(client, const charPropName[], &value, element)
 	return Plugin_Continue;
 }
 #endif
+// ============================================================================
+// ZOMBIE NAME/HEALTH DISPLAY
+// ============================================================================
+
+Handle g_hZombieInfoTimer = null;
+ConVar g_cvShowZombieInfo;
+
+void InitZombieInfoDisplay()
+{
+	// Prevent double-initialization
+	if (g_hZombieInfoTimer != null)
+	{
+		return;
+	}
+	
+	g_cvShowZombieInfo = CreateConVar("dod_zombiemod_show_info", "1", 
+		"Show zombie name and health when aiming at them (0=off, 1=on)", 
+		FCVAR_PLUGIN, true, 0.0, true, 1.0);
+	
+	
+	g_hZombieInfoTimer = CreateTimer(0.1, Timer_ShowZombieInfo, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public void OnMapStart()
+{
+	// Recreate timer on map change
+	
+	// Clear old handle if it exists
+	g_hZombieInfoTimer = null;
+	
+	// Recreate the timer
+	g_hZombieInfoTimer = CreateTimer(0.1, Timer_ShowZombieInfo, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void CleanupZombieInfoDisplay()
+{
+	// Timer will auto-clean with TIMER_FLAG_NO_MAPCHANGE
+	// Just set handle to null
+	g_hZombieInfoTimer = null;
+}
+
+public Action Timer_ShowZombieInfo(Handle timer)
+{
+	if (!g_bModActive || !g_cvShowZombieInfo.BoolValue)
+		return Plugin_Continue;
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || !IsPlayerAlive(client))
+			continue;
+		
+		// Only show to humans
+		if (GetClientTeam(client) != Team_Allies)
+			continue;
+		
+		ShowZombieInfoToClient(client);
+	}
+	
+	return Plugin_Continue;
+}
+
+void ShowZombieInfoToClient(int client)
+{
+	int target = GetClientAimTarget(client);
+	
+	// Validate target
+	if (target <= 0 || target > MaxClients)
+		return;
+	
+	if (!IsClientInGame(target) || !IsPlayerAlive(target))
+		return;
+	
+	// Only show zombie info
+	if (GetClientTeam(target) != Team_Axis)
+		return;
+	
+	// Get zombie's real health
+	int health = RoundFloat(g_ClientInfo_Float[target][ClientInfo_Health]);
+	
+	char name[MAX_NAME_LENGTH];
+	GetClientName(target, name, sizeof(name));
+	
+	// Show different message for critical zombies
+	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
+	{
+		PrintCenterText(client, "%s (CRITICAL - %d HP)", name, health);
+	}
+	else
+	{
+		PrintCenterText(client, "%s (%d HP)", name, health);
+	}
+}

@@ -70,6 +70,7 @@ public void OnPluginStart()
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
+	InitZombieInfoDisplay();
 	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 	
@@ -81,6 +82,12 @@ public void OnPluginStart()
 	g_bUseSendProxy = LibraryExists("sendproxy");
 	#endif
 }
+
+public void OnPluginEnd()
+{
+	CleanupZombieInfoDisplay();
+}
+
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
