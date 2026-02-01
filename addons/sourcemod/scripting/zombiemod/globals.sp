@@ -53,4 +53,5 @@ enum ClientInfo_Float
 // Properly typed storage arrays
 int g_ClientInfo_Int[DOD_MAXPLAYERS + 1][ClientInfo_Int];
 bool g_ClientInfo_Bool[DOD_MAXPLAYERS + 1][ClientInfo_Bool];
+float g_flPlayerSpawnTime[DOD_MAXPLAYERS + 1];  // Track when players spawn for no-clip
 float g_ClientInfo_Float[DOD_MAXPLAYERS + 1][ClientInfo_Float];

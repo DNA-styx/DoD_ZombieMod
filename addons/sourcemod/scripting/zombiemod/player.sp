@@ -121,6 +121,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 		int clientUserId = GetEventInt(event, "userid");
 		int client = GetClientOfUserId(clientUserId);
 		
+		// Track spawn time for no-clip period
+		g_flPlayerSpawnTime[client] = GetGameTime();
+		
 		g_ClientInfo_Float[client][ClientInfo_Health] = MAX_HEALTH;
 		g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = true;
 		
@@ -552,7 +555,32 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 
 public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bool originalResult)
 {
-	return g_bModActive ? true : originalResult;
+	if (!g_bModActive)
+		return originalResult;
+	
+	// Allow humans to pass through each other for 3 seconds after spawn
+	// This prevents spawn blocking by bots
+	if (client > 0 && client <= MaxClients && IsClientInGame(client))
+	{
+		if (GetClientTeam(client) == Team_Allies)
+		{
+			float timeSinceSpawn = GetGameTime() - g_flPlayerSpawnTime[client];
+			if (timeSinceSpawn < g_ConVarFloats[ConVar_Spawn_NoClip_Time])
+			{
+				// No collision for first 3 seconds
+				// Show debug message to player
+				// Only show message to real players, not bots
+				if (!IsFakeClient(client))
+				{
+									PrintHintText(client, "Spawn no-clip disabled");
+				}
+				return false;
+			}
+		}
+	}
+	
+	// Normal collision for everyone else
+	return true;
 }
 
 #if defined _SENDPROXYMANAGER_INC_
@@ -600,6 +628,9 @@ public void OnMapStart()
 	
 	// Recreate the timer
 	g_hZombieInfoTimer = CreateTimer(0.1, Timer_ShowZombieInfo, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	
+	// Also recreate zombie self-health timer
+	RecreateZombieSelfHealthTimer();
 }
 
 void CleanupZombieInfoDisplay()
@@ -653,10 +684,68 @@ void ShowZombieInfoToClient(int client)
 	// Show different message for critical zombies
 	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
 	{
-		PrintCenterText(client, "%s (CRITICAL - %d HP)", name, health);
+		PrintCenterText(client, "%s (CRITICAL HEALTH!)", name);
 	}
 	else
 	{
 		PrintCenterText(client, "%s (%d HP)", name, health);
 	}
+}
+
+// ============================================================================
+// ZOMBIE SELF HEALTH DISPLAY
+// ============================================================================
+
+Handle g_hZombieSelfHealthTimer = null;
+
+void InitZombieSelfHealthDisplay()
+{
+	// Prevent double-initialization
+	if (g_hZombieSelfHealthTimer != null)
+		return;
+	
+	g_hZombieSelfHealthTimer = CreateTimer(0.5, Timer_ShowZombieSelfHealth, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void RecreateZombieSelfHealthTimer()
+{
+	// Clear old handle
+	g_hZombieSelfHealthTimer = null;
+	
+	// Recreate the timer
+	g_hZombieSelfHealthTimer = CreateTimer(0.5, Timer_ShowZombieSelfHealth, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void CleanupZombieSelfHealthDisplay()
+{
+	// Timer will auto-clean with TIMER_FLAG_NO_MAPCHANGE
+	g_hZombieSelfHealthTimer = null;
+}
+
+public Action Timer_ShowZombieSelfHealth(Handle timer)
+{
+	if (!g_bModActive)
+		return Plugin_Continue;
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || !IsPlayerAlive(client))
+			continue;
+		
+		// Only show to zombies
+		if (GetClientTeam(client) != Team_Axis)
+			continue;
+		
+		ShowZombieSelfHealth(client);
+	}
+	
+	return Plugin_Continue;
+}
+
+void ShowZombieSelfHealth(int client)
+{
+	int health = RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]);
+	
+	// Use PrintHintText for DoD:S compatibility
+	PrintHintText(client, "Your Health: %d HP", health);
 }

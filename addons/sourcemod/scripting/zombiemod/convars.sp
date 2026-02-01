@@ -15,7 +15,8 @@ enum
 	ConVar_Zombie_CritReward, 
 	ConVar_Zombie_Speed, 
 	ConVar_Zombie_MaxSpeed, 
-	ConVar_Beacon_Interval, 
+	ConVar_Beacon_Interval,
+	ConVar_Spawn_NoClip_Time, 
 	
 	ConVar_Size
 }
@@ -40,6 +41,7 @@ void InitConVars()
 	AddConVar(ConVar_Zombie_Speed, CreateConVar("dod_zombiemod_zombie_speed", "0.65", "Amount of speed a zombie will have on spawn", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Zombie_MaxSpeed, CreateConVar("dod_zombiemod_zombie_maxspeed", "0.85", "Maximum amount of speed a zombie can have", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Beacon_Interval, CreateConVar("dod_zombiemod_beacon_interval", "8", "Time beween toggleing beacon on last human", FCVAR_PLUGIN, true, 1.0));
+	AddConVar(ConVar_Spawn_NoClip_Time, CreateConVar("dod_zombiemod_spawn_noclip_time", "3.0", "Seconds humans can pass through teammates after spawn (prevents spawn blocking)", FCVAR_PLUGIN, true, 0.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

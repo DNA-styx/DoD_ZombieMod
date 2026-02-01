@@ -71,6 +71,7 @@ public void OnPluginStart()
 	InitCommands();
 	InitGameRules();
 	InitZombieInfoDisplay();
+	InitZombieSelfHealthDisplay();
 	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 	
@@ -86,6 +87,7 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	CleanupZombieInfoDisplay();
+	CleanupZombieSelfHealthDisplay();
 }
 
 
