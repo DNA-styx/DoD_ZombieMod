@@ -16,16 +16,14 @@ enum
 	ConVar_Zombie_Speed, 
 	ConVar_Zombie_MaxSpeed, 
 	ConVar_Beacon_Interval,
-	ConVar_Spawn_NoClip_Time, 
+	ConVar_Spawn_NoClip_Time,
+	ConVar_Zombie_Spawn_Protect_Time,
+	ConVar_Show_Zombie_Info, 
 	
 	ConVar_Size
 }
 
 // Properly typed storage for ConVars
-Handle g_ConVarHandles[ConVar_Size];
-int g_ConVarInts[ConVar_Size];
-bool g_ConVarBools[ConVar_Size];
-float g_ConVarFloats[ConVar_Size];
 
 void InitConVars()
 {
@@ -41,7 +39,9 @@ void InitConVars()
 	AddConVar(ConVar_Zombie_Speed, CreateConVar("dod_zombiemod_zombie_speed", "0.65", "Amount of speed a zombie will have on spawn", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Zombie_MaxSpeed, CreateConVar("dod_zombiemod_zombie_maxspeed", "0.85", "Maximum amount of speed a zombie can have", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Beacon_Interval, CreateConVar("dod_zombiemod_beacon_interval", "8", "Time beween toggleing beacon on last human", FCVAR_PLUGIN, true, 1.0));
-	AddConVar(ConVar_Spawn_NoClip_Time, CreateConVar("dod_zombiemod_spawn_noclip_time", "3.0", "Seconds humans can pass through teammates after spawn (prevents spawn blocking)", FCVAR_PLUGIN, true, 0.0));
+	AddConVar(ConVar_Spawn_NoClip_Time, CreateConVar("dod_zombiemod_spawn_noclip_time", "15.0", "Seconds humans can pass through teammates after spawn (prevents spawn blocking)", FCVAR_PLUGIN, true, 0.0));
+	AddConVar(ConVar_Zombie_Spawn_Protect_Time, CreateConVar("dod_zombiemod_zombie_spawn_protect_time", "10.0", "Seconds zombies are protected from damage after spawning", FCVAR_PLUGIN, true, 0.0));
+	AddConVar(ConVar_Show_Zombie_Info, CreateConVar("dod_zombiemod_show_info", "1", "Show zombie name and health when aiming at them (0=off, 1=on)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

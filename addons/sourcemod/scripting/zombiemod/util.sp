@@ -51,20 +51,25 @@ void ZM_PrintToChatAll(const char[] format, any ...)
 	}
 }
 
+// ============================================================================
+// PHASE 2: SPAWN PROTECTION - Changed from distance to time-based
+// ============================================================================
+// OLD: Zombies protected within 400 units of spawn (problematic on small maps)
+// NEW: Zombies protected for configurable seconds after spawning (default 10s)
+// ConVar: dod_zombiemod_zombie_spawn_protect_time
+// ============================================================================
+
 bool IsInZombieSpawn(int client)
 {
-	float vecOrigin[3];
-	GetClientAbsOrigin(client, vecOrigin);
+	// Check if zombie is within spawn protection time
+	float timeSinceSpawn = GetGameTime() - g_flZombieSpawnTime[client];
 	
-	for (int i = 0; i < g_iNumZombieSpawns; i++)
+	if (timeSinceSpawn < g_ConVarFloats[ConVar_Zombie_Spawn_Protect_Time])
 	{
-		if (GetVectorDistance(vecOrigin, g_vecZombieSpawnOrigin[i], false) <= 400.0)
-		{
-			return true;
-		}
+		return true;  // Still protected
 	}
 	
-	return false;
+	return false;  // Protection expired
 }
 
 void ScreenOverlay(int client, const char[] material)

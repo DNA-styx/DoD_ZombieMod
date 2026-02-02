@@ -55,3 +55,11 @@ int g_ClientInfo_Int[DOD_MAXPLAYERS + 1][ClientInfo_Int];
 bool g_ClientInfo_Bool[DOD_MAXPLAYERS + 1][ClientInfo_Bool];
 float g_flPlayerSpawnTime[DOD_MAXPLAYERS + 1];  // Track when players spawn for no-clip
 float g_ClientInfo_Float[DOD_MAXPLAYERS + 1][ClientInfo_Float];
+// Track zombie spawn time for spawn protection
+float g_flZombieSpawnTime[DOD_MAXPLAYERS + 1];
+
+// ConVar storage arrays (needed by multiple files)
+Handle g_ConVarHandles[ConVar_Size];
+int g_ConVarInts[ConVar_Size];
+bool g_ConVarBools[ConVar_Size];
+float g_ConVarFloats[ConVar_Size];
