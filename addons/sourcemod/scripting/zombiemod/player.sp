@@ -45,13 +45,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHook(client, SDKHook_ShouldCollide, OnShouldCollide);
 	
-	#if defined _SENDPROXYMANAGER_INC_
-	if (g_bUseSendProxy)
-	{
-		SendProxy_Hook(client, "m_iTeamNum", Prop_Int, SendProxy_TeamNum);
-	}
-	#endif
-	
+		
 	g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] = 
 	g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] = 
 	g_ClientInfo_Int[client][ClientInfo_Critter] = 
@@ -575,7 +569,8 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 				// No collision for first 3 seconds
 				// Show debug message to player
 				// Only show message to real players, not bots
-				if (!IsFakeClient(client))
+				// Only show if debug mode is enabled
+				if (!IsFakeClient(client) && g_ConVarBools[ConVar_Debug])
 				{
 									PrintHintText(client, "Spawn no-clip disabled");
 				}
@@ -588,19 +583,6 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 	return true;
 }
 
-#if defined _SENDPROXYMANAGER_INC_
-public ActionSendProxy_TeamNum(client, const charPropName[], &value, element)
-{
-	if (g_bModActive && IsPlayerAlive(client))
-	{
-		value = Team_Custom;
-		
-		return Plugin_Changed;
-	}
-	
-	return Plugin_Continue;
-}
-#endif
 // ============================================================================
 // ZOMBIE NAME/HEALTH DISPLAY
 // ============================================================================
@@ -649,11 +631,17 @@ public Action Timer_ShowZombieInfo(Handle timer)
 		if (!IsClientInGame(client) || !IsPlayerAlive(client))
 			continue;
 		
-		// Only show to humans
-		if (GetClientTeam(client) != Team_Allies)
-			continue;
-		
-		ShowZombieInfoToClient(client);
+		// Show different info based on team
+		if (GetClientTeam(client) == Team_Allies)
+		{
+			// Humans see zombie info
+			ShowZombieInfoToClient(client);
+		}
+		else if (GetClientTeam(client) == Team_Axis)
+		{
+			// Zombies see human info
+			ShowHumanInfoToClient(client);
+		}
 	}
 	
 	return Plugin_Continue;
@@ -689,6 +677,28 @@ void ShowZombieInfoToClient(int client)
 	{
 		PrintCenterText(client, "%s (%d HP)", name, health);
 	}
+}
+
+void ShowHumanInfoToClient(int client)
+{
+	int target = GetClientAimTarget(client);
+	
+	// Validate target
+	if (target <= 0 || target > MaxClients)
+		return;
+	
+	if (!IsClientInGame(target) || !IsPlayerAlive(target))
+		return;
+	
+	// Only show human info
+	if (GetClientTeam(target) != Team_Allies)
+		return;
+	
+	char name[MAX_NAME_LENGTH];
+	GetClientName(target, name, sizeof(name));
+	
+	// Show only name, no health
+	PrintCenterText(client, "%s", name);
 }
 
 // ============================================================================
