@@ -35,7 +35,6 @@
 
 #undef REQUIRE_EXTENSIONS
 #tryinclude <steamtools>
-#tryinclude <sendproxy>
 
 /**
  * Don't change the order of these!
@@ -78,10 +77,6 @@ public void OnPluginStart()
 	#if defined _steamtools_included
 	g_bUseSteamTools = LibraryExists("SteamTools");
 	#endif
-	
-	#if defined _SENDPROXYMANAGER_INC_
-	g_bUseSendProxy = LibraryExists("sendproxy");
-	#endif
 }
 
 public void OnPluginEnd()
@@ -94,7 +89,6 @@ public void OnPluginEnd()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	MarkNativeAsOptional("Steam_SetGameDescription");
-	MarkNativeAsOptional("SendProxy_Hook");
 	
 	return APLRes_Success;
 }

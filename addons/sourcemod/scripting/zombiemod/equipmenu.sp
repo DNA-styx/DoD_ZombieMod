@@ -105,17 +105,7 @@ void InitEquipMenu()
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Keep Current Weapons\n \n");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Create Custom Class");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Change Category Item");
-	#if defined _SENDPROXYMANAGER_INC_
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Equip Custom Class\n \n");
-	// The class selection menu is not functional while the team index hack is active
-	if (g_bUseSendProxy)
-	{
-		AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Open Class Selection Menu");
-	}
-	#else
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Equip Custom Class");
-	#endif
-	
+		
 	SetMenuExitButton(g_EquipMenu[Menu_Main], false);
 	
 	g_EquipMenu[Menu_Primary] = CreateMenu(Handler_Primary, MenuAction_DrawItem | MenuAction_Display);

@@ -7,9 +7,6 @@ bool g_bModActive;
 #if defined _steamtools_included
 bool g_bUseSteamTools;
 #endif
-#if defined _SENDPROXYMANAGER_INC_
-bool g_bUseSendProxy;
-#endif
 bool g_bRoundEnded;
 bool g_bBlockChangeClass;
 int g_iZombie;
