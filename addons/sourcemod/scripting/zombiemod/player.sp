@@ -127,8 +127,34 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 			{
 				g_bRoundEnded = true;
 				
-				ZM_PrintToChatAll("Game commencing in 15 seconds!");
+				// ============================================================================
+				// COUNTDOWN DISPLAY SYSTEM
+				// ============================================================================
+				// Show "Game commencing in 15 seconds!" repeatedly to keep it visible
+				// Then show 5, 4, 3, 2, 1 countdown
 				
+				ZM_PrintToChatAll("Game commencing in 15 seconds!");
+				PrintCenterTextAll("Game commencing in 15 seconds!");
+				
+				// Re-display initial message every 2 seconds to keep it visible for full 10s
+				CreateTimer(2.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(4.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(6.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(8.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+				
+				// Final countdown sequence:
+				// 10s: Show "5"
+				// 11s: Show "4"
+				// 12s: Show "3"
+				// 13s: Show "2"
+				// 14s: Show "1"
+				// 15s: Game starts
+				
+				CreateTimer(10.0, Timer_Countdown_5, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(11.0, Timer_Countdown_4, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(12.0, Timer_Countdown_3, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(13.0, Timer_Countdown_2, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(14.0, Timer_Countdown_1, _, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(15.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
 				
 				SetRoundState(DoDRoundState_Restart);
@@ -757,4 +783,44 @@ void ShowZombieSelfHealth(int client)
 	
 	// Use PrintHintText for DoD:S compatibility
 	PrintHintText(client, "Your Health: %d HP", health);
+}
+
+// ============================================================================
+// COUNTDOWN TIMER CALLBACKS
+// ============================================================================
+
+public Action Timer_ShowCommencingMessage(Handle timer)
+{
+	PrintCenterTextAll("Game commencing in 15 seconds!");
+	return Plugin_Stop;
+}
+
+public Action Timer_Countdown_5(Handle timer)
+{
+	PrintCenterTextAll("5");
+	return Plugin_Stop;
+}
+
+public Action Timer_Countdown_4(Handle timer)
+{
+	PrintCenterTextAll("4");
+	return Plugin_Stop;
+}
+
+public Action Timer_Countdown_3(Handle timer)
+{
+	PrintCenterTextAll("3");
+	return Plugin_Stop;
+}
+
+public Action Timer_Countdown_2(Handle timer)
+{
+	PrintCenterTextAll("2");
+	return Plugin_Stop;
+}
+
+public Action Timer_Countdown_1(Handle timer)
+{
+	PrintCenterTextAll("1");
+	return Plugin_Stop;
 }
