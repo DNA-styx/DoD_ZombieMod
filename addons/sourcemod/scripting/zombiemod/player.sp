@@ -90,8 +90,14 @@ public void OnClientDisconnect_Post(int client)
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);
 			
-			PrintHintText(g_iZombie, "You are now a Zombie!");
-			ZM_PrintToChatAll("Player %N is now a Zombie.", g_iZombie);
+			PrintHintText(g_iZombie, "%t", "Became Zombie");
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientInGame(i))
+				{
+					PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Player Became Zombie", g_iZombie);
+				}
+			}
 		}
 		else if (numAllies == 0)
 		{
@@ -133,8 +139,14 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				// Show "Game commencing in 15 seconds!" repeatedly to keep it visible
 				// Then show 5, 4, 3, 2, 1 countdown
 				
-				ZM_PrintToChatAll("Game commencing in 15 seconds!");
-				PrintCenterTextAll("Game commencing in 15 seconds!");
+				for (int i = 1; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Game Commencing");
+					}
+				}
+				PrintCenterTextAll("%t", "Game Commencing");
 				
 				// Re-display initial message every 2 seconds to keep it visible for full 10s
 				CreateTimer(2.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -336,7 +348,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 				
 				g_ClientInfo_Bool[attacker][ClientInfo_IsCritical] = false;
 				
-				ZM_PrintToChat(attacker, "You received a %ihp boost for your kill!", g_ConVarInts[ConVar_Zombie_CritReward]);
+				PrintToChat(attacker, "\x079D0F0FZombie Mod\x01: %t", "Crit Kill Bonus", g_ConVarInts[ConVar_Zombie_CritReward]);
 			}
 			
 			GiveZombieReward(attacker);
@@ -404,9 +416,8 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieCritical]);
 					
 					EmitSoundToClient(attacker, g_szSounds[Sound_FinishHim]);
-					PrintCenterText(attacker, "FINISH HIM!");
 					
-					ZM_PrintToChat(client, "You got hit by a fatal shot, take cover!");
+					PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Fatal Shot Warning");
 				}
 			}
 		}
@@ -426,7 +437,7 @@ public ActionOnJoinClass(client, &playerClass)
 		{
 			if (g_bBlockChangeClass)
 			{
-				ZM_PrintToChat(client, "90 seconds of the round has passed, you cannot change class any more!");
+				PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Class Change Blocked");
 				
 				return Plugin_Handled;
 			}
@@ -530,7 +541,7 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 	{
 		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && IsInZombieSpawn(client))
 		{
-			PrintHintText(attacker, "Spawn Protection enabled");
+			PrintHintText(attacker, "%t", "Spawn Protection Active");
 			
 			return Plugin_Handled;
 		}
@@ -697,11 +708,11 @@ void ShowZombieInfoToClient(int client)
 	// Show different message for critical zombies
 	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
 	{
-		PrintCenterText(client, "%s (CRITICAL HEALTH!)", name);
+		PrintCenterText(client, "%t", "Critical Zombie Display", name);
 	}
 	else
 	{
-		PrintCenterText(client, "%s (%d HP)", name, health);
+		PrintCenterText(client, "%t", "Zombie Info Display", name, health);
 	}
 }
 
@@ -782,7 +793,7 @@ void ShowZombieSelfHealth(int client)
 	int health = RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]);
 	
 	// Use PrintHintText for DoD:S compatibility
-	PrintHintText(client, "Your Health: %d HP", health);
+	PrintHintText(client, "%t", "Zombie Self Health", health);
 }
 
 // ============================================================================
@@ -791,36 +802,36 @@ void ShowZombieSelfHealth(int client)
 
 public Action Timer_ShowCommencingMessage(Handle timer)
 {
-	PrintCenterTextAll("Game commencing in 15 seconds!");
+	PrintCenterTextAll("%t", "Game Commencing");
 	return Plugin_Stop;
 }
 
 public Action Timer_Countdown_5(Handle timer)
 {
-	PrintCenterTextAll("5");
+	PrintCenterTextAll("-= 5 =-");
 	return Plugin_Stop;
 }
 
 public Action Timer_Countdown_4(Handle timer)
 {
-	PrintCenterTextAll("4");
+	PrintCenterTextAll("-= 4 =-");
 	return Plugin_Stop;
 }
 
 public Action Timer_Countdown_3(Handle timer)
 {
-	PrintCenterTextAll("3");
+	PrintCenterTextAll("-= 3 =-");
 	return Plugin_Stop;
 }
 
 public Action Timer_Countdown_2(Handle timer)
 {
-	PrintCenterTextAll("2");
+	PrintCenterTextAll("-= 2 =-");
 	return Plugin_Stop;
 }
 
 public Action Timer_Countdown_1(Handle timer)
 {
-	PrintCenterTextAll("1");
+	PrintCenterTextAll("-= 1 =-");
 	return Plugin_Stop;
 }

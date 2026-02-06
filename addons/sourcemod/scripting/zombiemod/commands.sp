@@ -38,7 +38,13 @@ void InitCommands()
 
 void ShowTimeleft()
 {
-	ZM_PrintToChatAll("Rounds played: %i of %i before map-change.", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i))
+		{
+			PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Rounds Played", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
+		}
+	}
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
@@ -66,12 +72,12 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			}
 			else
 			{
-				ZM_PrintToChat(client, "You can use equip-menu only once per spawn!");
+				PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Equip Once Per Spawn");
 			}
 		}
 		else
 		{
-			ZM_PrintToChat(client, "90 seconds has passed, you cannot equip any more!");
+			PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Equip Time Expired");
 		}
 		
 		return Plugin_Handled;

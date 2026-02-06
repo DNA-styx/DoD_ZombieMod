@@ -63,6 +63,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	LoadTranslations("dod_zombiemod.phrases");
+	
 	InitOffsets();
 	InitConVars();
 	InitEquipMenu();

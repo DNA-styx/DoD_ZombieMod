@@ -146,7 +146,7 @@ bool HumanReward_PrimaryAmmo(int client)
 				{
 					SetWeaponAmmo(client, view_as<DoDWeaponAmmo>(g_WeaponInfo[i][WI_Ammo]), ammoAmount + g_WeaponInfo[i][WI_ClipSize]);
 					
-					ZM_PrintToChat(client, "You received extra primary ammo for killing a zombie.");
+					PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Reward Primary Ammo");
 					
 					return true;
 				}
@@ -188,7 +188,7 @@ bool HumanReward_PistolAmmo(int client)
 		{
 			SetWeaponAmmo(client, weaponAmmo, GetWeaponAmmo(client, weaponAmmo) + clipSize);
 			
-			ZM_PrintToChat(client, "You received extra pistol ammo for killing a zombie.");
+			PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Reward Pistol Ammo");
 			return true;
 		}
 	}
@@ -202,7 +202,7 @@ bool HumanReward_Health(int client)
 	{
 		g_ClientInfo_Float[client][ClientInfo_DamageScale] -= 0.1;
 		
-		ZM_PrintToChat(client, "You received 10%% damage resistance for killing a zombie.");
+		PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Reward Damage Resistance");
 		
 		return true;
 	}
@@ -212,7 +212,7 @@ bool HumanReward_Health(int client)
 		g_ClientInfo_Float[client][ClientInfo_Health] += 10.0;
 		SetEntityHealth(client, GetClientHealth(client) + 10);
 		
-		ZM_PrintToChat(client, "You received 10%% health for killing a zombie.");
+		PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Reward Health");
 		
 		return true;
 	}
@@ -228,10 +228,10 @@ void GiveZombieReward(int client)
 	{
 		SetPlayerLaggedMovementValue(client, LMV * 1.1);
 		
-		ZM_PrintToChat(client, "You received a 10%% speed boost for killing a human.");
+		PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Reward Speed Boost");
 	}
 	/* else
 	{
-		ZM_PrintToChat(client, "You already have max speed!");
+		PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Max Speed Reached");
 	} */
 }

@@ -1,0 +1,137 @@
+"Phrases"
+{
+	// ============================================================================
+	// HINT TEXT MESSAGES
+	// ============================================================================
+	
+	"Became Zombie"
+	{
+		"en"		"You are now a Zombie!"
+	}
+	
+	"Spawn Protection Active"
+	{
+		"en"		"Spawn Protection enabled"
+	}
+	
+	"Zombie Self Health"
+	{
+		"#format"	"{1:d}"
+		"en"		"Your Health: {1} HP"
+	}
+	
+	// ============================================================================
+	// CENTER TEXT MESSAGES
+	// ============================================================================
+	
+	"Game Commencing"
+	{
+		"en"		"Game commencing in 15 seconds!"
+	}
+	
+	"Critical Zombie Display"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} (CRITICAL HEALTH!)"
+	}
+	
+	"Zombie Info Display"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"{1} ({2} HP)"
+	}
+	
+	// ============================================================================
+	// CHAT MESSAGES - EQUIPMENT & RESTRICTIONS
+	// ============================================================================
+	
+	"Equip Once Per Spawn"
+	{
+		"en"		"You can use equip-menu only once per spawn!"
+	}
+	
+	"Equip Time Expired"
+	{
+		"en"		"90 seconds has passed, you cannot equip any more!"
+	}
+	
+	"Class Change Blocked"
+	{
+		"en"		"90 seconds of the round has passed, you cannot change class any more!"
+	}
+	
+	// ============================================================================
+	// CHAT MESSAGES - REWARDS
+	// ============================================================================
+	
+	"Reward Primary Ammo"
+	{
+		"en"		"You received extra primary ammo for killing a zombie."
+	}
+	
+	"Reward Pistol Ammo"
+	{
+		"en"		"You received extra pistol ammo for killing a zombie."
+	}
+	
+	"Reward Damage Resistance"
+	{
+		"en"		"You received 10%% damage resistance for killing a zombie."
+	}
+	
+	"Reward Health"
+	{
+		"en"		"You received 10%% health for killing a zombie."
+	}
+	
+	"Reward Speed Boost"
+	{
+		"en"		"You received a 10%% speed boost for killing a human."
+	}
+	
+	"Max Speed Reached"
+	{
+		"en"		"You already have max speed!"
+	}
+	
+	"Crit Kill Bonus"
+	{
+		"#format"	"{1:d}"
+		"en"		"You received a {1}hp boost for your kill!"
+	}
+	
+	// ============================================================================
+	// CHAT MESSAGES - COMBAT
+	// ============================================================================
+	
+	"Fatal Shot Warning"
+	{
+		"en"		"You got hit by a fatal shot, take cover!"
+	}
+	
+	// ============================================================================
+	// CHAT MESSAGES - GAME STATUS
+	// ============================================================================
+	
+	"Last Human Beaconed"
+	{
+		"en"		"The last man standing has been beaconed!"
+	}
+	
+	"Win Limit Reached"
+	{
+		"en"		"Win-limit reached! Changing map..."
+	}
+	
+	"Rounds Played"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Rounds played: {1} of {2} before map-change."
+	}
+	
+	"Player Became Zombie"
+	{
+		"#format"	"{1:N}"
+		"en"		"Player {1} is now a Zombie."
+	}
+}

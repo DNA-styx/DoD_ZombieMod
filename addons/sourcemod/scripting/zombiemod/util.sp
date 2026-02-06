@@ -29,27 +29,34 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-void ZM_PrintToChat(int client, const char[] format, any ...)
-{
-	char buffer[192];
-	VFormat(buffer, sizeof(buffer), format, 3);
-	
-	PrintToChat(client, ZM_PRINT_FORMAT, buffer);
-}
-
-void ZM_PrintToChatAll(const char[] format, any ...)
-{
-	char buffer[192];
-	VFormat(buffer, sizeof(buffer), format, 2);
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (IsClientInGame(i))
-		{
-			PrintToChat(i, ZM_PRINT_FORMAT, buffer);
-		}
-	}
-}
+// ============================================================================
+// DEPRECATED WRAPPER FUNCTIONS (v0.7.52)
+// ============================================================================
+// These wrapper functions have been removed in favor of direct PrintToChat
+// calls with translation support. Kept here commented for reference.
+//
+// void ZM_PrintToChat(int client, const char[] format, any ...)
+// {
+//     char buffer[192];
+//     VFormat(buffer, sizeof(buffer), format, 3);
+//     
+//     PrintToChat(client, ZM_PRINT_FORMAT, buffer);
+// }
+// 
+// void ZM_PrintToChatAll(const char[] format, any ...)
+// {
+//     char buffer[192];
+//     VFormat(buffer, sizeof(buffer), format, 2);
+//     
+//     for (int i = 1; i <= MaxClients; i++)
+//     {
+//         if (IsClientInGame(i))
+//         {
+//             PrintToChat(i, ZM_PRINT_FORMAT, buffer);
+//         }
+//     }
+// }
+// ============================================================================
 
 // ============================================================================
 // PHASE 2: SPAWN PROTECTION - Changed from distance to time-based
