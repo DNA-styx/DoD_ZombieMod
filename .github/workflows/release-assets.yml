@@ -1,0 +1,30 @@
+name: Attach release zips
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-zips:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build zip archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name }}"
+          zip -r "DoD_ZombieMod ${TAG} Game Files.zip" . -x ".git/*"
+          zip -r "DoD_ZombieMod ${TAG} Fast Download Files.zip" materials models sound
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            DoD_ZombieMod*Game Files.zip
+            DoD_ZombieMod*Fast Download Files.zip
