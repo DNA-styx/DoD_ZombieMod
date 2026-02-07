@@ -199,3 +199,21 @@ void SelectZombie()
 	
 	CloseHandle(clientArray);
 }
+
+/**
+ * Counts the number of real (non-bot, non-SourceTV) players on the server
+ * 
+ * @return              Number of real players
+ */
+int GetRealPlayerCount()
+{
+	int count = 0;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && !IsFakeClient(i) && !IsClientSourceTV(i))
+		{
+			count++;
+		}
+	}
+	return count;
+}

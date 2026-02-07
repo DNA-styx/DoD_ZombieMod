@@ -6,8 +6,15 @@
 	
 	"Zombie Mod Prefix"
 	{
-		"en"		"9D0F0F[Zombie Mod] "
+		"en"		"9D0F0F[Zombie Mod] "
 	}
+
+	"First Real Player Restart"
+	{
+		"#format"	"{1:N}"
+		"en"		"First real player {1} joined! Restarting round in 3 seconds..."
+	}
+	
 	
 	// ============================================================================
 	// HINT TEXT MESSAGES

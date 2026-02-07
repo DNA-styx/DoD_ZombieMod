@@ -57,6 +57,32 @@ public void OnClientPutInServer(int client)
 	EmitSoundToClient(client, g_szSounds[Sound_JoinServer]);
 }
 
+public void OnClientPostAdminCheck(int client)
+{
+	// Check if this is the first real player joining a bot-only game
+	// This fires after client is fully loaded and authenticated (better than OnClientPutInServer)
+	if (g_bModActive && !g_bRoundEnded && !IsFakeClient(client))
+	{
+		if (GetRealPlayerCount() == 1)
+		{
+			// This is the first real player - restart the round
+			g_bRoundEnded = true;
+			
+			// Notify all players
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientInGame(i))
+				{
+					PrintToChat(i, "%t%t", ZM_PREFIX, "First Real Player Restart", client);
+				}
+			}
+			
+			// Restart after short delay
+			CreateTimer(3.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+}
+
 public void OnClientDisconnect_Post(int client)
 {
 	if (g_bModActive)
@@ -90,7 +116,7 @@ public void OnClientDisconnect_Post(int client)
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);
 			
-			PrintHintText(g_iZombie, "%t", "Became Zombie");
+			PrintCenterText(g_iZombie, "%t", "Became Zombie");
 			for (int i = 1; i <= MaxClients; i++)
 			{
 				if (IsClientInGame(i))
@@ -243,6 +269,12 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
 					
+					// Force health display immediately after spawn (multiple attempts for reliability)
+					int userid = GetClientUserId(client);
+					CreateTimer(0.1, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(0.3, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(0.5, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
+					
 					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
 					
 					SetPlayerModel(client, Model_Zombie_Default);
@@ -332,7 +364,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 		ChangeClientTeam(client, Team_Axis);
 		
 		// Notify the player they became a zombie
-		PrintHintText(client, "%t", "Became Zombie");
+		PrintCenterText(client, "%t", "Became Zombie");
 		
 		// Notify all players
 		for (int i = 1; i <= MaxClients; i++)
@@ -806,6 +838,16 @@ void ShowZombieSelfHealth(int client)
 	
 	// Use PrintHintText for DoD:S compatibility
 	PrintHintText(client, "%t", "Zombie Self Health", health);
+}
+
+public Action Timer_ShowInitialHealth(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if (client && IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == Team_Axis)
+	{
+		ShowZombieSelfHealth(client);
+	}
+	return Plugin_Stop;
 }
 
 // ============================================================================
