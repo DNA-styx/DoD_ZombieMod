@@ -193,7 +193,7 @@ bool CheckWinConditions()
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
-				PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Last Human Beaconed");
+				PrintToChat(i, "%t%t", ZM_PREFIX, "Last Human Beaconed");
 				
 				EmitSoundToClient(i, g_szSounds[Sound_LastManStanding]);
 				
@@ -224,7 +224,7 @@ RoundEnd(winningTeam)
 			if (winLimitReached)
 			{
 				EmitSoundToClient(i, g_szSounds[Sound_End]);
-				PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Win Limit Reached");
+				PrintToChat(i, "%t%t", ZM_PREFIX, "Win Limit Reached");
 			}
 			else if (winningTeam == Team_Allies)
 			{

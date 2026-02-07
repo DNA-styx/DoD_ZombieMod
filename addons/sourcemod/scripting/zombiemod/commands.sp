@@ -42,7 +42,7 @@ void ShowTimeleft()
 	{
 		if (IsClientInGame(i))
 		{
-			PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Rounds Played", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
+			PrintToChat(i, "%t%t", ZM_PREFIX, "Rounds Played", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
 		}
 	}
 }
@@ -72,12 +72,12 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			}
 			else
 			{
-				PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Equip Once Per Spawn");
+				PrintToChat(client, "%t%t", ZM_PREFIX, "Equip Once Per Spawn");
 			}
 		}
 		else
 		{
-			PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Equip Time Expired");
+			PrintToChat(client, "%t%t", ZM_PREFIX, "Equip Time Expired");
 		}
 		
 		return Plugin_Handled;

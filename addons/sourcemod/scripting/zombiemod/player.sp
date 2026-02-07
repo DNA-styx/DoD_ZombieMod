@@ -95,7 +95,7 @@ public void OnClientDisconnect_Post(int client)
 			{
 				if (IsClientInGame(i))
 				{
-					PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Player Became Zombie", g_iZombie);
+					PrintToChat(i, "%t%t", ZM_PREFIX, "Player Became Zombie", g_iZombie);
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				{
 					if (IsClientInGame(i))
 					{
-						PrintToChat(i, "\x079D0F0FZombie Mod\x01: %t", "Game Commencing");
+						PrintToChat(i, "%t%t", ZM_PREFIX, "Game Commencing");
 					}
 				}
 				PrintCenterTextAll("%t", "Game Commencing");
@@ -330,6 +330,18 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 	if ((client = GetClientOfUserId(client)))
 	{
 		ChangeClientTeam(client, Team_Axis);
+		
+		// Notify the player they became a zombie
+		PrintHintText(client, "%t", "Became Zombie");
+		
+		// Notify all players
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (IsClientInGame(i))
+			{
+				PrintToChat(i, "%t%t", ZM_PREFIX, "Player Became Zombie", client);
+			}
+		}
 	}
 	
 	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)
@@ -348,7 +360,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 				
 				g_ClientInfo_Bool[attacker][ClientInfo_IsCritical] = false;
 				
-				PrintToChat(attacker, "\x079D0F0FZombie Mod\x01: %t", "Crit Kill Bonus", g_ConVarInts[ConVar_Zombie_CritReward]);
+				PrintToChat(attacker, "%t%t", ZM_PREFIX, "Crit Kill Bonus", g_ConVarInts[ConVar_Zombie_CritReward]);
 			}
 			
 			GiveZombieReward(attacker);
@@ -417,7 +429,7 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					
 					EmitSoundToClient(attacker, g_szSounds[Sound_FinishHim]);
 					
-					PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Fatal Shot Warning");
+					PrintToChat(client, "%t%t", ZM_PREFIX, "Fatal Shot Warning");
 				}
 			}
 		}
@@ -437,7 +449,7 @@ public ActionOnJoinClass(client, &playerClass)
 		{
 			if (g_bBlockChangeClass)
 			{
-				PrintToChat(client, "\x079D0F0FZombie Mod\x01: %t", "Class Change Blocked");
+				PrintToChat(client, "%t%t", ZM_PREFIX, "Class Change Blocked");
 				
 				return Plugin_Handled;
 			}
