@@ -9,8 +9,8 @@ enum
 	ConVar_WinLimit, 
 	ConVar_MinPlayers, 
 	ConVar_Zombie_RoundTime, 
-	ConVar_Human_MaxHealth, 
-	ConVar_Human_EquipMenu, 
+	// ConVar_Human_MaxHealth,        // UNUSED - Never referenced in code - Commented out v0.7.58
+	// ConVar_Human_EquipMenu,         // UNUSED - Never created or used - Commented out v0.7.58
 	ConVar_Zombie_Health, 
 	ConVar_Zombie_CritReward, 
 	ConVar_Zombie_Speed, 
@@ -34,7 +34,8 @@ void InitConVars()
 	AddConVar(ConVar_WinLimit, CreateConVar("dod_zombiemod_winlimit", "5", "Maximum amount of rounds until mapchange", FCVAR_PLUGIN, true, 1.0));
 	AddConVar(ConVar_MinPlayers, CreateConVar("dod_zombiemod_minplayers", "3", "Minumum amount of players to start Zombie Mod", FCVAR_PLUGIN, true, 3.0, true, 32.0));
 	AddConVar(ConVar_Zombie_RoundTime, CreateConVar("dod_zombiemod_roundtime", "600", "How long time (in seconds) each round takes", FCVAR_PLUGIN, true, 120.0));
-	AddConVar(ConVar_Human_MaxHealth, CreateConVar("dod_zombiemod_human_maxhealth", "150", "Maximum amount of health a human can have", FCVAR_PLUGIN, true, 1.0));
+	// UNUSED - Never referenced in code - Commented out v0.7.58
+	// AddConVar(ConVar_Human_MaxHealth, CreateConVar("dod_zombiemod_human_maxhealth", "150", "Maximum amount of health a human can have", FCVAR_PLUGIN, true, 1.0));
 	AddConVar(ConVar_Zombie_Health, CreateConVar("dod_zombiemod_zombie_health", "8000", "Amount of health a zombie will have on spawn", FCVAR_PLUGIN, true, 1.0));
 	AddConVar(ConVar_Zombie_CritReward, CreateConVar("dod_zombiemod_crit_reward", "250", "Amount of health a zombie will get for being critted", FCVAR_PLUGIN, true, 0.0, true, 100.0));
 	AddConVar(ConVar_Zombie_Speed, CreateConVar("dod_zombiemod_zombie_speed", "0.65", "Amount of speed a zombie will have on spawn", FCVAR_PLUGIN, true, 0.0));
