@@ -19,7 +19,8 @@ enum
 	ConVar_Spawn_NoClip_Time,
 	ConVar_Zombie_Spawn_Protect_Time,
 	ConVar_Show_Zombie_Info,
-	ConVar_Debug, 
+	ConVar_Debug,
+	ConVar_Class_Chance,
 	
 	ConVar_Size
 }
@@ -45,6 +46,9 @@ void InitConVars()
 	AddConVar(ConVar_Zombie_Spawn_Protect_Time, CreateConVar("dod_zombiemod_zombie_spawn_protect_time", "10.0", "Seconds zombies are protected from damage after spawning", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Show_Zombie_Info, CreateConVar("dod_zombiemod_show_info", "1", "Show zombie name and health when aiming at them (0=off, 1=on)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
 	AddConVar(ConVar_Debug, CreateConVar("dod_zombiemod_debug", "0", "Enable debug messages (0=off, 1=on)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
+	
+	// Zombie Classes
+	AddConVar(ConVar_Class_Chance, CreateConVar("dod_zombiemod_class_chance", "25", "Percentage chance zombie gets special class (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

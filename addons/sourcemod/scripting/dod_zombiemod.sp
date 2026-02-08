@@ -50,6 +50,7 @@
 #include "zombiemod/killrewards.sp"
 #include "zombiemod/player.sp"
 #include "zombiemod/commands.sp"
+#include "zombiemod/zombie_classes.sp"
 
 public Plugin myinfo = 
 {
@@ -73,6 +74,7 @@ public void OnPluginStart()
 	InitGameRules();
 	InitZombieInfoDisplay();
 	InitZombieSelfHealthDisplay();
+	ZombieClasses_Init();
 	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 	

@@ -85,6 +85,9 @@ public void OnClientPostAdminCheck(int client)
 
 public void OnClientDisconnect_Post(int client)
 {
+	// Clean up zombie class data
+	ZombieClasses_OnClientDisconnect(client);
+	
 	if (g_bModActive)
 	{
 		// If the disconnected player was critical, give the critter the kill and reward.
@@ -268,6 +271,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
 					
+					// Assign zombie class
+					ZombieClasses_OnSpawn(client);
+					
 					// Show "You are now a Zombie!" message
 					PrintCenterText(client, "%t", "Became Zombie");
 					
@@ -320,6 +326,9 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 		}
 		else
 		{
+			// Trigger zombie class death effects
+			ZombieClasses_OnDeath(client);
+			
 			PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieDeath]);
 			
 			int critAttacker = GetClientOfUserId(g_ClientInfo_Int[client][ClientInfo_Critter]);
@@ -748,13 +757,22 @@ void ShowZombieInfoToClient(int client)
 	char name[MAX_NAME_LENGTH];
 	GetClientName(target, name, sizeof(name));
 	
+	// Check if gas zombie
+	ZombieClass class = ZombieClasses_GetClass(target);
+	
 	// Show different message for critical zombies
 	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
 	{
 		PrintCenterText(client, "%t", "Critical Zombie Display", name);
 	}
+	else if (class == ZombieClass_Gas)
+	{
+		// Gas zombie display
+		PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
+	}
 	else
 	{
+		// Normal zombie display
 		PrintCenterText(client, "%t", "Zombie Info Display", name, health);
 	}
 }
@@ -777,8 +795,8 @@ void ShowHumanInfoToClient(int client)
 	char name[MAX_NAME_LENGTH];
 	GetClientName(target, name, sizeof(name));
 	
-	// Show "Human: {name}"
-	PrintCenterText(client, "Human: %s", name);
+	// Show "Human: {name}" using translation
+	PrintCenterText(client, "%t", "Human Info Display", name);
 }
 
 // ============================================================================
