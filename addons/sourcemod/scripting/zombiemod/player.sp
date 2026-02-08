@@ -116,7 +116,6 @@ public void OnClientDisconnect_Post(int client)
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);
 			
-			PrintCenterText(g_iZombie, "%t", "Became Zombie");
 			for (int i = 1; i <= MaxClients; i++)
 			{
 				if (IsClientInGame(i))
@@ -269,6 +268,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
 					
+					// Show "You are now a Zombie!" message
+					PrintCenterText(client, "%t", "Became Zombie");
+					
 					// Force health display immediately after spawn (multiple attempts for reliability)
 					int userid = GetClientUserId(client);
 					CreateTimer(0.1, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
@@ -362,9 +364,6 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 	if ((client = GetClientOfUserId(client)))
 	{
 		ChangeClientTeam(client, Team_Axis);
-		
-		// Notify the player they became a zombie
-		PrintCenterText(client, "%t", "Became Zombie");
 		
 		// Notify all players
 		for (int i = 1; i <= MaxClients; i++)
@@ -778,8 +777,8 @@ void ShowHumanInfoToClient(int client)
 	char name[MAX_NAME_LENGTH];
 	GetClientName(target, name, sizeof(name));
 	
-	// Show only name, no health
-	PrintCenterText(client, "%s", name);
+	// Show "Human: {name}"
+	PrintCenterText(client, "Human: %s", name);
 }
 
 // ============================================================================
