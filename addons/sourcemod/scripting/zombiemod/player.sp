@@ -760,14 +760,22 @@ void ShowZombieInfoToClient(int client)
 	// Check if gas zombie
 	ZombieClass class = ZombieClasses_GetClass(target);
 	
-	// Show different message for critical zombies
+	// Show different message based on class and critical status
 	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
 	{
-		PrintCenterText(client, "%t", "Critical Zombie Display", name);
+		// Critical health
+		if (class == ZombieClass_Gas)
+		{
+			PrintCenterText(client, "%t", "Critical Gas Zombie Display", name);
+		}
+		else
+		{
+			PrintCenterText(client, "%t", "Critical Zombie Display", name);
+		}
 	}
 	else if (class == ZombieClass_Gas)
 	{
-		// Gas zombie display
+		// Gas zombie display (normal health)
 		PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
 	}
 	else

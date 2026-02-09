@@ -51,6 +51,12 @@
 		"en"		"{1} (CRITICAL HEALTH!)"
 	}
 	
+	"Critical Gas Zombie Display"
+	{
+		"#format"	"{1:s}"
+		"en"		"Gas Zombie: {1} (CRITICAL HEALTH!)"
+	}
+	
 	"Zombie Info Display"
 	{
 		"#format"	"{1:s},{2:d}"
