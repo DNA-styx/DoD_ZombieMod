@@ -69,13 +69,7 @@ public void OnClientPostAdminCheck(int client)
 			g_bRoundEnded = true;
 			
 			// Notify all players
-			for (int i = 1; i <= MaxClients; i++)
-			{
-				if (IsClientInGame(i))
-				{
-					PrintToChat(i, "%t%t", ZM_PREFIX, "First Real Player Restart", client);
-				}
-			}
+			PrintToChatAll("%t%t", ZM_PREFIX, "First Real Player Restart", client);
 			
 			// Restart after short delay
 			CreateTimer(3.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -119,13 +113,7 @@ public void OnClientDisconnect_Post(int client)
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);
 			
-			for (int i = 1; i <= MaxClients; i++)
-			{
-				if (IsClientInGame(i))
-				{
-					PrintToChat(i, "%t%t", ZM_PREFIX, "Player Became Zombie", g_iZombie);
-				}
-			}
+			PrintToChatAll("%t%t", ZM_PREFIX, "Player Became Zombie", g_iZombie);
 		}
 		else if (numAllies == 0)
 		{
@@ -167,13 +155,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				// Show "Game commencing in 15 seconds!" repeatedly to keep it visible
 				// Then show 5, 4, 3, 2, 1 countdown
 				
-				for (int i = 1; i <= MaxClients; i++)
-				{
-					if (IsClientInGame(i))
-					{
-						PrintToChat(i, "%t%t", ZM_PREFIX, "Game Commencing");
-					}
-				}
+				PrintToChatAll("%t%t", ZM_PREFIX, "Game Commencing");
 				PrintCenterTextAll("%t", "Game Commencing");
 				
 				// Re-display initial message every 2 seconds to keep it visible for full 10s
@@ -375,13 +357,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 		ChangeClientTeam(client, Team_Axis);
 		
 		// Notify all players
-		for (int i = 1; i <= MaxClients; i++)
-		{
-			if (IsClientInGame(i))
-			{
-				PrintToChat(i, "%t%t", ZM_PREFIX, "Player Became Zombie", client);
-			}
-		}
+		PrintToChatAll("%t%t", ZM_PREFIX, "Player Became Zombie", client);
 	}
 	
 	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)

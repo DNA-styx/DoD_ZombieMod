@@ -189,17 +189,18 @@ bool CheckWinConditions()
 	}
 	else if (numHumans == 1 && !g_iLastHuman)
 	{
+		PrintToChatAll("%t%t", ZM_PREFIX, "Last Human Beaconed");
+		EmitSoundToAll(g_szSounds[Sound_LastManStanding]);
+		
+		// Find and set the last human
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
-				PrintToChat(i, "%t%t", ZM_PREFIX, "Last Human Beaconed");
-				
-				EmitSoundToClient(i, g_szSounds[Sound_LastManStanding]);
-				
 				if (!g_iLastHuman && GetClientTeam(i) == Team_Allies)
 				{
 					g_iLastHuman = GetClientUserId(i);
+					break;  // Found them, exit loop
 				}
 			}
 		}
@@ -212,6 +213,21 @@ RoundEnd(winningTeam)
 {
 	bool winLimitReached = ++g_iRoundWins >= g_ConVarInts[ConVar_WinLimit];
 	
+	if (winLimitReached)
+	{
+		PrintToChatAll("%t%t", ZM_PREFIX, "Win Limit Reached");
+		EmitSoundToAll(g_szSounds[Sound_End]);
+	}
+	else if (winningTeam == Team_Allies)
+	{
+		EmitSoundToAll(g_szSounds[Sound_HumansWin]);
+	}
+	else if (winningTeam == Team_Axis)
+	{
+		EmitSoundToAll(g_szSounds[Sound_ZombiesWin]);
+	}
+	
+	// Handle per-client operations (stop sound, overlays)
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && !IsClientSourceTV(i))
@@ -221,19 +237,13 @@ RoundEnd(winningTeam)
 				StopSound(i, SNDCHAN_AUTO, g_szSounds[Sound_LastManStanding]);
 			}
 			
-			if (winLimitReached)
+			// Apply screen overlays
+			if (winningTeam == Team_Allies)
 			{
-				EmitSoundToClient(i, g_szSounds[Sound_End]);
-				PrintToChat(i, "%t%t", ZM_PREFIX, "Win Limit Reached");
-			}
-			else if (winningTeam == Team_Allies)
-			{
-				EmitSoundToClient(i, g_szSounds[Sound_HumansWin]);
 				ScreenOverlay(i, g_szOverlay[Overlay_HumansWin]);
 			}
 			else if (winningTeam == Team_Axis)
 			{
-				EmitSoundToClient(i, g_szSounds[Sound_ZombiesWin]);
 				ScreenOverlay(i, g_szOverlay[Overlay_ZombiesWin]);
 			}
 		}
