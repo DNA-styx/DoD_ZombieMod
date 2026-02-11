@@ -1,10 +1,6 @@
 Based on https://forums.alliedmods.net/showthread.php?t=219990
 
-Refreshed by https://claude.ai/ closely guided by DNA.styx. Any mistakes or sub-optimal solutons are my responsibility, no matter what tools I've chosen to employ. Happy to take feedback and guidence.
-
-Long live Root_
-
-
+Refreshed by https://claude.ai/ closely guided by DNA.styx. Any mistakes or sub-optimal solutions are my responsibility, no matter what tools I've chosen to employ. Happy to receive feedback and guidance from those more knowledgable than myself.
 
 ![20F37A~1](https://github.com/user-attachments/assets/d0e67c71-e141-495f-a598-b028c3d08ae6)
 
@@ -19,3 +15,5 @@ Long live Root_
 ![2070B8~1](https://github.com/user-attachments/assets/e9b61fdb-2ab4-4b06-b81a-8e358dff6f4e)
 
 ![20FFCC~1](https://github.com/user-attachments/assets/1bad63e4-440e-4733-b5f7-978db1b55d0f)
+
+Long live Root_
