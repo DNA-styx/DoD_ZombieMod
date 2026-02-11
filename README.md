@@ -1,6 +1,6 @@
 Based on https://forums.alliedmods.net/showthread.php?t=219990
 
-Refreshed by https://claude.ai/ closely guided by DNA.styx
+Refreshed by https://claude.ai/ closely guided by DNA.styx. Any mistakes or sub-optimal solutons are my responsibility, no matter what tools I've chosen to employ. Happy to take feedback and guidence.
 
 Long live Root_
 
