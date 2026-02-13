@@ -12,7 +12,7 @@
 	"First Real Player Restart"
 	{
 		"#format"	"{1:N}"
-		"en"		"First real player {1} joined! Restarting round in 3 seconds..."
+		"en"		"Player {1} joined! Restarting round..."
 	}
 	
 	
@@ -86,7 +86,7 @@
 	
 	"Pickup Ammo"
 	{
-		"en"		"+1 Clip (Primary & Pistol)"
+		"en"		"Extra Ammo!"
 	}
 	
 	"Pickup Speed"
