@@ -640,14 +640,7 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 			float timeSinceSpawn = GetGameTime() - g_flPlayerSpawnTime[client];
 			if (timeSinceSpawn < g_ConVarFloats[ConVar_Spawn_NoClip_Time])
 			{
-				// No collision for first 3 seconds
-				// Show debug message to player
-				// Only show message to real players, not bots
-				// Only show if debug mode is enabled
-				if (!IsFakeClient(client) && g_ConVarBools[ConVar_Debug])
-				{
-									PrintHintText(client, "Spawn no-clip disabled");
-				}
+				// No collision for first N seconds (prevents spawn blocking)
 				return false;
 			}
 		}
