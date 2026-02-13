@@ -4,7 +4,7 @@
 #include <sourcemod>
 #include <sdktools>
 
-#define PLUGIN_VERSION "0.0.4"
+#define PLUGIN_VERSION "0.0.5"
 
 // Team constants for DoD:S
 #define TEAM_ALLIES 2
@@ -213,15 +213,11 @@ void CreateSparkEffect(float position[3])
 	DispatchSpawn(spark);
 	ActivateEntity(spark);
 	
-	// Set spark color to green (RGB: 0, 255, 0)
-	SetEntityRenderMode(spark, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(spark, 0, 255, 0, 255);
-	
 	// Trigger spark once
 	AcceptEntityInput(spark, "StartSpark");
 	
-	// Remove after 0.5 seconds
-	CreateTimer(0.5, Timer_RemoveSpark, EntIndexToEntRef(spark), TIMER_FLAG_NO_MAPCHANGE);
+	// Remove after 1 second
+	CreateTimer(1.0, Timer_RemoveSpark, EntIndexToEntRef(spark), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Timer_RemoveSpark(Handle timer, int ref)
