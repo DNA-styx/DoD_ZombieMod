@@ -21,6 +21,7 @@ enum
 	ConVar_Show_Zombie_Info,
 	ConVar_Debug,
 	ConVar_Class_Chance,
+	ConVar_Pickup_Timeout,
 	
 	ConVar_Size
 }
@@ -49,6 +50,9 @@ void InitConVars()
 	
 	// Zombie Classes
 	AddConVar(ConVar_Class_Chance, CreateConVar("dod_zombiemod_class_chance", "25", "Percentage chance zombie gets special class (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
+	
+	// Pickups
+	AddConVar(ConVar_Pickup_Timeout, CreateConVar("dod_zombiemod_pickup_timeout", "30.0", "Seconds before pickup auto-destroys if not picked up", FCVAR_PLUGIN, true, 5.0, true, 120.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

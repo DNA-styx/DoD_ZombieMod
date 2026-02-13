@@ -452,6 +452,7 @@ public Action Timer_RestartRound(Handle timer)
 		g_iLastHuman = g_iBeaconTicks = g_bBlockChangeClass = false;
 		
 		g_bModActive = true;
+		PrintToServer("[PICKUPS DEBUG] *** MOD ACTIVATED *** (minimum players reached)");
 		
 		SelectZombie();
 		

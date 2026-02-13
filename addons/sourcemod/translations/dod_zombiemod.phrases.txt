@@ -76,6 +76,45 @@
 	}
 	
 	// ============================================================================
+	// PICKUP MESSAGES
+	// ============================================================================
+	
+	"Pickup Health"
+	{
+		"en"		"+50 Health!"
+	}
+	
+	"Pickup Ammo"
+	{
+		"en"		"+1 Clip (Primary & Pistol)"
+	}
+	
+	"Pickup Speed"
+	{
+		"en"		"Speed Boost! (10 seconds)"
+	}
+	
+	"Pickup Damage"
+	{
+		"en"		"Damage Boost! (10 seconds)"
+	}
+	
+	"Pickup Already Active"
+	{
+		"en"		"You already have this boost active!"
+	}
+	
+	"Pickup Expired Speed"
+	{
+		"en"		"Speed boost expired"
+	}
+	
+	"Pickup Expired Damage"
+	{
+		"en"		"Damage boost expired"
+	}
+	
+	// ============================================================================
 	// CHAT MESSAGES - EQUIPMENT & RESTRICTIONS
 	// ============================================================================
 	

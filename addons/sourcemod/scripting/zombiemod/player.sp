@@ -82,6 +82,9 @@ public void OnClientDisconnect_Post(int client)
 	// Clean up zombie class data
 	ZombieClasses_OnClientDisconnect(client);
 	
+	// Clean up pickup boosts
+	Pickups_OnClientDisconnect(client);
+	
 	if (g_bModActive)
 	{
 		// If the disconnected player was critical, give the critter the kill and reward.
@@ -567,6 +570,12 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 {
 	if (g_bModActive)
 	{
+		// Apply pickup damage modifications
+		if (attacker > 0 && attacker <= MaxClients)
+		{
+			damage = Pickups_ModifyDamage(attacker, damage);
+		}
+		
 		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && IsInZombieSpawn(client))
 		{
 			PrintHintText(attacker, "%t", "Spawn Protection Active");
@@ -667,6 +676,9 @@ void InitZombieInfoDisplay()
 
 public void OnMapStart()
 {
+	// Recreate pickup timer and precache
+	Pickups_OnMapStart();
+	
 	// Recreate timer on map change
 	
 	// Clear old handle if it exists
@@ -677,6 +689,9 @@ public void OnMapStart()
 	
 	// Also recreate zombie self-health timer
 	RecreateZombieSelfHealthTimer();
+	
+	// Recreate pickup timer
+	Pickups_OnMapStart();
 }
 
 void CleanupZombieInfoDisplay()

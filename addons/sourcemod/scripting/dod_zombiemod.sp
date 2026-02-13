@@ -51,6 +51,7 @@
 #include "zombiemod/player.sp"
 #include "zombiemod/commands.sp"
 #include "zombiemod/zombie_classes.sp"
+#include "zombiemod/pickups.sp"
 
 public Plugin myinfo = 
 {
@@ -75,6 +76,7 @@ public void OnPluginStart()
 	InitZombieInfoDisplay();
 	InitZombieSelfHealthDisplay();
 	ZombieClasses_Init();
+	Pickups_Init();
 	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 	
@@ -87,6 +89,11 @@ public void OnPluginEnd()
 {
 	CleanupZombieInfoDisplay();
 	CleanupZombieSelfHealthDisplay();
+}
+
+public void OnMapEnd()
+{
+	Pickups_OnMapEnd();
 }
 
 

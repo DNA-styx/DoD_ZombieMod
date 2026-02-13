@@ -235,3 +235,19 @@ void GiveZombieReward(int client)
 		PrintToChat(client, "%t%t", ZM_PREFIX, "Max Speed Reached");
 	} */
 }
+
+// ============================================================================
+// PUBLIC HELPER FUNCTIONS FOR OTHER MODULES
+// ============================================================================
+
+// Give one clip of primary ammo (for pickups)
+bool GiveOneClipPrimaryAmmo(int client)
+{
+	return HumanReward_PrimaryAmmo(client);
+}
+
+// Give one clip of pistol ammo (for pickups)
+bool GiveOneClipPistolAmmo(int client)
+{
+	return HumanReward_PistolAmmo(client);
+}
