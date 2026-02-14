@@ -55,8 +55,6 @@ float g_flOriginalSpeed[MAXPLAYERS+1];
 
 void Pickups_Init()
 {
-	PrintToServer("[PICKUPS DEBUG] Pickups_Init() called");
-	
 	// Initialize player arrays
 	for (int i = 0; i <= MAXPLAYERS; i++)
 	{
@@ -64,53 +62,39 @@ void Pickups_Init()
 		g_bHasDamageBoost[i] = false;
 		g_flOriginalSpeed[i] = 0.0;
 	}
-	
-	PrintToServer("[PICKUPS DEBUG] Player arrays initialized");
 }
 
 void Pickups_OnMapStart()
 {
-	PrintToServer("[PICKUPS DEBUG] Pickups_OnMapStart() called");
-	
 	// Precache model
 	PrecacheModel(PICKUP_MODEL, true);
-	PrintToServer("[PICKUPS DEBUG] Model precached: %s", PICKUP_MODEL);
 	
 	// Precache sprite
 	PrecacheModel(PICKUP_SPRITE, true);
-	PrintToServer("[PICKUPS DEBUG] Sprite precached: %s", PICKUP_SPRITE);
 	
 	// Precache sounds
 	PrecacheSound("items/smallmedkit1.wav", true);
-	PrintToServer("[PICKUPS DEBUG] Sound precached");
 	
 	// Kill existing timer if it exists
 	if (g_hSpawnTimer != INVALID_HANDLE)
 	{
 		KillTimer(g_hSpawnTimer);
 		g_hSpawnTimer = INVALID_HANDLE;
-		PrintToServer("[PICKUPS DEBUG] Existing timer killed");
 	}
 	
 	// Start spawn timer
 	g_hSpawnTimer = CreateTimer(PICKUP_SPAWN_INTERVAL, Timer_SpawnPickup, _, TIMER_REPEAT);
-	PrintToServer("[PICKUPS DEBUG] Spawn timer created with %.1f second interval", PICKUP_SPAWN_INTERVAL);
-	PrintToServer("[PICKUPS DEBUG] Timer handle: %x", g_hSpawnTimer);
 }
 
 void Pickups_OnMapEnd()
 {
-	PrintToServer("[PICKUPS DEBUG] Pickups_OnMapEnd() called");
-	
 	if (g_hSpawnTimer != INVALID_HANDLE)
 	{
 		KillTimer(g_hSpawnTimer);
 		g_hSpawnTimer = INVALID_HANDLE;
-		PrintToServer("[PICKUPS DEBUG] Spawn timer killed");
 	}
 	
 	g_iPickupCount = 0;
-	PrintToServer("[PICKUPS DEBUG] Pickup count reset to 0");
 }
 
 void Pickups_OnClientDisconnect(int client)
@@ -126,42 +110,22 @@ void Pickups_OnClientDisconnect(int client)
 
 public Action Timer_SpawnPickup(Handle timer)
 {
-	PrintToServer("[PICKUPS DEBUG] Timer_SpawnPickup fired - g_bModActive=%d, g_bRoundEnded=%d", g_bModActive, g_bRoundEnded);
-	
 	// Only spawn if mod is active and game is running
 	if (!g_bModActive)
-	{
-		PrintToServer("[PICKUPS DEBUG] Not spawning - mod not active");
 		return Plugin_Continue;
-	}
 	
 	if (g_bRoundEnded)
-	{
-		PrintToServer("[PICKUPS DEBUG] Not spawning - round ended");
 		return Plugin_Continue;
-	}
 	
 	// Check if we've hit the max
 	if (g_iPickupCount >= MAX_ACTIVE_PICKUPS)
-	{
-		PrintToServer("[PICKUPS DEBUG] Not spawning - max active reached (%d/%d)", g_iPickupCount, MAX_ACTIVE_PICKUPS);
 		return Plugin_Continue;
-	}
-	
-	PrintToServer("[PICKUPS DEBUG] Attempting to find spawn location...");
 	
 	// Try to find a valid spawn location
 	float spawnPos[3];
 	if (FindPickupSpawnLocation(spawnPos))
 	{
-		PrintToServer("[PICKUPS DEBUG] Valid location found, creating pickup...");
 		CreatePickup(spawnPos);
-		PrintToServer("[PICKUPS DEBUG] Pickup created at %.1f, %.1f, %.1f - Total active: %d", 
-			spawnPos[0], spawnPos[1], spawnPos[2], g_iPickupCount);
-	}
-	else
-	{
-		PrintToServer("[PICKUPS DEBUG] Failed to find valid spawn location");
 	}
 	
 	return Plugin_Continue;
@@ -181,12 +145,10 @@ bool FindPickupSpawnLocation(float position[3])
 		}
 	}
 	
-	PrintToServer("[PICKUPS DEBUG] Found %d alive human(s)", aliveCount);
 	
 	// Need at least one human to spawn near
 	if (aliveCount == 0)
 	{
-		PrintToServer("[PICKUPS DEBUG] No alive humans - cannot spawn");
 		return false;
 	}
 	
@@ -208,31 +170,23 @@ bool FindPickupSpawnLocation(float position[3])
 		position[1] = playerPos[1] + (distance * Sine(DegToRad(angle)));
 		position[2] = playerPos[2] + 50.0;  // Start above ground
 		
-		PrintToServer("[PICKUPS DEBUG] Attempt %d: Testing position %.1f, %.1f, %.1f", 
-			attempt + 1, position[0], position[1], position[2]);
-		
 		// Trace down to ground
 		if (TraceToGround(position))
 		{
-			PrintToServer("[PICKUPS DEBUG] Ground trace successful");
 			// Verify location is accessible (not in wall)
 			if (IsLocationAccessible(position))
 			{
-				PrintToServer("[PICKUPS DEBUG] Location accessible - SUCCESS on attempt %d", attempt + 1);
 				return true;
 			}
 			else
 			{
-				PrintToServer("[PICKUPS DEBUG] Location not accessible (in wall)");
 			}
 		}
 		else
 		{
-			PrintToServer("[PICKUPS DEBUG] Ground trace failed");
 		}
 	}
 	
-	PrintToServer("[PICKUPS DEBUG] All %d spawn attempts failed", SPAWN_MAX_ATTEMPTS);
 	return false;
 }
 
@@ -293,44 +247,36 @@ void GetPickupSpriteColor(PickupType type, int color[3])
 
 void CreatePickup(float position[3])
 {
-	PrintToServer("[PICKUPS DEBUG] CreatePickup() called");
 	
 	// Create visual prop (prop_dynamic)
 	int pickup = CreateEntityByName("prop_dynamic");
 	
 	if (pickup == -1)
 	{
-		PrintToServer("[PICKUPS DEBUG] ERROR: Failed to create entity!");
 		return;
 	}
 	
-	PrintToServer("[PICKUPS DEBUG] Entity created (prop_dynamic), index: %d", pickup);
 	
 	// Set model
 	SetEntityModel(pickup, PICKUP_MODEL);
-	PrintToServer("[PICKUPS DEBUG] Model set");
 	
 	// Choose random pickup type
 	PickupType type = view_as<PickupType>(GetRandomInt(0, view_as<int>(Pickup_MaxTypes) - 1));
-	PrintToServer("[PICKUPS DEBUG] Type chosen: %d", type);
 	
 	// Store type in entity
 	SetEntProp(pickup, Prop_Data, "m_iHammerID", view_as<int>(type));
 	
 	// Set color based on type
 	SetPickupColor(pickup, type);
-	PrintToServer("[PICKUPS DEBUG] Color set");
 	
 	// Teleport to position BEFORE spawning
 	TeleportEntity(pickup, position, NULL_VECTOR, NULL_VECTOR);
 	
 	// Spawn it
 	DispatchSpawn(pickup);
-	PrintToServer("[PICKUPS DEBUG] DispatchSpawn called");
 	
 	// Activate the entity
 	ActivateEntity(pickup);
-	PrintToServer("[PICKUPS DEBUG] Entity activated");
 	
 	// Create glowing sprite for visibility
 	int sprite = CreateEntityByName("env_sprite");
@@ -375,11 +321,9 @@ void CreatePickup(float position[3])
 		// Store sprite reference in pickup
 		SetEntPropEnt(pickup, Prop_Data, "m_hEffectEntity", sprite);
 		
-		PrintToServer("[PICKUPS DEBUG] Sprite created at %.1f, %.1f, %.1f", spritePos[0], spritePos[1], spritePos[2]);
 	}
 	else
 	{
-		PrintToServer("[PICKUPS DEBUG] WARNING: Failed to create sprite!");
 	}
 	
 	// Create a trigger for touch detection
@@ -414,21 +358,17 @@ void CreatePickup(float position[3])
 		// Hook the trigger
 		SDKHook(trigger, SDKHook_StartTouch, OnPickupTouched);
 		
-		PrintToServer("[PICKUPS DEBUG] Trigger created and hooked at %.1f, %.1f, %.1f", position[0], position[1], position[2]);
 	}
 	else
 	{
-		PrintToServer("[PICKUPS DEBUG] ERROR: Failed to create trigger!");
 	}
 	
 	// Auto-destroy after lifetime from ConVar
 	float lifetime = g_ConVarFloats[ConVar_Pickup_Timeout];
 	CreateTimer(lifetime, Timer_RemovePickup, EntIndexToEntRef(pickup), TIMER_FLAG_NO_MAPCHANGE);
-	PrintToServer("[PICKUPS DEBUG] Timer created (%.1f sec lifetime)", lifetime);
 	
 	// Increment count
 	g_iPickupCount++;
-	PrintToServer("[PICKUPS DEBUG] Pickup count incremented to %d", g_iPickupCount);
 }
 
 void SetPickupColor(int pickup, PickupType type)
@@ -453,7 +393,6 @@ public Action Timer_RemovePickup(Handle timer, int ref)
 		if (sprite != -1 && IsValidEntity(sprite))
 		{
 			RemoveEntity(sprite);
-			PrintToServer("[PICKUPS DEBUG] Sprite removed (timeout)");
 		}
 		
 		// Get and remove the trigger too
@@ -462,11 +401,9 @@ public Action Timer_RemovePickup(Handle timer, int ref)
 		{
 			SDKUnhook(trigger, SDKHook_StartTouch, OnPickupTouched);
 			RemoveEntity(trigger);
-			PrintToServer("[PICKUPS DEBUG] Trigger removed (timeout)");
 		}
 		
 		RemoveEntity(pickup);
-		PrintToServer("[PICKUPS DEBUG] Pickup removed (timeout)");
 		g_iPickupCount--;
 		
 		if (g_iPickupCount < 0)
@@ -482,17 +419,14 @@ public Action Timer_RemovePickup(Handle timer, int ref)
 
 public Action OnPickupTouched(int trigger, int client)
 {
-	PrintToServer("[PICKUPS DEBUG] OnPickupTouched called - trigger: %d, client: %d", trigger, client);
 	
 	// Validate client
 	if (client < 1 || client > MaxClients || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
-		PrintToServer("[PICKUPS DEBUG] Invalid client or not alive");
 		return Plugin_Continue;
 	}
 	
 	int team = GetClientTeam(client);
-	PrintToServer("[PICKUPS DEBUG] Client %d touched trigger, team: %d", client, team);
 	
 	// Get the pickup entity from the trigger
 	int pickup = -1;
@@ -511,17 +445,14 @@ public Action OnPickupTouched(int trigger, int client)
 	
 	if (pickup == -1)
 	{
-		PrintToServer("[PICKUPS DEBUG] ERROR: Could not find pickup entity for trigger!");
 		return Plugin_Continue;
 	}
 	
-	PrintToServer("[PICKUPS DEBUG] Found pickup entity: %d", pickup);
 	
 	// Humans get the pickup
 	if (team == Team_Allies)
 	{
 		PickupType type = view_as<PickupType>(GetEntProp(trigger, Prop_Data, "m_iHammerID"));
-		PrintToServer("[PICKUPS DEBUG] Human touched pickup, type: %d", type);
 		ApplyPickup(client, type);
 		
 		// Remove sprite
@@ -536,12 +467,10 @@ public Action OnPickupTouched(int trigger, int client)
 		RemoveEntity(trigger);
 		RemoveEntity(pickup);
 		g_iPickupCount--;
-		PrintToServer("[PICKUPS DEBUG] Pickup, sprite, and trigger removed (collected by human)");
 	}
 	// Zombies destroy it
 	else if (team == Team_Axis)
 	{
-		PrintToServer("[PICKUPS DEBUG] Zombie touched pickup, destroying");
 		
 		// Remove sprite
 		int sprite = GetEntPropEnt(pickup, Prop_Data, "m_hEffectEntity");
@@ -554,7 +483,6 @@ public Action OnPickupTouched(int trigger, int client)
 		RemoveEntity(trigger);
 		RemoveEntity(pickup);
 		g_iPickupCount--;
-		PrintToServer("[PICKUPS DEBUG] Pickup, sprite, and trigger removed (destroyed by zombie)");
 	}
 	
 	return Plugin_Handled;
@@ -582,7 +510,7 @@ void ApplyPickup(int client, PickupType type)
 		}
 		case Pickup_Ammo:
 		{
-			GiveFullAmmo(client);
+			GiveAmmoClips(client);
 			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Ammo");
 		}
 		case Pickup_Speed:
@@ -626,15 +554,13 @@ void ApplyPickup(int client, PickupType type)
 	EmitSoundToClient(client, "items/smallmedkit1.wav");
 }
 
-void GiveFullAmmo(int client)
+void GiveAmmoClips(int client)
 {
-	// Give one clip for primary weapon (uses killrewards.sp code)
-	bool gavePrimary = GiveOneClipPrimaryAmmo(client);
+	// Give one clip for primary weapon (suppress killrewards message)
+	GiveOneClipPrimaryAmmo(client, true);
 	
-	// Give one clip for pistol (uses killrewards.sp code)
-	bool gavePistol = GiveOneClipPistolAmmo(client);
-	
-	PrintToServer("[PICKUPS DEBUG] Gave ammo - Primary: %d, Pistol: %d", gavePrimary, gavePistol);
+	// Give one clip for pistol (suppress killrewards message)
+	GiveOneClipPistolAmmo(client, true);
 }
 
 // ============================================================================

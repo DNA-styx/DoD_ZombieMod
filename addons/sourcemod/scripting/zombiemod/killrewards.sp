@@ -127,7 +127,7 @@ bool HumanReward_GiveReward(int client, int reward)
 	return false;
 }
 
-bool HumanReward_PrimaryAmmo(int client)
+bool HumanReward_PrimaryAmmo(int client, bool suppressMessage = false)
 {
 	int weapon = GetPlayerWeaponSlot(client, Slot_Primary);
 	
@@ -146,7 +146,10 @@ bool HumanReward_PrimaryAmmo(int client)
 				{
 					SetWeaponAmmo(client, view_as<DoDWeaponAmmo>(g_WeaponInfo[i][WI_Ammo]), ammoAmount + g_WeaponInfo[i][WI_ClipSize]);
 					
-					PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Primary Ammo");
+					if (!suppressMessage)
+					{
+						PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Primary Ammo");
+					}
 					
 					return true;
 				}
@@ -157,7 +160,7 @@ bool HumanReward_PrimaryAmmo(int client)
 	return false;
 }
 
-bool HumanReward_PistolAmmo(int client)
+bool HumanReward_PistolAmmo(int client, bool suppressMessage = false)
 {
 	int maxAmmo = 56;
 	
@@ -188,7 +191,11 @@ bool HumanReward_PistolAmmo(int client)
 		{
 			SetWeaponAmmo(client, weaponAmmo, GetWeaponAmmo(client, weaponAmmo) + clipSize);
 			
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Pistol Ammo");
+			if (!suppressMessage)
+			{
+				PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Pistol Ammo");
+			}
+			
 			return true;
 		}
 	}
@@ -241,13 +248,15 @@ void GiveZombieReward(int client)
 // ============================================================================
 
 // Give one clip of primary ammo (for pickups)
-bool GiveOneClipPrimaryAmmo(int client)
+// suppressMessage: if true, don't print chat message (pickup will print its own)
+bool GiveOneClipPrimaryAmmo(int client, bool suppressMessage = false)
 {
-	return HumanReward_PrimaryAmmo(client);
+	return HumanReward_PrimaryAmmo(client, suppressMessage);
 }
 
 // Give one clip of pistol ammo (for pickups)
-bool GiveOneClipPistolAmmo(int client)
+// suppressMessage: if true, don't print chat message (pickup will print its own)
+bool GiveOneClipPistolAmmo(int client, bool suppressMessage = false)
 {
-	return HumanReward_PistolAmmo(client);
+	return HumanReward_PistolAmmo(client, suppressMessage);
 }
