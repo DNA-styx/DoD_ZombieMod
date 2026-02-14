@@ -569,12 +569,28 @@ Menu_Equip_PistolAmmo(client)
 	{
 		case Menu_Pistol_Colt:
 		{
-			SetWeaponAmmo(client, Ammo_Colt, ExtraAmmoColt);
+			int maxAmmo = g_ConVarInts[ConVar_Human_Pistol_MaxAmmo];
+			
+			// If player has pistol ammo equipment, give one extra clip
+			if (g_ClientInfo_Int[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
+			{
+				maxAmmo += ClipSize_Colt;
+			}
+			
+			SetWeaponAmmo(client, Ammo_Colt, maxAmmo);
 		}
 		
 		case Menu_Pistol_P38:
 		{
-			SetWeaponAmmo(client, Ammo_P38, ExtraAmmoP38);
+			int maxAmmo = g_ConVarInts[ConVar_Human_Pistol_MaxAmmo];
+			
+			// If player has pistol ammo equipment, give one extra clip
+			if (g_ClientInfo_Int[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
+			{
+				maxAmmo += ClipSize_P38;
+			}
+			
+			SetWeaponAmmo(client, Ammo_P38, maxAmmo);
 		}
 	}
 } 

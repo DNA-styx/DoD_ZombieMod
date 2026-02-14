@@ -239,7 +239,8 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 							GivePlayerItem(client, "weapon_colt");
 						}
 						
-						SetWeaponAmmo(client, Ammo_Colt, ExtraAmmoColt);
+						// Give Colt ammo (use ConVar limit)
+						SetWeaponAmmo(client, Ammo_Colt, g_ConVarInts[ConVar_Human_Pistol_MaxAmmo]);
 					}
 				}
 				case Team_Axis:

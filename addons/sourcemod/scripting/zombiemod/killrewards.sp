@@ -162,19 +162,13 @@ bool HumanReward_PrimaryAmmo(int client, bool suppressMessage = false)
 
 bool HumanReward_PistolAmmo(int client, bool suppressMessage = false)
 {
-	int maxAmmo = 56;
-	
-	if (g_ClientInfo_Int[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
-	{
-		maxAmmo += 10;
-	}
-	
 	int pistol = GetPlayerPistol(client);
 	
 	if (pistol != Pistol_Invalid)
 	{
 		DoDWeaponAmmo weaponAmmo;
 		int clipSize;
+		int maxAmmo;
 		
 		if (pistol == Pistol_Colt)
 		{
@@ -187,9 +181,25 @@ bool HumanReward_PistolAmmo(int client, bool suppressMessage = false)
 			clipSize = ClipSize_P38;
 		}
 		
-		if (GetWeaponAmmo(client, weaponAmmo) < maxAmmo)
+		// Both pistols use same max ammo limit (ConVar)
+		maxAmmo = g_ConVarInts[ConVar_Human_Pistol_MaxAmmo];
+		
+		// If player has pistol ammo equipment, add one extra clip
+		if (g_ClientInfo_Int[client][ClientInfo_EquipmentItem] == Menu_Equipment_PistolAmmo)
 		{
-			SetWeaponAmmo(client, weaponAmmo, GetWeaponAmmo(client, weaponAmmo) + clipSize);
+			maxAmmo += clipSize;
+		}
+		
+		int currentAmmo = GetWeaponAmmo(client, weaponAmmo);
+		if (currentAmmo < maxAmmo)
+		{
+			int newAmmo = currentAmmo + clipSize;
+			
+			// Cap at max
+			if (newAmmo > maxAmmo)
+				newAmmo = maxAmmo;
+			
+			SetWeaponAmmo(client, weaponAmmo, newAmmo);
 			
 			if (!suppressMessage)
 			{
@@ -214,10 +224,20 @@ bool HumanReward_Health(int client)
 		return true;
 	}
 	
-	if (GetClientHealth(client) <= 90)
+	int maxHealth = g_ConVarInts[ConVar_Human_MaxHealth];
+	int currentHealth = GetClientHealth(client);
+	
+	// Only give health if below max
+	if (currentHealth < maxHealth)
 	{
-		g_ClientInfo_Float[client][ClientInfo_Health] += 10.0;
-		SetEntityHealth(client, GetClientHealth(client) + 10);
+		int newHealth = currentHealth + 10;
+		
+		// Cap at max health
+		if (newHealth > maxHealth)
+			newHealth = maxHealth;
+		
+		g_ClientInfo_Float[client][ClientInfo_Health] = float(newHealth);
+		SetEntityHealth(client, newHealth);
 		
 		PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Health");
 		

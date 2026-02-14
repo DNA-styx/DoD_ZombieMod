@@ -593,9 +593,10 @@ void ApplyPickup(int client, PickupType type)
 			int health = GetClientHealth(client);
 			int newHealth = health + 50;
 			
-			// Cap at 150
-			if (newHealth > 150)
-				newHealth = 150;
+			// Cap at max health (ConVar)
+			int maxHealth = g_ConVarInts[ConVar_Human_MaxHealth];
+			if (newHealth > maxHealth)
+				newHealth = maxHealth;
 			
 			SetEntityHealth(client, newHealth);
 			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Health");
