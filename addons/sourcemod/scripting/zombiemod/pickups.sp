@@ -13,6 +13,9 @@
 // Pickup settings
 #define PICKUP_MODEL           "models/props_misc/ration_box02.mdl"
 #define PICKUP_SPRITE          "sprites/glow01.vmt"
+#define PICKUP_BEAM_SPRITE     "materials/sprites/laser.vmt"
+#define PICKUP_SPAWN_SOUND     "ambient/energy/whiteflash.wav"
+#define PICKUP_COLLECT_SOUND   "items/smallmedkit1.wav"
 #define PICKUP_SPAWN_INTERVAL  45.0
 #define MAX_ACTIVE_PICKUPS     5
 
@@ -72,8 +75,12 @@ void Pickups_OnMapStart()
 	// Precache sprite
 	PrecacheModel(PICKUP_SPRITE, true);
 	
+	// Precache beam sprite for sky beam effect
+	g_iBeamSprite = PrecacheModel(PICKUP_BEAM_SPRITE, true);
+	
 	// Precache sounds
-	PrecacheSound("items/smallmedkit1.wav", true);
+	PrecacheSound(PICKUP_COLLECT_SOUND, true);
+	PrecacheSound(PICKUP_SPAWN_SOUND, true);
 	
 	// Kill existing timer if it exists
 	if (g_hSpawnTimer != INVALID_HANDLE)
@@ -125,7 +132,7 @@ public Action Timer_SpawnPickup(Handle timer)
 	float spawnPos[3];
 	if (FindPickupSpawnLocation(spawnPos))
 	{
-		CreatePickup(spawnPos);
+		SpawnPickupWithBeam(spawnPos);
 	}
 	
 	return Plugin_Continue;
@@ -245,7 +252,94 @@ void GetPickupSpriteColor(PickupType type, int color[3])
 	}
 }
 
-void CreatePickup(float position[3])
+void SpawnPickupWithBeam(float position[3])
+{
+	// Choose random pickup type
+	PickupType type = view_as<PickupType>(GetRandomInt(0, view_as<int>(Pickup_MaxTypes) - 1));
+	
+	// Get color for this pickup type
+	int color[3];
+	GetPickupSpriteColor(type, color);
+	
+	// Prepare color array with alpha for beam
+	int beamColor[4];
+	beamColor[0] = color[0];
+	beamColor[1] = color[1];
+	beamColor[2] = color[2];
+	beamColor[3] = 255;  // Full alpha
+	
+	// Create beam from sky to ground
+	float skyStart[3];
+	skyStart[0] = position[0];
+	skyStart[1] = position[1];
+	skyStart[2] = position[2] + 1000.0;  // Start 1000 units above
+	
+	float groundEnd[3];
+	groundEnd[0] = position[0];
+	groundEnd[1] = position[1];
+	groundEnd[2] = position[2];
+	
+	// Create beam effect (visible to all clients)
+	// Starts narrow (2.0) and expands to wide (20.0)
+	TE_SetupBeamPoints(
+		skyStart,           // Start position
+		groundEnd,          // End position
+		g_iBeamSprite,      // Sprite index
+		0,                  // Halo index
+		0,                  // Start frame
+		0,                  // Frame rate
+		1.0,                // Life (1 second)
+		2.0,                // Start width (narrow)
+		20.0,               // End width (wide)
+		1,                  // Fade length
+		0.0,                // Amplitude
+		beamColor,          // Color based on pickup type
+		0                   // Speed
+	);
+	TE_SendToAll();
+	
+	// Play spawn sound to all clients at the spawn position
+	EmitSoundToAll(
+		PICKUP_SPAWN_SOUND,
+		SOUND_FROM_WORLD,
+		SNDCHAN_AUTO,
+		SNDLEVEL_NORMAL,
+		SND_NOFLAGS,
+		1.0,                // Volume
+		SNDPITCH_NORMAL,
+		-1,                 // Entity (world)
+		position,           // Origin
+		NULL_VECTOR,        // Direction
+		true,               // Update positions
+		0.0                 // Sound time
+	);
+	
+	// Create the actual pickup after a short delay (beam reaches ground)
+	DataPack pack = new DataPack();
+	pack.WriteFloat(position[0]);
+	pack.WriteFloat(position[1]);
+	pack.WriteFloat(position[2]);
+	pack.WriteCell(view_as<int>(type));  // Pass the type
+	CreateTimer(1.0, Timer_CreatePickupDelayed, pack, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public Action Timer_CreatePickupDelayed(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	float position[3];
+	position[0] = pack.ReadFloat();
+	position[1] = pack.ReadFloat();
+	position[2] = pack.ReadFloat();
+	PickupType type = view_as<PickupType>(pack.ReadCell());
+	delete pack;
+	
+	// Now create the actual pickup with the predetermined type
+	CreatePickup(position, type);
+	
+	return Plugin_Stop;
+}
+
+void CreatePickup(float position[3], PickupType type)
 {
 	
 	// Create visual prop (prop_dynamic)
@@ -256,12 +350,10 @@ void CreatePickup(float position[3])
 		return;
 	}
 	
-	
 	// Set model
 	SetEntityModel(pickup, PICKUP_MODEL);
 	
-	// Choose random pickup type
-	PickupType type = view_as<PickupType>(GetRandomInt(0, view_as<int>(Pickup_MaxTypes) - 1));
+	// Type is passed as parameter (already chosen in SpawnPickupWithBeam)
 	
 	// Store type in entity
 	SetEntProp(pickup, Prop_Data, "m_iHammerID", view_as<int>(type));
@@ -551,7 +643,7 @@ void ApplyPickup(int client, PickupType type)
 	}
 	
 	// Play pickup sound
-	EmitSoundToClient(client, "items/smallmedkit1.wav");
+	EmitSoundToClient(client, PICKUP_COLLECT_SOUND);
 }
 
 void GiveAmmoClips(int client)
