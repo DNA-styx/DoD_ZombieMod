@@ -161,6 +161,10 @@ public Action Timer_CreateRoundTimer(Handle timer)
 		
 		PauseTimer(g_iRoundTimer);
 	}
+	
+	// Initialize zombie classes for new round
+	ZombieClasses_OnRoundStart();
+	
 	return Plugin_Continue;
 }
 
@@ -211,6 +215,9 @@ bool CheckWinConditions()
 
 RoundEnd(winningTeam)
 {
+	// Disable zombie class features (teleporter, etc.)
+	ZombieClasses_OnRoundEnd();
+	
 	bool winLimitReached = ++g_iRoundWins >= g_ConVarInts[ConVar_WinLimit];
 	
 	if (winLimitReached)

@@ -24,6 +24,10 @@
 #define EXPLODE_DAMAGE       150
 #define EXPLODE_SOUND        "ambient/explosions/explode_3.wav"
 
+// Teleporter settings
+#define TELEPORT_DELAY       60.0   // Seconds after round start before teleports activate
+#define TELEPORT_SOUND       "buttons/spark6.wav"
+
 // ============================================================================
 // ENUMS
 // ============================================================================
@@ -32,7 +36,8 @@ enum ZombieClass
 {
 	ZombieClass_Normal = 0,
 	ZombieClass_Gas,
-	ZombieClass_TNT
+	ZombieClass_TNT,
+	ZombieClass_Teleporter
 }
 
 // ============================================================================
@@ -41,6 +46,11 @@ enum ZombieClass
 
 int g_iZombieClass[MAXPLAYERS+1];
 Handle g_hGasCloudTimers[MAXPLAYERS+1];
+
+// Teleporter globals
+bool g_bTeleportActive = false;
+Handle g_hTeleportActivationTimer = null;
+ArrayList g_AlliedSpawns = null;
 
 // ============================================================================
 // INITIALIZATION
@@ -54,12 +64,59 @@ void ZombieClasses_Init()
 		g_iZombieClass[i] = view_as<int>(ZombieClass_Normal);
 		g_hGasCloudTimers[i] = INVALID_HANDLE;
 	}
+	
+	// Initialize teleporter spawn cache
+	g_AlliedSpawns = new ArrayList(3);
 }
 
 void ZombieClasses_OnMapStart()
 {
 	// Precache explosion sound
 	PrecacheSound(EXPLODE_SOUND, true);
+	
+	// Precache teleport sound
+	PrecacheSound(TELEPORT_SOUND, true);
+	
+	// Cache Allied spawn points for teleporter
+	g_AlliedSpawns.Clear();
+	CacheAlliedSpawns();
+}
+
+void ZombieClasses_OnRoundStart()
+{
+	// Disable teleport at round start
+	g_bTeleportActive = false;
+	
+	// Kill existing timer if it exists
+	if (g_hTeleportActivationTimer != null)
+	{
+		KillTimer(g_hTeleportActivationTimer);
+		g_hTeleportActivationTimer = null;
+	}
+	
+	// Start delay timer for teleporter activation
+	g_hTeleportActivationTimer = CreateTimer(TELEPORT_DELAY, Timer_EnableTeleport, 0, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void ZombieClasses_OnRoundEnd()
+{
+	// Disable teleport when round ends
+	g_bTeleportActive = false;
+	
+	// Kill timer if round ends before activation
+	if (g_hTeleportActivationTimer != null)
+	{
+		KillTimer(g_hTeleportActivationTimer);
+		g_hTeleportActivationTimer = null;
+	}
+}
+
+public Action Timer_EnableTeleport(Handle timer)
+{
+	g_bTeleportActive = true;
+	g_hTeleportActivationTimer = null;
+	
+	return Plugin_Stop;
 }
 
 // ============================================================================
@@ -102,20 +159,30 @@ void ZombieClasses_OnSpawn(int client)
 	if (roll <= chance)
 	{
 		// Randomly choose between special classes
-		int specialClass = GetRandomInt(1, 2);  // 1 = Gas, 2 = TNT
+		int specialClass = GetRandomInt(1, 3);  // 1 = Gas, 2 = TNT, 3 = Teleporter
 		
 		if (specialClass == 1)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
 		}
-		else
+		else if (specialClass == 2)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
+		}
+		else
+		{
+			g_iZombieClass[client] = view_as<int>(ZombieClass_Teleporter);
 		}
 	}
 	else
 	{
 		g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
+	}
+	
+	// If Teleporter class, attempt to teleport
+	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Teleporter))
+	{
+		TeleportToRandomAlliedSpawn(client);
 	}
 }
 
@@ -398,6 +465,94 @@ void DamageNearbyEntities(float origin[3], float radius, int damage, int attacke
 			AcceptEntityInput(entity, "Break");
 		}
 	}
+}
+
+// ============================================================================
+// TELEPORTER ZOMBIE
+// Code based on "Zombies Behind Us!" plugin by ChatGPT, Claude AI, guided by DNA.styx
+// ============================================================================
+
+void CacheAlliedSpawns()
+{
+	int entity = -1;
+	float origin[3];
+	
+	// Find all Allied spawn points
+	while ((entity = FindEntityByClassname(entity, "info_player_allies")) != -1)
+	{
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+		g_AlliedSpawns.PushArray(origin);
+	}
+}
+
+void TeleportToRandomAlliedSpawn(int client)
+{
+	// Check if mod is active and round hasn't ended
+	if (!g_bModActive || g_bRoundEnded)
+		return;
+	
+	// Check if teleport is active (delay has passed)
+	if (!g_bTeleportActive)
+		return;
+	
+	int spawnCount = g_AlliedSpawns.Length;
+	
+	if (spawnCount == 0)
+		return;
+	
+	// Pick random spawn point
+	int index = GetRandomInt(0, spawnCount - 1);
+	float spawnPos[3];
+	g_AlliedSpawns.GetArray(index, spawnPos);
+	
+	// Use exact Allied spawn position (known good spawn point)
+	TeleportEntity(client, spawnPos, NULL_VECTOR, NULL_VECTOR);
+	
+	// Play spark sound to nearby players
+	EmitAmbientSound(TELEPORT_SOUND, spawnPos, SOUND_FROM_WORLD, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+	
+	// Create green sparks shooting upward
+	CreateTeleportSparkEffect(spawnPos);
+}
+
+void CreateTeleportSparkEffect(float position[3])
+{
+	int spark = CreateEntityByName("env_spark");
+	
+	if (spark == -1)
+		return;
+	
+	// Set spark properties
+	DispatchKeyValue(spark, "spawnflags", "128");     // Shoot upward
+	DispatchKeyValue(spark, "MaxDelay", "0");         // No delay
+	DispatchKeyValue(spark, "Magnitude", "2");        // Size
+	DispatchKeyValue(spark, "TrailLength", "2");      // Trail length
+	
+	// Teleport to position
+	TeleportEntity(spark, position, NULL_VECTOR, NULL_VECTOR);
+	
+	// Spawn and activate
+	DispatchSpawn(spark);
+	ActivateEntity(spark);
+	
+	// Trigger spark once
+	AcceptEntityInput(spark, "StartSpark");
+	
+	// Remove after 1 second
+	CreateTimer(1.0, Timer_RemoveTeleportSpark, EntIndexToEntRef(spark), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public Action Timer_RemoveTeleportSpark(Handle timer, int ref)
+{
+	int spark = EntRefToEntIndex(ref);
+	
+	if (spark != INVALID_ENT_REFERENCE && IsValidEntity(spark))
+	{
+		AcceptEntityInput(spark, "StopSpark");
+		RemoveEntity(spark);
+	}
+	
+	return Plugin_Stop;
 }
 
 // ============================================================================
