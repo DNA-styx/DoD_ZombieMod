@@ -45,6 +45,8 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHook(client, SDKHook_ShouldCollide, OnShouldCollide);
 	
+	// Initialize spawn protection
+	SpawnProtection_OnClientConnect(client);
 		
 	g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] = 
 	g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] = 
@@ -86,7 +88,7 @@ public void OnClientDisconnect_Post(int client)
 	Pickups_OnClientDisconnect(client);
 	
 	// Clean up spawn protection
-	g_bSpawnProtected[client] = false;
+	SpawnProtection_OnClientDisconnect(client);
 	
 	if (g_bModActive)
 	{
@@ -253,16 +255,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = false;
 					
 					// Activate spawn protection
-					float protectTime = g_ConVarFloats[ConVar_Zombie_Spawn_Protect_Time];
-					if (protectTime > 0.0)
-					{
-						g_bSpawnProtected[client] = true;
-						SetEntityRenderColor(client, 0, 255, 0, 120);  // Green translucent
-						SetEntProp(client, Prop_Data, "m_takedamage", 0, 1);  // Immune to damage
-						
-						// Remove protection after time
-						CreateTimer(protectTime, Timer_RemoveSpawnProtection, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-					}
+					SpawnProtection_Activate(client);
 					
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
@@ -588,7 +581,7 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 		}
 		
 		// Check spawn protection (visual color indicator, no text spam)
-		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && g_bSpawnProtected[client])
+		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && SpawnProtection_IsProtected(client))
 		{
 			return Plugin_Handled;
 		}
@@ -639,9 +632,9 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
 	// Remove spawn protection if zombie attacks while protected
-	if (g_bModActive && g_bSpawnProtected[client] && IsPlayerAlive(client) && buttons & IN_ATTACK)
+	if (g_bModActive && buttons & IN_ATTACK)
 	{
-		RemoveSpawnProtection(client);
+		SpawnProtection_OnPlayerAttack(client);
 	}
 	return Plugin_Continue;
 }
@@ -929,34 +922,4 @@ public Action Timer_Countdown_1(Handle timer)
 {
 	PrintCenterTextAll("-= 1 =-");
 	return Plugin_Stop;
-}
-
-// ============================================================================
-// SPAWN PROTECTION
-// Code based on Spawn Protection v1.5.2 by Fredd (optimized by Grey83)
-// https://forums.alliedmods.net/showthread.php?t=68139
-// ============================================================================
-
-public Action Timer_RemoveSpawnProtection(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if (client && g_bSpawnProtected[client])
-	{
-		RemoveSpawnProtection(client);
-	}
-	return Plugin_Stop;
-}
-
-void RemoveSpawnProtection(int client)
-{
-	if (!g_bSpawnProtected[client])
-		return;
-	
-	g_bSpawnProtected[client] = false;
-	
-	// Restore normal damage
-	SetEntProp(client, Prop_Data, "m_takedamage", 2, 1);
-	
-	// Restore normal rendering
-	SetEntityRenderColor(client, 255, 255, 255, 255);
 }
