@@ -288,7 +288,7 @@ void SpawnPickupWithBeam(float position[3])
 		0,                  // Halo index
 		0,                  // Start frame
 		0,                  // Frame rate
-		1.0,                // Life (1 second)
+		3.0,                // Life (3 seconds)
 		2.0,                // Start width (narrow)
 		20.0,               // End width (wide)
 		1,                  // Fade length
@@ -314,13 +314,13 @@ void SpawnPickupWithBeam(float position[3])
 		0.0                 // Sound time
 	);
 	
-	// Create the actual pickup after a short delay (beam reaches ground)
+	// Create the actual pickup after beam finishes (3 seconds)
 	DataPack pack = new DataPack();
 	pack.WriteFloat(position[0]);
 	pack.WriteFloat(position[1]);
 	pack.WriteFloat(position[2]);
 	pack.WriteCell(view_as<int>(type));  // Pass the type
-	CreateTimer(1.0, Timer_CreatePickupDelayed, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(3.0, Timer_CreatePickupDelayed, pack, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Timer_CreatePickupDelayed(Handle timer, DataPack pack)
