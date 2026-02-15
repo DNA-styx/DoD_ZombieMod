@@ -53,7 +53,7 @@ bool g_ClientInfo_Bool[DOD_MAXPLAYERS + 1][ClientInfo_Bool];
 float g_flPlayerSpawnTime[DOD_MAXPLAYERS + 1];  // Track when players spawn for no-clip
 float g_ClientInfo_Float[DOD_MAXPLAYERS + 1][ClientInfo_Float];
 // Track zombie spawn time for spawn protection
-float g_flZombieSpawnTime[DOD_MAXPLAYERS + 1];
+// float g_flZombieSpawnTime[DOD_MAXPLAYERS + 1];  // UNUSED - Replaced by g_bSpawnProtected boolean flag in v0.7.101
 
 // Spawn protection
 bool g_bSpawnProtected[DOD_MAXPLAYERS + 1];

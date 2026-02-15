@@ -32,7 +32,7 @@ enum ZombieClass
 {
 	ZombieClass_Normal = 0,
 	ZombieClass_Gas,
-	ZombieClass_Exploder
+	ZombieClass_TNT
 }
 
 // ============================================================================
@@ -102,7 +102,7 @@ void ZombieClasses_OnSpawn(int client)
 	if (roll <= chance)
 	{
 		// Randomly choose between special classes
-		int specialClass = GetRandomInt(1, 2);  // 1 = Gas, 2 = Exploder
+		int specialClass = GetRandomInt(1, 2);  // 1 = Gas, 2 = TNT
 		
 		if (specialClass == 1)
 		{
@@ -110,7 +110,7 @@ void ZombieClasses_OnSpawn(int client)
 		}
 		else
 		{
-			g_iZombieClass[client] = view_as<int>(ZombieClass_Exploder);
+			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
 		}
 	}
 	else
@@ -133,7 +133,7 @@ void ZombieClasses_OnDeath(int client)
 		{
 			CreateGasCloudAtDeath(client);
 		}
-		case ZombieClass_Exploder:
+		case ZombieClass_TNT:
 		{
 			CreateExplosionAtDeath(client);
 		}
@@ -288,7 +288,7 @@ public Action Timer_KillGasEntity(Handle timer, int entity)
 }
 
 // ============================================================================
-// EXPLODER ZOMBIE
+// TNT ZOMBIE
 // ============================================================================
 
 void CreateExplosionAtDeath(int client)
@@ -357,14 +357,12 @@ void DamageNearbyEntities(float origin[3], float radius, int damage, int attacke
 		if (!IsClientInGame(i) || !IsPlayerAlive(i))
 			continue;
 		
-		// Skip the boom zombie that exploded
+		// Skip the TNT zombie that exploded
 		if (i == attacker)
 			continue;
 		
 		// Damage both humans (Allies) and other zombies (Axis)
-		int team = GetClientTeam(i);
-		if (team != Team_Allies && team != Team_Axis)
-			continue;
+		// Note: Mod forces all players onto teams, no spectators/unassigned in game
 		
 		float targetPos[3];
 		GetClientAbsOrigin(i, targetPos);

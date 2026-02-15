@@ -252,11 +252,6 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					g_ClientInfo_Float[client][ClientInfo_Health] = g_ConVarFloats[ConVar_Zombie_Health];
 					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = false;
 					
-					// ============================================================================
-					// PHASE 2: Track spawn time for time-based spawn protection
-					// ============================================================================
-					g_flZombieSpawnTime[client] = GetGameTime();
-					
 					// Activate spawn protection
 					float protectTime = g_ConVarFloats[ConVar_Zombie_Spawn_Protect_Time];
 					if (protectTime > 0.0)
@@ -780,7 +775,7 @@ void ShowZombieInfoToClient(int client)
 		{
 			PrintCenterText(client, "%t", "Critical Gas Zombie Display", name);
 		}
-		else if (class == ZombieClass_Exploder)
+		else if (class == ZombieClass_TNT)
 		{
 			PrintCenterText(client, "%t", "Critical TNT Zombie Display", name);
 		}
@@ -794,7 +789,7 @@ void ShowZombieInfoToClient(int client)
 		// Gas zombie display (normal health)
 		PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
 	}
-	else if (class == ZombieClass_Exploder)
+	else if (class == ZombieClass_TNT)
 	{
 		// TNT zombie display (normal health)
 		PrintCenterText(client, "%t", "TNT Zombie Display", name, health);
