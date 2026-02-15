@@ -57,6 +57,12 @@
 		"en"		"Gas Zombie: {1} (CRITICAL HEALTH!)"
 	}
 	
+	"Critical TNT Zombie Display"
+	{
+		"#format"	"{1:s}"
+		"en"		"TNT Zombie: {1} (CRITICAL HEALTH!)"
+	}
+	
 	"Zombie Info Display"
 	{
 		"#format"	"{1:s},{2:d}"
@@ -73,6 +79,12 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Gas Zombie: {1} ({2} HP)"
+	}
+	
+	"TNT Zombie Display"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"TNT Zombie: {1} ({2} HP)"
 	}
 	
 	// ============================================================================

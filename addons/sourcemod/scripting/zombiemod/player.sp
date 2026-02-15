@@ -673,6 +673,9 @@ public void OnMapStart()
 	// Recreate pickup timer and precache
 	Pickups_OnMapStart();
 	
+	// Precache zombie class sounds/effects
+	ZombieClasses_OnMapStart();
+	
 	// Recreate timer on map change
 	
 	// Clear old handle if it exists
@@ -753,6 +756,10 @@ void ShowZombieInfoToClient(int client)
 		{
 			PrintCenterText(client, "%t", "Critical Gas Zombie Display", name);
 		}
+		else if (class == ZombieClass_Exploder)
+		{
+			PrintCenterText(client, "%t", "Critical TNT Zombie Display", name);
+		}
 		else
 		{
 			PrintCenterText(client, "%t", "Critical Zombie Display", name);
@@ -762,6 +769,11 @@ void ShowZombieInfoToClient(int client)
 	{
 		// Gas zombie display (normal health)
 		PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
+	}
+	else if (class == ZombieClass_Exploder)
+	{
+		// TNT zombie display (normal health)
+		PrintCenterText(client, "%t", "TNT Zombie Display", name, health);
 	}
 	else
 	{

@@ -19,6 +19,11 @@
 #define GAS_COLOR_G     205
 #define GAS_COLOR_B     50
 
+// Explosion settings
+#define EXPLODE_RADIUS       300.0
+#define EXPLODE_DAMAGE       150
+#define EXPLODE_SOUND        "ambient/explosions/explode_3.wav"
+
 // ============================================================================
 // ENUMS
 // ============================================================================
@@ -26,7 +31,8 @@
 enum ZombieClass
 {
 	ZombieClass_Normal = 0,
-	ZombieClass_Gas
+	ZombieClass_Gas,
+	ZombieClass_Exploder
 }
 
 // ============================================================================
@@ -48,6 +54,12 @@ void ZombieClasses_Init()
 		g_iZombieClass[i] = view_as<int>(ZombieClass_Normal);
 		g_hGasCloudTimers[i] = INVALID_HANDLE;
 	}
+}
+
+void ZombieClasses_OnMapStart()
+{
+	// Precache explosion sound
+	PrecacheSound(EXPLODE_SOUND, true);
 }
 
 // ============================================================================
@@ -89,8 +101,17 @@ void ZombieClasses_OnSpawn(int client)
 	
 	if (roll <= chance)
 	{
-		// Assign gas zombie class
-		g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
+		// Randomly choose between special classes
+		int specialClass = GetRandomInt(1, 2);  // 1 = Gas, 2 = Exploder
+		
+		if (specialClass == 1)
+		{
+			g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
+		}
+		else
+		{
+			g_iZombieClass[client] = view_as<int>(ZombieClass_Exploder);
+		}
 	}
 	else
 	{
@@ -111,6 +132,10 @@ void ZombieClasses_OnDeath(int client)
 		case ZombieClass_Gas:
 		{
 			CreateGasCloudAtDeath(client);
+		}
+		case ZombieClass_Exploder:
+		{
+			CreateExplosionAtDeath(client);
 		}
 	}
 }
@@ -260,6 +285,121 @@ public Action Timer_KillGasEntity(Handle timer, int entity)
 		AcceptEntityInput(entity, "Kill");
 	}
 	return Plugin_Stop;
+}
+
+// ============================================================================
+// EXPLODER ZOMBIE
+// ============================================================================
+
+void CreateExplosionAtDeath(int client)
+{
+	float origin[3];
+	GetClientAbsOrigin(client, origin);
+	
+	// Play explosion sound (full 3 second sound will play)
+	EmitAmbientSound(EXPLODE_SOUND, origin, SOUND_FROM_WORLD, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+	
+	// Create explosion visual effect (TE_SetupExplosion)
+	TE_SetupExplosion(
+		origin,                 // Position
+		PrecacheModel("sprites/sprite_fire01.vmt"),  // Sprite
+		10.0,                   // Scale
+		15,                     // Framerate
+		0,                      // Flags
+		RoundFloat(EXPLODE_RADIUS),  // Radius (convert float to int)
+		EXPLODE_DAMAGE          // Magnitude (already an int)
+	);
+	TE_SendToAll();
+	
+	// Create localized screen shake using env_shake
+	int shake = CreateEntityByName("env_shake");
+	if (shake != -1)
+	{
+		DispatchKeyValueFloat(shake, "amplitude", 20.0);      // Shake intensity
+		DispatchKeyValueFloat(shake, "radius", EXPLODE_RADIUS); // Shake radius
+		DispatchKeyValueFloat(shake, "duration", 1.5);         // Shake duration
+		DispatchKeyValueFloat(shake, "frequency", 100.0);      // Shake frequency
+		DispatchKeyValue(shake, "spawnflags", "12");           // 4 (Everyone) + 8 (Physics objects)
+		
+		// Position and activate
+		TeleportEntity(shake, origin, NULL_VECTOR, NULL_VECTOR);
+		DispatchSpawn(shake);
+		ActivateEntity(shake);
+		
+		// Trigger the shake
+		AcceptEntityInput(shake, "StartShake");
+		
+		// Remove after duration
+		CreateTimer(1.5, Timer_RemoveShake, EntIndexToEntRef(shake), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	
+	// Damage nearby humans and zombies
+	DamageNearbyEntities(origin, EXPLODE_RADIUS, EXPLODE_DAMAGE, client);
+}
+
+public Action Timer_RemoveShake(Handle timer, int ref)
+{
+	int shake = EntRefToEntIndex(ref);
+	
+	if (shake != INVALID_ENT_REFERENCE && IsValidEntity(shake))
+	{
+		AcceptEntityInput(shake, "StopShake");
+		RemoveEntity(shake);
+	}
+	
+	return Plugin_Stop;
+}
+
+void DamageNearbyEntities(float origin[3], float radius, int damage, int attacker)
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i) || !IsPlayerAlive(i))
+			continue;
+		
+		// Skip the boom zombie that exploded
+		if (i == attacker)
+			continue;
+		
+		// Damage both humans (Allies) and other zombies (Axis)
+		int team = GetClientTeam(i);
+		if (team != Team_Allies && team != Team_Axis)
+			continue;
+		
+		float targetPos[3];
+		GetClientAbsOrigin(i, targetPos);
+		
+		float distance = GetVectorDistance(origin, targetPos);
+		
+		if (distance <= radius)
+		{
+			// Calculate damage falloff (full damage at center, less at edges)
+			float damageScale = 1.0 - (distance / radius);
+			int finalDamage = RoundFloat(float(damage) * damageScale);
+			
+			if (finalDamage > 0)
+			{
+				// Apply damage
+				SDKHooks_TakeDamage(i, attacker, attacker, float(finalDamage), DMG_BLAST, -1, NULL_VECTOR, origin);
+			}
+		}
+	}
+	
+	// Damage props in radius
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "prop_*")) != -1)
+	{
+		float propPos[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", propPos);
+		
+		float distance = GetVectorDistance(origin, propPos);
+		
+		if (distance <= radius)
+		{
+			// Break the prop
+			AcceptEntityInput(entity, "Break");
+		}
+	}
 }
 
 // ============================================================================
