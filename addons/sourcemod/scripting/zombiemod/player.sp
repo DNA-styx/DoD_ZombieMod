@@ -546,13 +546,15 @@ public Action OnWeaponCanUse(int client, int weapon)
 		
 		if (GetClientTeam(client) == Team_Axis)
 		{
+			// TODO: Revisit grenade mechanics for zombies in future
+			// Currently disabled because zombies get stuck with grenades and can't switch back to spade
 			static const char allowedZombieWeapons[][] = 
 			{
-				"spade", 
-				"frag_us_live", 
-				"frag_ger_live", 
-				"riflegren_us_live", 
-				"riflegren_ger_live"
+				"spade"
+				// "frag_us_live",       // Commented out - causes weapon switching bug
+				// "frag_ger_live",      // Commented out - causes weapon switching bug
+				// "riflegren_us_live",  // Commented out - causes weapon switching bug
+				// "riflegren_ger_live"  // Commented out - causes weapon switching bug
 			};
 			
 			for (int i; i < sizeof(allowedZombieWeapons); i++)
