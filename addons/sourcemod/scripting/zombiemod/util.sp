@@ -66,19 +66,6 @@
 // ConVar: dod_zombiemod_zombie_spawn_protect_time
 // ============================================================================
 
-bool IsInZombieSpawn(int client)
-{
-	// Check if zombie is within spawn protection time
-	float timeSinceSpawn = GetGameTime() - g_flZombieSpawnTime[client];
-	
-	if (timeSinceSpawn < g_ConVarFloats[ConVar_Zombie_Spawn_Protect_Time])
-	{
-		return true;  // Still protected
-	}
-	
-	return false;  // Protection expired
-}
-
 void ScreenOverlay(int client, const char[] material)
 {
 	ClientCommand(client, "r_screenoverlay \"%s\"", material);

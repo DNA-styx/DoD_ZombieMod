@@ -55,6 +55,9 @@ float g_ClientInfo_Float[DOD_MAXPLAYERS + 1][ClientInfo_Float];
 // Track zombie spawn time for spawn protection
 float g_flZombieSpawnTime[DOD_MAXPLAYERS + 1];
 
+// Spawn protection
+bool g_bSpawnProtected[DOD_MAXPLAYERS + 1];
+
 // ConVar storage arrays (needed by multiple files)
 Handle g_ConVarHandles[ConVar_Size];
 int g_ConVarInts[ConVar_Size];

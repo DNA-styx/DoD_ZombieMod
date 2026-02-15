@@ -85,6 +85,9 @@ public void OnClientDisconnect_Post(int client)
 	// Clean up pickup boosts
 	Pickups_OnClientDisconnect(client);
 	
+	// Clean up spawn protection
+	g_bSpawnProtected[client] = false;
+	
 	if (g_bModActive)
 	{
 		// If the disconnected player was critical, give the critter the kill and reward.
@@ -253,6 +256,18 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					// PHASE 2: Track spawn time for time-based spawn protection
 					// ============================================================================
 					g_flZombieSpawnTime[client] = GetGameTime();
+					
+					// Activate spawn protection
+					float protectTime = g_ConVarFloats[ConVar_Zombie_Spawn_Protect_Time];
+					if (protectTime > 0.0)
+					{
+						g_bSpawnProtected[client] = true;
+						SetEntityRenderColor(client, 0, 255, 0, 120);  // Green translucent
+						SetEntProp(client, Prop_Data, "m_takedamage", 0, 1);  // Immune to damage
+						
+						// Remove protection after time
+						CreateTimer(protectTime, Timer_RemoveSpawnProtection, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+					}
 					
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
@@ -577,10 +592,9 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 			damage = Pickups_ModifyDamage(attacker, damage);
 		}
 		
-		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && IsInZombieSpawn(client))
+		// Check spawn protection (visual color indicator, no text spam)
+		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && g_bSpawnProtected[client])
 		{
-			PrintHintText(attacker, "%t", "Spawn Protection Active");
-			
 			return Plugin_Handled;
 		}
 		
@@ -624,6 +638,16 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 		}
 	}
 	
+	return Plugin_Continue;
+}
+
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
+{
+	// Remove spawn protection if zombie attacks while protected
+	if (g_bModActive && g_bSpawnProtected[client] && IsPlayerAlive(client) && buttons & IN_ATTACK)
+	{
+		RemoveSpawnProtection(client);
+	}
 	return Plugin_Continue;
 }
 
@@ -910,4 +934,34 @@ public Action Timer_Countdown_1(Handle timer)
 {
 	PrintCenterTextAll("-= 1 =-");
 	return Plugin_Stop;
+}
+
+// ============================================================================
+// SPAWN PROTECTION
+// Code based on Spawn Protection v1.5.2 by Fredd (optimized by Grey83)
+// https://forums.alliedmods.net/showthread.php?t=68139
+// ============================================================================
+
+public Action Timer_RemoveSpawnProtection(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if (client && g_bSpawnProtected[client])
+	{
+		RemoveSpawnProtection(client);
+	}
+	return Plugin_Stop;
+}
+
+void RemoveSpawnProtection(int client)
+{
+	if (!g_bSpawnProtected[client])
+		return;
+	
+	g_bSpawnProtected[client] = false;
+	
+	// Restore normal damage
+	SetEntProp(client, Prop_Data, "m_takedamage", 2, 1);
+	
+	// Restore normal rendering
+	SetEntityRenderColor(client, 255, 255, 255, 255);
 }
