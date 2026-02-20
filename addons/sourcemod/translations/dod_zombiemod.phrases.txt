@@ -25,10 +25,10 @@
 		"en"		"You are now a Zombie!"
 	}
 	
-	"Zombie Self Health"
+	"Zombie Self Info"
 	{
-		"#format"	"{1:d}"
-		"en"		"Your Health: {1} HP"
+		"#format"	"{1:s},{2:d}"
+		"en"		"{1} | Health: {2} HP"
 	}
 	
 	// ============================================================================

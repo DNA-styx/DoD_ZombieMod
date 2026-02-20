@@ -157,34 +157,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 			{
 				g_bRoundEnded = true;
 				
-				// ============================================================================
-				// COUNTDOWN DISPLAY SYSTEM
-				// ============================================================================
-				// Show "Game commencing in 15 seconds!" repeatedly to keep it visible
-				// Then show 5, 4, 3, 2, 1 countdown
+				// Show game commencing messages and countdown
+				HUD_ShowGameCommencing();
 				
-				PrintToChatAll("%t%t", ZM_PREFIX, "Game Commencing");
-				PrintCenterTextAll("%t", "Game Commencing");
-				
-				// Re-display initial message every 2 seconds to keep it visible for full 10s
-				CreateTimer(2.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(4.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(6.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(8.0, Timer_ShowCommencingMessage, _, TIMER_FLAG_NO_MAPCHANGE);
-				
-				// Final countdown sequence:
-				// 10s: Show "5"
-				// 11s: Show "4"
-				// 12s: Show "3"
-				// 13s: Show "2"
-				// 14s: Show "1"
-				// 15s: Game starts
-				
-				CreateTimer(10.0, Timer_Countdown_5, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(11.0, Timer_Countdown_4, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(12.0, Timer_Countdown_3, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(13.0, Timer_Countdown_2, _, TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(14.0, Timer_Countdown_1, _, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(15.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
 				
 				SetRoundState(DoDRoundState_Restart);
@@ -212,6 +187,7 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 						
 						int playerClass = GetPlayerClass(client);
 						
+						// Give Colt to Rifleman and Support classes
 						if (playerClass == PlayerClass_Rifleman
 							 || playerClass == PlayerClass_Support)
 						{
@@ -263,20 +239,16 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					// Assign zombie class
 					ZombieClasses_OnSpawn(client);
 					
-					// Show "You are now a Zombie!" message
-					PrintCenterText(client, "%t", "Became Zombie");
-					
-					// Force health display immediately after spawn (multiple attempts for reliability)
-					int userid = GetClientUserId(client);
-					CreateTimer(0.1, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(0.3, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(0.5, Timer_ShowInitialHealth, userid, TIMER_FLAG_NO_MAPCHANGE);
-					
-					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
-					
 					SetPlayerModel(client, Model_Zombie_Default);
 					
 					SetPlayerLaggedMovementValue(client, g_ConVarFloats[ConVar_Zombie_Speed]);
+					
+					// Show messages and sounds to real players only (bots don't need these)
+					if (!IsFakeClient(client))
+					{
+						PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
+						HUD_ShowZombieSpawnInfo(clientUserId);
+					}
 				}
 			}
 		}
@@ -663,265 +635,4 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 	
 	// Normal collision for everyone else
 	return true;
-}
-
-// ============================================================================
-// ZOMBIE NAME/HEALTH DISPLAY
-// ============================================================================
-
-Handle g_hZombieInfoTimer = null;
-
-void InitZombieInfoDisplay()
-{
-	// Prevent double-initialization
-	if (g_hZombieInfoTimer != null)
-	{
-		return;
-	}
-	
-	g_hZombieInfoTimer = CreateTimer(0.1, Timer_ShowZombieInfo, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-}
-
-public void OnMapStart()
-{
-	// Recreate pickup timer and precache
-	Pickups_OnMapStart();
-	
-	// Precache zombie class sounds/effects
-	ZombieClasses_OnMapStart();
-	
-	// Recreate timer on map change
-	
-	// Clear old handle if it exists
-	g_hZombieInfoTimer = null;
-	
-	// Recreate the timer
-	g_hZombieInfoTimer = CreateTimer(0.1, Timer_ShowZombieInfo, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	
-	// Also recreate zombie self-health timer
-	RecreateZombieSelfHealthTimer();
-	
-	// Recreate pickup timer
-	Pickups_OnMapStart();
-}
-
-void CleanupZombieInfoDisplay()
-{
-	// Timer will auto-clean with TIMER_FLAG_NO_MAPCHANGE
-	// Just set handle to null
-	g_hZombieInfoTimer = null;
-}
-
-public Action Timer_ShowZombieInfo(Handle timer)
-{
-	if (!g_bModActive || !g_ConVarBools[ConVar_Show_Zombie_Info])
-		return Plugin_Continue;
-	
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client) || !IsPlayerAlive(client))
-			continue;
-		
-		// Show different info based on team
-		if (GetClientTeam(client) == Team_Allies)
-		{
-			// Humans see zombie info
-			ShowZombieInfoToClient(client);
-		}
-		else if (GetClientTeam(client) == Team_Axis)
-		{
-			// Zombies see human info
-			ShowHumanInfoToClient(client);
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
-void ShowZombieInfoToClient(int client)
-{
-	int target = GetClientAimTarget(client);
-	
-	// Validate target
-	if (target <= 0 || target > MaxClients)
-		return;
-	
-	if (!IsClientInGame(target) || !IsPlayerAlive(target))
-		return;
-	
-	// Only show zombie info
-	if (GetClientTeam(target) != Team_Axis)
-		return;
-	
-	// Get zombie's real health
-	int health = RoundFloat(g_ClientInfo_Float[target][ClientInfo_Health]);
-	
-	char name[MAX_NAME_LENGTH];
-	GetClientName(target, name, sizeof(name));
-	
-	// Check if gas zombie
-	ZombieClass class = ZombieClasses_GetClass(target);
-	
-	// Show different message based on class and critical status
-	if (g_ClientInfo_Bool[target][ClientInfo_IsCritical])
-	{
-		// Critical health
-		if (class == ZombieClass_Gas)
-		{
-			PrintCenterText(client, "%t", "Critical Gas Zombie Display", name);
-		}
-		else if (class == ZombieClass_TNT)
-		{
-			PrintCenterText(client, "%t", "Critical TNT Zombie Display", name);
-		}
-		else
-		{
-			PrintCenterText(client, "%t", "Critical Zombie Display", name);
-		}
-	}
-	else if (class == ZombieClass_Gas)
-	{
-		// Gas zombie display (normal health)
-		PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
-	}
-	else if (class == ZombieClass_TNT)
-	{
-		// TNT zombie display (normal health)
-		PrintCenterText(client, "%t", "TNT Zombie Display", name, health);
-	}
-	else
-	{
-		// Normal zombie display
-		PrintCenterText(client, "%t", "Zombie Info Display", name, health);
-	}
-}
-
-void ShowHumanInfoToClient(int client)
-{
-	int target = GetClientAimTarget(client);
-	
-	// Validate target
-	if (target <= 0 || target > MaxClients)
-		return;
-	
-	if (!IsClientInGame(target) || !IsPlayerAlive(target))
-		return;
-	
-	// Only show human info
-	if (GetClientTeam(target) != Team_Allies)
-		return;
-	
-	char name[MAX_NAME_LENGTH];
-	GetClientName(target, name, sizeof(name));
-	
-	// Show "Human: {name}" using translation
-	PrintCenterText(client, "%t", "Human Info Display", name);
-}
-
-// ============================================================================
-// ZOMBIE SELF HEALTH DISPLAY
-// ============================================================================
-
-Handle g_hZombieSelfHealthTimer = null;
-
-void InitZombieSelfHealthDisplay()
-{
-	// Prevent double-initialization
-	if (g_hZombieSelfHealthTimer != null)
-		return;
-	
-	g_hZombieSelfHealthTimer = CreateTimer(0.5, Timer_ShowZombieSelfHealth, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-}
-
-void RecreateZombieSelfHealthTimer()
-{
-	// Clear old handle
-	g_hZombieSelfHealthTimer = null;
-	
-	// Recreate the timer
-	g_hZombieSelfHealthTimer = CreateTimer(0.5, Timer_ShowZombieSelfHealth, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-}
-
-void CleanupZombieSelfHealthDisplay()
-{
-	// Timer will auto-clean with TIMER_FLAG_NO_MAPCHANGE
-	g_hZombieSelfHealthTimer = null;
-}
-
-public Action Timer_ShowZombieSelfHealth(Handle timer)
-{
-	if (!g_bModActive)
-		return Plugin_Continue;
-	
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client) || !IsPlayerAlive(client))
-			continue;
-		
-		// Only show to zombies
-		if (GetClientTeam(client) != Team_Axis)
-			continue;
-		
-		ShowZombieSelfHealth(client);
-	}
-	
-	return Plugin_Continue;
-}
-
-void ShowZombieSelfHealth(int client)
-{
-	int health = RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]);
-	
-	// Use PrintHintText for DoD:S compatibility
-	PrintHintText(client, "%t", "Zombie Self Health", health);
-}
-
-public Action Timer_ShowInitialHealth(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if (client && IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == Team_Axis)
-	{
-		ShowZombieSelfHealth(client);
-	}
-	return Plugin_Stop;
-}
-
-// ============================================================================
-// COUNTDOWN TIMER CALLBACKS
-// ============================================================================
-
-public Action Timer_ShowCommencingMessage(Handle timer)
-{
-	PrintCenterTextAll("%t", "Game Commencing");
-	return Plugin_Stop;
-}
-
-public Action Timer_Countdown_5(Handle timer)
-{
-	PrintCenterTextAll("-= 5 =-");
-	return Plugin_Stop;
-}
-
-public Action Timer_Countdown_4(Handle timer)
-{
-	PrintCenterTextAll("-= 4 =-");
-	return Plugin_Stop;
-}
-
-public Action Timer_Countdown_3(Handle timer)
-{
-	PrintCenterTextAll("-= 3 =-");
-	return Plugin_Stop;
-}
-
-public Action Timer_Countdown_2(Handle timer)
-{
-	PrintCenterTextAll("-= 2 =-");
-	return Plugin_Stop;
-}
-
-public Action Timer_Countdown_1(Handle timer)
-{
-	PrintCenterTextAll("-= 1 =-");
-	return Plugin_Stop;
 }

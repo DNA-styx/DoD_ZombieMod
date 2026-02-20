@@ -52,6 +52,7 @@
 #include "zombiemod/commands.sp"
 #include "zombiemod/zombie_classes.sp"
 #include "zombiemod/zombie_spawnprotection.sp"
+#include "zombiemod/hud_messages.sp"
 #include "zombiemod/pickups.sp"
 
 public Plugin myinfo = 
@@ -74,8 +75,6 @@ public void OnPluginStart()
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
-	InitZombieInfoDisplay();
-	InitZombieSelfHealthDisplay();
 	ZombieClasses_Init();
 	SpawnProtection_Init();
 	Pickups_Init();
@@ -85,12 +84,6 @@ public void OnPluginStart()
 	#if defined _steamtools_included
 	g_bUseSteamTools = LibraryExists("SteamTools");
 	#endif
-}
-
-public void OnPluginEnd()
-{
-	CleanupZombieInfoDisplay();
-	CleanupZombieSelfHealthDisplay();
 }
 
 public void OnMapEnd()
@@ -151,4 +144,16 @@ public void OnConfigsExecuted()
 			break;
 		}
 	}
+}
+
+public void OnMapStart()
+{
+	// Recreate pickup timer and precache
+	Pickups_OnMapStart();
+	
+	// Precache zombie class sounds/effects
+	ZombieClasses_OnMapStart();
+	
+	// Recreate HUD timers
+	HUD_OnMapStart();
 }
