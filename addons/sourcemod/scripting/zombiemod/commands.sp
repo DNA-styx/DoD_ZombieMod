@@ -50,7 +50,10 @@ void ShowTimeleft()
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	char text[13];
-	Format(text, sizeof(text), sArgs); // strcopy is evil
+	// TODO: Original code used Format(text, sizeof(text), sArgs) which is a format string
+	// vulnerability - if a player types % characters in chat it crashes with "String formatted
+	// incorrectly". Fixed by passing sArgs as a %s argument instead of as the format string.
+	Format(text, sizeof(text), "%s", sArgs);
 	StripQuotes(text);
 	
 	if (StrEqual(text, "timeleft", false)
