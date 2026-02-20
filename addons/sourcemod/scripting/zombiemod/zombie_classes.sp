@@ -49,7 +49,6 @@ Handle g_hGasCloudTimers[MAXPLAYERS+1];
 
 // Teleporter globals
 bool g_bTeleportActive = false;
-Handle g_hTeleportActivationTimer = null;
 ArrayList g_AlliedSpawns = null;
 
 // ============================================================================
@@ -87,34 +86,26 @@ void ZombieClasses_OnRoundStart()
 	// Disable teleport at round start
 	g_bTeleportActive = false;
 	
-	// Kill existing timer if it exists
-	if (g_hTeleportActivationTimer != null)
-	{
-		KillTimer(g_hTeleportActivationTimer);
-		g_hTeleportActivationTimer = null;
-	}
-	
-	// Start delay timer for teleporter activation
-	g_hTeleportActivationTimer = CreateTimer(TELEPORT_DELAY, Timer_EnableTeleport, 0, TIMER_FLAG_NO_MAPCHANGE);
+	// Note: TELEPORT_DELAY timer is now started when mod becomes active (Timer_RestartRound)
+	// This prevents teleports before the actual zombie mod game starts
+}
+
+void ZombieClasses_OnModActive()
+{
+	// Start teleport delay timer when mod becomes active
+	g_bTeleportActive = false;
+	CreateTimer(TELEPORT_DELAY, Timer_EnableTeleport, 0, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void ZombieClasses_OnRoundEnd()
 {
-	// Disable teleport when round ends
+	// Disable teleport when round ends - timer auto-cleans via TIMER_FLAG_NO_MAPCHANGE
 	g_bTeleportActive = false;
-	
-	// Kill timer if round ends before activation
-	if (g_hTeleportActivationTimer != null)
-	{
-		KillTimer(g_hTeleportActivationTimer);
-		g_hTeleportActivationTimer = null;
-	}
 }
 
 public Action Timer_EnableTeleport(Handle timer)
 {
 	g_bTeleportActive = true;
-	g_hTeleportActivationTimer = null;
 	
 	return Plugin_Stop;
 }
