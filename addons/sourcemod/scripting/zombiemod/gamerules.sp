@@ -460,6 +460,9 @@ public Action Timer_RestartRound(Handle timer)
 		
 		g_bModActive = true;
 		
+		// Start teleport delay timer now that mod is active
+		ZombieClasses_OnModActive();
+		
 		SelectZombie();
 		
 		for (int i = 1; i <= MaxClients; i++)
