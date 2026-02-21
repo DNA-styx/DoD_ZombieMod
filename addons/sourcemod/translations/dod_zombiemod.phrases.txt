@@ -22,13 +22,14 @@
 	
 	"Became Zombie"
 	{
-		"en"		"You are now a Zombie!"
+		"#format"	"{1:s}"
+		"en"		"You are now a {1}!"
 	}
 	
 	"Zombie Self Info"
 	{
-		"#format"	"{1:s},{2:d}"
-		"en"		"{1} | Health: {2} HP"
+		"#format"	"{1:d}"
+		"en"		"Health: {1} HP"
 	}
 	
 	// ============================================================================

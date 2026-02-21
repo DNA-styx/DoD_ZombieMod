@@ -25,6 +25,23 @@ void HUD_OnMapStart()
 }
 
 // ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Get zombie class display name from ZombieClass enum
+void GetZombieClassDisplayName(ZombieClass class, char[] buffer, int maxlength)
+{
+	switch (class)
+	{
+		case ZombieClass_Normal: strcopy(buffer, maxlength, "Normal Zombie");
+		case ZombieClass_Teleporter: strcopy(buffer, maxlength, "Teleporter Zombie");
+		case ZombieClass_Gas: strcopy(buffer, maxlength, "Gas Zombie");
+		case ZombieClass_TNT: strcopy(buffer, maxlength, "TNT Zombie");
+		default: strcopy(buffer, maxlength, "Zombie");
+	}
+}
+
+// ============================================================================
 // ZOMBIE INFO DISPLAY (Humans viewing zombies)
 // ============================================================================
 
@@ -167,30 +184,22 @@ public Action Timer_ShowZombieSelfInfo(Handle timer, int userid)
 	if (!IsPlayerAlive(client))
 		return Plugin_Continue;
 	
-	// Show "You are now a Zombie!" message
-	PrintCenterText(client, "%t", "Became Zombie");
-	
-	// Get zombie class name
+	// Get zombie class name using helper function
 	char className[64];
-	int zombieClass = g_iZombieClass[client];
-	
-	switch (zombieClass)
-	{
-		case ZombieClass_Normal: strcopy(className, sizeof(className), "Normal Zombie");
-		case ZombieClass_Teleporter: strcopy(className, sizeof(className), "Teleporter Zombie");
-		case ZombieClass_Gas: strcopy(className, sizeof(className), "Gas Zombie");
-		case ZombieClass_TNT: strcopy(className, sizeof(className), "TNT Zombie");
-		default: strcopy(className, sizeof(className), "Zombie");
-	}
+	ZombieClass zombieClass = view_as<ZombieClass>(g_iZombieClass[client]);
+	GetZombieClassDisplayName(zombieClass, className, sizeof(className));
 	
 	// Get current health
 	int health = RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]);
 	
-	// Show class and health once, then stop timer
-	PrintHintText(client, "%t", "Zombie Self Info", className, health);
+	// Show "You are now a [Class]!" message in center
+	PrintCenterText(client, "%t", "Became Zombie", className);
+	
+	// Show health in hint text (class already shown above)
+	PrintHintText(client, "%t", "Zombie Self Info", health);
 	
 	// Possible DoD:S bug that PrintHintText doesn't display after being killed
-	PrintToChat(client, "%t", "Zombie Self Info", className, health);
+	PrintToChat(client, "%t", "Zombie Self Info", health);
 	
 	return Plugin_Stop;
 }
