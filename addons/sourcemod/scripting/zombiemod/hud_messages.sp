@@ -37,6 +37,7 @@ void GetZombieClassDisplayName(ZombieClass class, char[] buffer, int maxlength)
 		case ZombieClass_Teleporter: strcopy(buffer, maxlength, "Teleporter Zombie");
 		case ZombieClass_Gas: strcopy(buffer, maxlength, "Gas Zombie");
 		case ZombieClass_TNT: strcopy(buffer, maxlength, "TNT Zombie");
+		case ZombieClass_Ghost: strcopy(buffer, maxlength, "Ghost Zombie");
 		default: strcopy(buffer, maxlength, "Zombie");
 	}
 }
@@ -100,6 +101,10 @@ void ShowZombieInfoToHuman(int client)
 	bool isCritical = g_ClientInfo_Bool[target][ClientInfo_IsCritical];
 	ZombieClass class = ZombieClasses_GetClass(target);
 	
+	// Ghost zombies are completely hidden from humans - show nothing
+	if (class == ZombieClass_Ghost)
+		return;
+	
 	// Display based on critical status and class
 	if (isCritical)
 	{
@@ -114,6 +119,7 @@ void ShowZombieInfoToHuman(int client)
 		}
 		else
 		{
+			// Ghost, Normal, and Teleporter - generic display (don't reveal Ghost class)
 			PrintCenterText(client, "%t", "Critical Zombie Display", name);
 		}
 	}
@@ -130,7 +136,7 @@ void ShowZombieInfoToHuman(int client)
 		}
 		else
 		{
-			// Normal and Teleporter classes - same display (no class shown)
+			// Ghost, Normal, and Teleporter - generic display (don't reveal Ghost class)
 			PrintCenterText(client, "%t", "Zombie Info Display", name, health);
 		}
 	}

@@ -22,6 +22,7 @@ enum
 	ConVar_Show_Zombie_Info,
 	ConVar_Class_Chance,
 	ConVar_Pickup_Timeout,
+	ConVar_Ghost_Alpha_Max,
 	
 	ConVar_Size
 }
@@ -52,6 +53,9 @@ void InitConVars()
 	
 	// Pickups
 	AddConVar(ConVar_Pickup_Timeout, CreateConVar("dod_zombiemod_pickup_timeout", "30.0", "Seconds before pickup auto-destroys if not picked up", FCVAR_PLUGIN, true, 5.0, true, 120.0));
+	
+	// Ghost Zombie
+	AddConVar(ConVar_Ghost_Alpha_Max, CreateConVar("dod_zombiemod_ghost_alpha_max", "50.0", "Maximum alpha visibility for Ghost Zombie (0=invisible, 255=fully visible)", FCVAR_PLUGIN, true, 0.0, true, 255.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

@@ -239,14 +239,22 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					// Assign zombie class
 					ZombieClasses_OnSpawn(client);
 					
+					// Apply spawn protection visual effect (but not for Ghost zombies who have their own alpha)
+					if (g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
+					{
+						SpawnProtection_ApplyVisuals(client);
+					}
+					
 					SetPlayerModel(client, Model_Zombie_Default);
 					
 					SetPlayerLaggedMovementValue(client, g_ConVarFloats[ConVar_Zombie_Speed]);
 					
-					// Show messages and sounds to real players only (bots don't need these)
+					// Play zombie spawn sound for all players (including bots)
+					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
+					
+					// Show messages to real players only (bots don't need these)
 					if (!IsFakeClient(client))
 					{
-						PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
 						HUD_ShowZombieSpawnInfo(clientUserId);
 					}
 				}

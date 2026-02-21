@@ -29,27 +29,23 @@
 #define TELEPORT_SOUND       "buttons/spark6.wav"
 
 // ============================================================================
-// ENUMS
-// ============================================================================
-
-enum ZombieClass
-{
-	ZombieClass_Normal = 0,
-	ZombieClass_Gas,
-	ZombieClass_TNT,
-	ZombieClass_Teleporter
-}
-
-// ============================================================================
 // GLOBALS
 // ============================================================================
 
-int g_iZombieClass[MAXPLAYERS+1];
 Handle g_hGasCloudTimers[MAXPLAYERS+1];
 
 // Teleporter globals
 bool g_bTeleportActive = false;
 ArrayList g_AlliedSpawns = null;
+
+// Ghost zombie globals
+#define GHOST_ALPHA_INTERVAL 0.05   // Update frequency (seconds)
+#define GHOST_ALPHA_MIN 0.0         // Minimum alpha (fully invisible)
+#define GHOST_ALPHA_RATE 2.0        // Alpha change per update
+
+float g_fGhostAlpha[MAXPLAYERS+1];
+bool g_bGhostAlphaIncreasing[MAXPLAYERS+1];
+Handle g_hGhostAlphaTimers[MAXPLAYERS+1];
 
 // ============================================================================
 // INITIALIZATION
@@ -62,6 +58,9 @@ void ZombieClasses_Init()
 	{
 		g_iZombieClass[i] = view_as<int>(ZombieClass_Normal);
 		g_hGasCloudTimers[i] = INVALID_HANDLE;
+		g_hGhostAlphaTimers[i] = INVALID_HANDLE;
+		g_fGhostAlpha[i] = GHOST_ALPHA_MIN;
+		g_bGhostAlphaIncreasing[i] = true;
 	}
 	
 	// Initialize teleporter spawn cache
@@ -124,6 +123,13 @@ void ZombieClasses_OnClientDisconnect(int client)
 		KillTimer(g_hGasCloudTimers[client]);
 		g_hGasCloudTimers[client] = INVALID_HANDLE;
 	}
+	
+	// Clean up any active ghost alpha timer
+	if (g_hGhostAlphaTimers[client] != INVALID_HANDLE)
+	{
+		KillTimer(g_hGhostAlphaTimers[client]);
+		g_hGhostAlphaTimers[client] = INVALID_HANDLE;
+	}
 }
 
 // ============================================================================
@@ -154,8 +160,8 @@ void ZombieClasses_OnSpawn(int client)
 		// - Teleports are active (60s delay passed)
 		// - Mod is active and round hasn't ended (otherwise teleport will fail)
 		bool canUseTeleporter = g_bTeleportActive && g_bModActive && !g_bRoundEnded;
-		int maxClass = canUseTeleporter ? 3 : 2;  // 1-3 if teleporter available, 1-2 if not
-		int specialClass = GetRandomInt(1, maxClass);  // 1 = Gas, 2 = TNT, 3 = Teleporter (if available)
+		int maxClass = canUseTeleporter ? 4 : 3;  // 1-4 if teleporter available, 1-3 if not (Gas, TNT, Ghost)
+		int specialClass = GetRandomInt(1, maxClass);  // 1=Gas, 2=TNT, 3=Teleporter (if available) or Ghost, 4=Ghost
 		
 		if (specialClass == 1)
 		{
@@ -165,9 +171,22 @@ void ZombieClasses_OnSpawn(int client)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
 		}
-		else  // specialClass == 3 (only possible if canUseTeleporter is true)
+		else if (specialClass == 3)
 		{
-			g_iZombieClass[client] = view_as<int>(ZombieClass_Teleporter);
+			// If teleporter is available, class 3 is Teleporter
+			// If teleporter is NOT available, class 3 is Ghost
+			if (canUseTeleporter)
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_Teleporter);
+			}
+			else
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
+			}
+		}
+		else  // specialClass == 4 (only possible if canUseTeleporter is true)
+		{
+			g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
 		}
 	}
 	else
@@ -180,6 +199,12 @@ void ZombieClasses_OnSpawn(int client)
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Teleporter))
 	{
 		TeleportToRandomAlliedSpawn(client);
+	}
+	
+	// If Ghost class, activate ghost effect
+	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
+	{
+		ActivateGhostEffect(client);
 	}
 }
 
@@ -200,6 +225,10 @@ void ZombieClasses_OnDeath(int client)
 		case ZombieClass_TNT:
 		{
 			CreateExplosionAtDeath(client);
+		}
+		case ZombieClass_Ghost:
+		{
+			DeactivateGhostEffect(client);
 		}
 	}
 }
@@ -550,6 +579,102 @@ public Action Timer_RemoveTeleportSpark(Handle timer, int ref)
 	}
 	
 	return Plugin_Stop;
+}
+
+// ============================================================================
+// GHOST ZOMBIE
+// ============================================================================
+
+void ActivateGhostEffect(int client)
+{
+	// Set render mode to support alpha transparency
+	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
+	
+	// Initialize alpha values
+	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
+	g_bGhostAlphaIncreasing[client] = true;
+	
+	// Make weapon invisible (same alpha as body)
+	int weapon = GetPlayerWeaponSlot(client, 2);  // Slot 2 = melee (spade)
+	if (weapon > 0 && IsValidEntity(weapon))
+	{
+		SetEntityRenderMode(weapon, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(weapon, 255, 255, 255, RoundToNearest(GHOST_ALPHA_MIN));
+	}
+	
+	// Create ghost alpha oscillation timer
+	int userid = GetClientUserId(client);
+	g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
+		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void DeactivateGhostEffect(int client)
+{
+	// Kill timer if active
+	if (g_hGhostAlphaTimers[client] != INVALID_HANDLE)
+	{
+		KillTimer(g_hGhostAlphaTimers[client]);
+		g_hGhostAlphaTimers[client] = INVALID_HANDLE;
+	}
+	
+	// Reset alpha values
+	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
+	g_bGhostAlphaIncreasing[client] = true;
+	
+	// Reset player render mode to normal
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+	
+	// Reset weapon render mode
+	int weapon = GetPlayerWeaponSlot(client, 2);
+	if (weapon > 0 && IsValidEntity(weapon))
+	{
+		SetEntityRenderMode(weapon, RENDER_NORMAL);
+		SetEntityRenderColor(weapon, 255, 255, 255, 255);
+	}
+}
+
+public Action Timer_GhostAlpha(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	
+	// Stop timer if client invalid or no longer zombie or no longer ghost class
+	if (!client || !IsClientInGame(client) || 
+	    GetClientTeam(client) != Team_Axis || 
+	    g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
+	{
+		if (client)
+			g_hGhostAlphaTimers[client] = INVALID_HANDLE;
+		return Plugin_Stop;
+	}
+	
+	// Oscillate alpha between min and max
+	if (g_bGhostAlphaIncreasing[client])
+	{
+		g_fGhostAlpha[client] += GHOST_ALPHA_RATE;
+		if (g_fGhostAlpha[client] >= g_ConVarFloats[ConVar_Ghost_Alpha_Max])
+			g_bGhostAlphaIncreasing[client] = false;
+	}
+	else
+	{
+		g_fGhostAlpha[client] -= GHOST_ALPHA_RATE;
+		if (g_fGhostAlpha[client] <= GHOST_ALPHA_MIN)
+			g_bGhostAlphaIncreasing[client] = true;
+	}
+	
+	int alpha = RoundToNearest(g_fGhostAlpha[client]);
+	
+	// Apply alpha to player
+	SetEntityRenderColor(client, 255, 255, 255, alpha);
+	
+	// Apply same alpha to weapon
+	int weapon = GetPlayerWeaponSlot(client, 2);
+	if (weapon > 0 && IsValidEntity(weapon))
+	{
+		SetEntityRenderColor(weapon, 255, 255, 255, alpha);
+	}
+	
+	return Plugin_Continue;
 }
 
 // ============================================================================

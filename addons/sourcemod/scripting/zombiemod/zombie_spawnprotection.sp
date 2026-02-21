@@ -56,14 +56,22 @@ void SpawnProtection_Activate(int client)
 	// Enable protection
 	g_bSpawnProtected[client] = true;
 	
-	// Visual indicator: Green translucent
-	SetEntityRenderColor(client, 0, 255, 0, 120);
-	
 	// Damage immunity
 	SetEntProp(client, Prop_Data, "m_takedamage", 0, 1);
 	
 	// Auto-remove after time expires
 	CreateTimer(protectTime, Timer_RemoveSpawnProtection, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+void SpawnProtection_ApplyVisuals(int client)
+{
+	// Only apply visuals if actually protected
+	if (!g_bSpawnProtected[client])
+		return;
+	
+	// Visual indicator: Green translucent (only for non-Ghost zombies)
+	// Ghost zombies have their own alpha management
+	SetEntityRenderColor(client, 0, 255, 0, 120);
 }
 
 // ============================================================================
@@ -80,8 +88,11 @@ void SpawnProtection_Remove(int client)
 	// Restore normal damage
 	SetEntProp(client, Prop_Data, "m_takedamage", 2, 1);
 	
-	// Restore normal rendering
-	SetEntityRenderColor(client, 255, 255, 255, 255);
+	// Restore normal rendering - but NOT for Ghost zombies who have their own alpha management
+	if (g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
+	{
+		SetEntityRenderColor(client, 255, 255, 255, 255);
+	}
 }
 
 public Action Timer_RemoveSpawnProtection(Handle timer, int userid)

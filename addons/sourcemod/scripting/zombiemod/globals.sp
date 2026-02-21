@@ -60,3 +60,16 @@ Handle g_ConVarHandles[ConVar_Size];
 int g_ConVarInts[ConVar_Size];
 bool g_ConVarBools[ConVar_Size];
 float g_ConVarFloats[ConVar_Size];
+
+// Zombie class enum (needed by multiple files: player.sp, zombie_classes.sp, zombie_spawnprotection.sp, hud_messages.sp)
+enum ZombieClass
+{
+	ZombieClass_Normal = 0,
+	ZombieClass_Gas,
+	ZombieClass_TNT,
+	ZombieClass_Teleporter,
+	ZombieClass_Ghost
+}
+
+// Zombie class tracking (needed by multiple files)
+int g_iZombieClass[MAXPLAYERS+1];
