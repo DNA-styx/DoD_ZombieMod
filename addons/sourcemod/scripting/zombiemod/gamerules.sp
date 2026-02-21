@@ -165,6 +165,9 @@ public Action Timer_CreateRoundTimer(Handle timer)
 	// Initialize zombie classes for new round
 	ZombieClasses_OnRoundStart();
 	
+	// Reset pickup spawn timer for new round
+	Pickups_OnRoundStart();
+	
 	return Plugin_Continue;
 }
 

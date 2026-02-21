@@ -104,6 +104,20 @@ void Pickups_OnMapEnd()
 	g_iPickupCount = 0;
 }
 
+void Pickups_OnRoundStart()
+{
+	// Reset the pickup spawn timer at round start to ensure consistent timing
+	// Without this, timer from previous round continues and pickups spawn too early
+	if (g_hSpawnTimer != INVALID_HANDLE)
+	{
+		KillTimer(g_hSpawnTimer);
+		g_hSpawnTimer = INVALID_HANDLE;
+	}
+	
+	// Create fresh timer
+	g_hSpawnTimer = CreateTimer(PICKUP_SPAWN_INTERVAL, Timer_SpawnPickup, _, TIMER_REPEAT);
+}
+
 void Pickups_OnClientDisconnect(int client)
 {
 	g_bHasSpeedBoost[client] = false;
