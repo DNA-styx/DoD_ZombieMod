@@ -149,8 +149,13 @@ void ZombieClasses_OnSpawn(int client)
 	
 	if (roll <= chance)
 	{
-		// Randomly choose between special classes
-		int specialClass = GetRandomInt(1, 3);  // 1 = Gas, 2 = TNT, 3 = Teleporter
+		// Choose between special classes
+		// Teleporter only available if:
+		// - Teleports are active (60s delay passed)
+		// - Mod is active and round hasn't ended (otherwise teleport will fail)
+		bool canUseTeleporter = g_bTeleportActive && g_bModActive && !g_bRoundEnded;
+		int maxClass = canUseTeleporter ? 3 : 2;  // 1-3 if teleporter available, 1-2 if not
+		int specialClass = GetRandomInt(1, maxClass);  // 1 = Gas, 2 = TNT, 3 = Teleporter (if available)
 		
 		if (specialClass == 1)
 		{
@@ -160,7 +165,7 @@ void ZombieClasses_OnSpawn(int client)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
 		}
-		else
+		else  // specialClass == 3 (only possible if canUseTeleporter is true)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_Teleporter);
 		}
@@ -171,6 +176,7 @@ void ZombieClasses_OnSpawn(int client)
 	}
 	
 	// If Teleporter class, attempt to teleport
+	// (Will always succeed since we only assign Teleporter if conditions are met)
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Teleporter))
 	{
 		TeleportToRandomAlliedSpawn(client);
