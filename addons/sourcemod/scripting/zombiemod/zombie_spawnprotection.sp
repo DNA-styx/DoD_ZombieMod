@@ -71,6 +71,7 @@ void SpawnProtection_ApplyVisuals(int client)
 	
 	// Visual indicator: Green translucent (only for non-Ghost zombies)
 	// Ghost zombies have their own alpha management
+	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(client, 0, 255, 0, 120);
 }
 
@@ -91,6 +92,7 @@ void SpawnProtection_Remove(int client)
 	// Restore normal rendering - but NOT for Ghost zombies who have their own alpha management
 	if (g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
 	{
+		SetEntityRenderMode(client, RENDER_NORMAL);
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 	}
 }
