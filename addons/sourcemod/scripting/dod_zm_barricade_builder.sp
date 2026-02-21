@@ -4,7 +4,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "0.1.5"
+#define PLUGIN_VERSION "0.1.6"
 #define PLUGIN_NAME "DoD:S ZM Barricade Builder"
 #define PLUGIN_AUTHOR "Dron-elektron, modified by claude.ai guided by DNA.styx"
 #define PLUGIN_DESCRIPTION "Based on Dron-elektron's Gravity Gun. Pick up and place in-game props"
@@ -16,7 +16,7 @@
 #define HOLD_DISTANCE 128.0          // Distance to hold prop from player
 #define UPDATE_INTERVAL 0.05         // How often to update prop position (50ms)
 #define SPEED_FACTOR 8.0             // How fast prop moves to target position
-#define MAX_VIEW_ANGLE 90.0          // Maximum angle from view direction to detect props (90 = front hemisphere)
+#define AIM_TOLERANCE 64.0           // Maximum distance from crosshair aim point to prop (tighter = more precise)
 #define SETTLE_VELOCITY -50.0        // Downward velocity when releasing props (helps them settle naturally)
 
 // Weapon definitions for DoD:S
@@ -169,13 +169,32 @@ void ReleaseProp(int client) {
     g_heldProp[client] = NO_PROP_HELD;
 }
 
-// Find the nearest prop in player's view within range
+// Find the nearest prop that the player is aiming at
 int FindNearestPropInView(int client) {
-    float clientEyePos[3];
+    float clientEyePos[3], clientEyeAngles[3];
     GetClientEyePosition(client, clientEyePos);
+    GetClientEyeAngles(client, clientEyeAngles);
     
+    // Perform ray trace to see what player is aiming at
+    float aimDirection[3];
+    GetAngleVectors(clientEyeAngles, aimDirection, NULL_VECTOR, NULL_VECTOR);
+    
+    // Calculate end point of the trace
+    float traceEnd[3];
+    traceEnd[0] = clientEyePos[0] + (aimDirection[0] * MAX_PROP_DISTANCE);
+    traceEnd[1] = clientEyePos[1] + (aimDirection[1] * MAX_PROP_DISTANCE);
+    traceEnd[2] = clientEyePos[2] + (aimDirection[2] * MAX_PROP_DISTANCE);
+    
+    // Do the ray trace
+    Handle trace = TR_TraceRayFilterEx(clientEyePos, traceEnd, MASK_SOLID, RayType_EndPoint, TraceFilter_IgnorePlayers, client);
+    
+    float hitPos[3];
+    TR_GetEndPosition(hitPos, trace);
+    CloseHandle(trace);
+    
+    // Now find the closest prop to where the player is aiming
     int nearestProp = ENTITY_NOT_FOUND;
-    float nearestDistance = MAX_PROP_DISTANCE;
+    float nearestDistance = AIM_TOLERANCE;  // Maximum distance from aim point to prop (tight selection)
     
     // Array of classnames to check
     char propTypes[3][32] = {
@@ -184,7 +203,7 @@ int FindNearestPropInView(int client) {
         "prop_physics_multiplayer"
     };
     
-    // Single consolidated loop for all prop types
+    // Search for props near the aim point
     for (int i = 0; i < 3; i++) {
         int prop = ENTITY_NOT_FOUND;
         
@@ -194,18 +213,21 @@ int FindNearestPropInView(int client) {
                 continue;
             }
             
+            // Check if prop is within range of player
             float propPos[3];
             GetEntPropVector(prop, Prop_Data, "m_vecAbsOrigin", propPos);
+            float distanceFromPlayer = GetVectorDistance(clientEyePos, propPos);
             
-            float distance = GetVectorDistance(clientEyePos, propPos);
+            if (distanceFromPlayer > MAX_PROP_DISTANCE) {
+                continue;
+            }
             
-            // Check if prop is within range and closer than current nearest
-            if (distance < nearestDistance) {
-                // Check if prop is in player's view (not behind them)
-                if (IsPropInView(client, propPos)) {
-                    nearestDistance = distance;  // Update for next iterations
-                    nearestProp = prop;
-                }
+            // Check distance from aim point to prop
+            float distanceFromAim = GetVectorDistance(hitPos, propPos);
+            
+            if (distanceFromAim < nearestDistance) {
+                nearestDistance = distanceFromAim;
+                nearestProp = prop;
             }
         }
     }
@@ -213,27 +235,19 @@ int FindNearestPropInView(int client) {
     return nearestProp;
 }
 
-// Check if a prop is in the player's view (in front of them)
-bool IsPropInView(int client, float propPos[3]) {
-    float clientEyePos[3], clientAngles[3];
-    GetClientEyePosition(client, clientEyePos);
-    GetClientEyeAngles(client, clientAngles);
+// Trace filter to ignore players
+public bool TraceFilter_IgnorePlayers(int entity, int contentsMask, int client) {
+    // Ignore the client doing the trace
+    if (entity == client) {
+        return false;
+    }
     
-    // Get forward vector from player's view
-    float forwardVec[3];
-    GetAngleVectors(clientAngles, forwardVec, NULL_VECTOR, NULL_VECTOR);
+    // Ignore all players
+    if (entity > 0 && entity <= MaxClients) {
+        return false;
+    }
     
-    // Get direction vector from player to prop
-    float toPropVec[3];
-    MakeVectorFromPoints(clientEyePos, propPos, toPropVec);
-    NormalizeVector(toPropVec, toPropVec);
-    
-    // Calculate angle between view direction and prop direction
-    float dotProduct = GetVectorDotProduct(forwardVec, toPropVec);
-    float angle = ArcCosine(dotProduct) * (180.0 / FLOAT_PI);
-    
-    // Return true if prop is within the view angle threshold
-    return angle <= MAX_VIEW_ANGLE;
+    return true;
 }
 
 // Check if a prop is currently being held by any player
