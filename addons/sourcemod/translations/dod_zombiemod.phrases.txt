@@ -15,6 +15,12 @@
 		"en"		"Player {1} joined! Restarting round..."
 	}
 	
+	"Player Teleported"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} has teleported to Human spawn!"
+	}
+	
 	
 	// ============================================================================
 	// HINT TEXT MESSAGES

@@ -155,13 +155,8 @@ void ZombieClasses_OnSpawn(int client)
 	
 	if (roll <= chance)
 	{
-		// Choose between special classes
-		// Teleporter only available if:
-		// - Teleports are active (60s delay passed)
-		// - Mod is active and round hasn't ended (otherwise teleport will fail)
-		bool canUseTeleporter = g_bTeleportActive && g_bModActive && !g_bRoundEnded;
-		int maxClass = canUseTeleporter ? 4 : 3;  // 1-4 if teleporter available, 1-3 if not (Gas, TNT, Ghost)
-		int specialClass = GetRandomInt(1, maxClass);  // 1=Gas, 2=TNT, 3=Teleporter (if available) or Ghost, 4=Ghost
+		// Choose between special classes: Gas, TNT, Ghost
+		int specialClass = GetRandomInt(1, 3);  // 1=Gas, 2=TNT, 3=Ghost
 		
 		if (specialClass == 1)
 		{
@@ -171,20 +166,7 @@ void ZombieClasses_OnSpawn(int client)
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
 		}
-		else if (specialClass == 3)
-		{
-			// If teleporter is available, class 3 is Teleporter
-			// If teleporter is NOT available, class 3 is Ghost
-			if (canUseTeleporter)
-			{
-				g_iZombieClass[client] = view_as<int>(ZombieClass_Teleporter);
-			}
-			else
-			{
-				g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
-			}
-		}
-		else  // specialClass == 4 (only possible if canUseTeleporter is true)
+		else  // specialClass == 3
 		{
 			g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
 		}
@@ -194,17 +176,34 @@ void ZombieClasses_OnSpawn(int client)
 		g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
 	}
 	
-	// If Teleporter class, attempt to teleport
-	// (Will always succeed since we only assign Teleporter if conditions are met)
-	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Teleporter))
-	{
-		TeleportToRandomAlliedSpawn(client);
-	}
-	
 	// If Ghost class, activate ghost effect
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
 	{
 		ActivateGhostEffect(client);
+	}
+	
+	// Teleport chance (applies to ALL zombie classes after 60s delay)
+	// Check if teleportation is available and roll for chance
+	if (g_bTeleportActive && g_bModActive && !g_bRoundEnded)
+	{
+		int teleportChance = g_ConVarInts[ConVar_Teleport_Chance];
+		if (teleportChance > 0)
+		{
+			int teleportRoll = GetRandomInt(1, 100);
+			if (teleportRoll <= teleportChance)
+			{
+				// Teleport this zombie and announce it
+				if (TeleportToRandomAlliedSpawn(client))
+				{
+					// Get player name
+					char name[MAX_NAME_LENGTH];
+					GetClientName(client, name, sizeof(name));
+					
+					// Announce to all players
+					PrintToChatAll("%t%t", ZM_PREFIX, "Player Teleported", name);
+				}
+			}
+		}
 	}
 }
 
@@ -511,20 +510,20 @@ void CacheAlliedSpawns()
 	}
 }
 
-void TeleportToRandomAlliedSpawn(int client)
+bool TeleportToRandomAlliedSpawn(int client)
 {
 	// Check if mod is active and round hasn't ended
 	if (!g_bModActive || g_bRoundEnded)
-		return;
+		return false;
 	
 	// Check if teleport is active (delay has passed)
 	if (!g_bTeleportActive)
-		return;
+		return false;
 	
 	int spawnCount = g_AlliedSpawns.Length;
 	
 	if (spawnCount == 0)
-		return;
+		return false;
 	
 	// Pick random spawn point
 	int index = GetRandomInt(0, spawnCount - 1);
@@ -539,6 +538,8 @@ void TeleportToRandomAlliedSpawn(int client)
 	
 	// Create green sparks shooting upward
 	CreateTeleportSparkEffect(spawnPos);
+	
+	return true;  // Successfully teleported
 }
 
 void CreateTeleportSparkEffect(float position[3])

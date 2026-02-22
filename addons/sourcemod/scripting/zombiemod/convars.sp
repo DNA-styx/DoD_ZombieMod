@@ -23,6 +23,7 @@ enum
 	ConVar_Class_Chance,
 	ConVar_Pickup_Timeout,
 	ConVar_Ghost_Alpha_Max,
+	ConVar_Teleport_Chance,
 	
 	ConVar_Size
 }
@@ -56,6 +57,9 @@ void InitConVars()
 	
 	// Ghost Zombie
 	AddConVar(ConVar_Ghost_Alpha_Max, CreateConVar("dod_zombiemod_ghost_alpha_max", "50.0", "Maximum alpha visibility for Ghost Zombie (0=invisible, 255=fully visible)", FCVAR_PLUGIN, true, 0.0, true, 255.0));
+	
+	// Teleportation
+	AddConVar(ConVar_Teleport_Chance, CreateConVar("dod_zombiemod_teleport_chance", "25", "Percentage chance any zombie will teleport to human spawn on respawn (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

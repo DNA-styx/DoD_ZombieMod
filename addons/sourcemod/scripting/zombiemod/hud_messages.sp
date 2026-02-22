@@ -34,7 +34,6 @@ void GetZombieClassDisplayName(ZombieClass class, char[] buffer, int maxlength)
 	switch (class)
 	{
 		case ZombieClass_Normal: strcopy(buffer, maxlength, "Normal Zombie");
-		case ZombieClass_Teleporter: strcopy(buffer, maxlength, "Teleporter Zombie");
 		case ZombieClass_Gas: strcopy(buffer, maxlength, "Gas Zombie");
 		case ZombieClass_TNT: strcopy(buffer, maxlength, "TNT Zombie");
 		case ZombieClass_Ghost: strcopy(buffer, maxlength, "Ghost Zombie");

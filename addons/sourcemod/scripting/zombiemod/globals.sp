@@ -67,7 +67,6 @@ enum ZombieClass
 	ZombieClass_Normal = 0,
 	ZombieClass_Gas,
 	ZombieClass_TNT,
-	ZombieClass_Teleporter,
 	ZombieClass_Ghost
 }
 
