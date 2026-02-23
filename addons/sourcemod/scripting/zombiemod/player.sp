@@ -380,6 +380,14 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 		
 		SetEventBroadcast(event, true);
 	}
+	
+	// Reset visual effects when changing teams
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if (client && IsClientInGame(client))
+	{
+		ResetPlayerVisuals(client);
+	}
+	
 	return Plugin_Continue;
 }
 
@@ -643,4 +651,24 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 	
 	// Normal collision for everyone else
 	return true;
+}
+
+// ============================================================================
+// VISUAL CLEANUP
+// ============================================================================
+
+void ResetPlayerVisuals(int client)
+{
+	// Remove spawn protection effects
+	SpawnProtection_Remove(client);
+	
+	// Deactivate ghost zombie effects if active
+	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
+	{
+		DeactivateGhostEffect(client);
+	}
+	
+	// Reset render mode and color to normal (catches any other visual effects)
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
 }

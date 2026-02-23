@@ -247,6 +247,9 @@ RoundEnd(winningTeam)
 				StopSound(i, SNDCHAN_AUTO, g_szSounds[Sound_LastManStanding]);
 			}
 			
+			// Reset all visual effects (spawn protection, ghost zombie, etc.)
+			ResetPlayerVisuals(i);
+			
 			// Apply screen overlays
 			if (winningTeam == Team_Allies)
 			{
