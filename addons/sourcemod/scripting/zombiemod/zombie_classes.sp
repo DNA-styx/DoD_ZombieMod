@@ -47,6 +47,9 @@ float g_fGhostAlpha[MAXPLAYERS+1];
 bool g_bGhostAlphaIncreasing[MAXPLAYERS+1];
 Handle g_hGhostAlphaTimers[MAXPLAYERS+1];
 
+// Class selection menu
+Menu g_ZombieClassMenu = null;
+
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
@@ -65,6 +68,20 @@ void ZombieClasses_Init()
 	
 	// Initialize teleporter spawn cache
 	g_AlliedSpawns = new ArrayList(3);
+	
+	// Create zombie class selection menu
+	CreateZombieClassMenu();
+}
+
+void CreateZombieClassMenu()
+{
+	g_ZombieClassMenu = new Menu(MenuHandler_ZombieClass);
+	g_ZombieClassMenu.SetTitle("Select Zombie Class:");
+	g_ZombieClassMenu.AddItem("0", "Random Class");
+	g_ZombieClassMenu.AddItem("1", "Gas Zombie (Toxic cloud on death)");
+	g_ZombieClassMenu.AddItem("2", "TNT Zombie (Explodes on death)");
+	g_ZombieClassMenu.AddItem("3", "Ghost Zombie (Nearly invisible)");
+	g_ZombieClassMenu.ExitButton = false;  // Force selection (or timeout)
 }
 
 void ZombieClasses_OnMapStart()
@@ -147,9 +164,43 @@ void ZombieClasses_OnSpawn(int client)
 	if (chance <= 0)
 	{
 		g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
+		ApplyZombieClassEffects(client);
 		return;
 	}
 	
+	// Bots always get random class immediately
+	if (IsFakeClient(client))
+	{
+		AssignRandomZombieClass(client, chance);
+		ApplyZombieClassEffects(client);
+		return;
+	}
+	
+	// Real players: Start as Normal and show class selection menu
+	g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
+	
+	// Teleport chance still applies immediately (before menu selection)
+	CheckAndApplyTeleport(client);
+	
+	// Show class selection menu (30 second timeout)
+	CreateTimer(1.0, Timer_ShowZombieClassMenu, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public Action Timer_ShowZombieClassMenu(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	
+	// Verify client is still valid and is a zombie
+	if (client && IsClientInGame(client) && GetClientTeam(client) == Team_Axis)
+	{
+		g_ZombieClassMenu.Display(client, 30);  // 30 second timeout
+	}
+	
+	return Plugin_Stop;
+}
+
+void AssignRandomZombieClass(int client, int chance)
+{
 	// Random chance for special class
 	int roll = GetRandomInt(1, 100);
 	
@@ -175,13 +226,19 @@ void ZombieClasses_OnSpawn(int client)
 	{
 		g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
 	}
-	
-	// If Ghost class, activate ghost effect
+}
+
+void ApplyZombieClassEffects(int client)
+{
+	// Activate Ghost effect if Ghost class
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
 	{
 		ActivateGhostEffect(client);
 	}
-	
+}
+
+void CheckAndApplyTeleport(int client)
+{
 	// Teleport chance (applies to ALL zombie classes after 60s delay)
 	// Check if teleportation is available and roll for chance
 	if (g_bTeleportActive && g_bModActive && !g_bRoundEnded)
@@ -588,12 +645,17 @@ public Action Timer_RemoveTeleportSpark(Handle timer, int ref)
 
 void ActivateGhostEffect(int client)
 {
-	// Set render mode to support alpha transparency
-	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
-	
 	// Initialize alpha values
 	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
 	g_bGhostAlphaIncreasing[client] = true;
+	
+	// Only set render mode if spawn protection is NOT active
+	// Calling SetEntityRenderMode resets alpha to 255, which would override spawn protection alpha
+	// Spawn protection has already set RENDER_TRANSCOLOR, so we can skip this
+	if (!SpawnProtection_IsProtected(client))
+	{
+		SetEntityRenderMode(client, RENDER_TRANSCOLOR);
+	}
 	
 	// Make weapon invisible (same alpha as body)
 	int weapon = GetPlayerWeaponSlot(client, 2);  // Slot 2 = melee (spade)
@@ -603,10 +665,16 @@ void ActivateGhostEffect(int client)
 		SetEntityRenderColor(weapon, 255, 255, 255, RoundToNearest(GHOST_ALPHA_MIN));
 	}
 	
-	// Create ghost alpha oscillation timer
-	int userid = GetClientUserId(client);
-	g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
-		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	// Only create alpha timer if spawn protection is NOT active
+	// If spawn protection is active, it's already handling alpha oscillation
+	// and will transition to Ghost alpha when protection ends
+	if (!SpawnProtection_IsProtected(client))
+	{
+		// Create ghost alpha oscillation timer
+		int userid = GetClientUserId(client);
+		g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
+			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	}
 }
 
 void DeactivateGhostEffect(int client)
@@ -676,6 +744,70 @@ public Action Timer_GhostAlpha(Handle timer, int userid)
 	}
 	
 	return Plugin_Continue;
+}
+
+// ============================================================================
+// CLASS SELECTION MENU
+// ============================================================================
+
+public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int selection)
+{
+	if (action == MenuAction_Select)
+	{
+		// Verify client is still a zombie
+		if (!IsClientInGame(client) || GetClientTeam(client) != Team_Axis)
+			return 0;
+		
+		// Get class choice from menu
+		char info[8];
+		menu.GetItem(selection, info, sizeof(info));
+		int choice = StringToInt(info);
+		
+		// Get class chance for random calculation
+		int chance = g_ConVarInts[ConVar_Class_Chance];
+		
+		// Apply class based on selection
+		switch (choice)
+		{
+			case 0:  // Random
+			{
+				AssignRandomZombieClass(client, chance);
+			}
+			case 1:  // Gas
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
+			}
+			case 2:  // TNT
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
+			}
+			case 3:  // Ghost
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
+			}
+		}
+		
+		// Apply class effects
+		ApplyZombieClassEffects(client);
+		
+		// Update HUD to show new class
+		HUD_ShowZombieSpawnInfo(GetClientUserId(client));
+	}
+	else if (action == MenuAction_Cancel && selection == MenuCancel_Timeout)
+	{
+		// Timeout - assign random class
+		if (IsClientInGame(client) && GetClientTeam(client) == Team_Axis)
+		{
+			int chance = g_ConVarInts[ConVar_Class_Chance];
+			AssignRandomZombieClass(client, chance);
+			ApplyZombieClassEffects(client);
+			
+			// Update HUD to show class
+			HUD_ShowZombieSpawnInfo(GetClientUserId(client));
+		}
+	}
+	
+	return 0;
 }
 
 // ============================================================================
