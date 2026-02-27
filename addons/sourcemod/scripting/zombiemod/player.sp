@@ -47,6 +47,9 @@ public void OnClientPutInServer(int client)
 	
 	// Initialize spawn protection
 	SpawnProtection_OnClientConnect(client);
+	
+	// Initialize human skills
+	HumanSkills_OnClientConnect(client);
 		
 	g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] = 
 	g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] = 
@@ -89,6 +92,9 @@ public void OnClientDisconnect_Post(int client)
 	
 	// Clean up spawn protection
 	SpawnProtection_OnClientDisconnect(client);
+	
+	// Clean up human skills
+	HumanSkills_OnClientDisconnect(client);
 	
 	if (g_bModActive)
 	{
@@ -173,6 +179,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				{
 					g_ClientInfo_Float[client][ClientInfo_DamageScale] = 1.0;
 					g_ClientInfo_Bool[client][ClientInfo_HasEquipped] = false;
+					
+					// Reset human skill on spawn (forces re-selection each spawn)
+					HumanSkills_OnSpawn(client);
 					
 					if (!g_bRoundEnded)
 					{

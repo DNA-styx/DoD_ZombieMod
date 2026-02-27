@@ -72,3 +72,14 @@ enum ZombieClass
 
 // Zombie class tracking (needed by multiple files)
 int g_iZombieClass[MAXPLAYERS+1];
+
+// Human skill enum (needed by multiple files: equipmenu.sp, human_skill.sp, hud_messages.sp)
+enum HumanSkill
+{
+	HumanSkill_None = 0,
+	HumanSkill_ESP
+}
+
+// Human skill tracking (needed by multiple files)
+int g_iHumanSkill[MAXPLAYERS+1];
+Menu g_HumanSkillMenu = null;

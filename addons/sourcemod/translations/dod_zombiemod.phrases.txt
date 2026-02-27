@@ -118,6 +118,25 @@
 		"en"		"You already have this boost active!"
 	}
 	
+	// ============================================================================
+	// SKILL MENU MESSAGES
+	// ============================================================================
+	
+	"Skill Menu Title"
+	{
+		"en"		"Select Skill:"
+	}
+	
+	"Skill No Skill"
+	{
+		"en"		"No Skill"
+	}
+	
+	"Skill ESP"
+	{
+		"en"		"ESP (See Zombie Class)"
+	}
+	
 	"Pickup Expired Speed"
 	{
 		"en"		"Speed boost expired"

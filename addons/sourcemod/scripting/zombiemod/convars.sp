@@ -19,7 +19,7 @@ enum
 	ConVar_Beacon_Interval,
 	ConVar_Spawn_NoClip_Time,
 	ConVar_Zombie_Spawn_Protect_Time,
-	ConVar_Show_Zombie_Info,
+	// ConVar_Show_Zombie_Info,  // REMOVED - Zombie info now always shown (ESP skill controls class visibility) - Removed v0.7.152
 	ConVar_Class_Chance,
 	ConVar_Pickup_Timeout,
 	ConVar_Ghost_Alpha_Max,
@@ -47,7 +47,7 @@ void InitConVars()
 	AddConVar(ConVar_Beacon_Interval, CreateConVar("dod_zombiemod_beacon_interval", "8", "Time between toggling beacon on last human", FCVAR_PLUGIN, true, 1.0));
 	AddConVar(ConVar_Spawn_NoClip_Time, CreateConVar("dod_zombiemod_spawn_noclip_time", "15.0", "Seconds humans can pass through teammates after spawn (prevents spawn blocking)", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Zombie_Spawn_Protect_Time, CreateConVar("dod_zombiemod_zombie_spawn_protect_time", "5.0", "Seconds zombies are protected from damage after spawning", FCVAR_PLUGIN, true, 0.0));
-	AddConVar(ConVar_Show_Zombie_Info, CreateConVar("dod_zombiemod_show_info", "1", "Show zombie name and health when aiming at them (0=off, 1=on)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
+	// REMOVED v0.7.152: dod_zombiemod_show_info - Zombie info now always shown (ESP skill controls class visibility)
 	
 	// Zombie Classes
 	AddConVar(ConVar_Class_Chance, CreateConVar("dod_zombiemod_class_chance", "50", "Percentage chance zombie gets special class (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));

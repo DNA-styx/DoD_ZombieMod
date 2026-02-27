@@ -34,6 +34,7 @@ enum
 	Menu_Main_KeepWeapons, 
 	Menu_Main_CreateClass, 
 	Menu_Main_ChangeCategory, 
+	Menu_Main_SelectSkill,
 	Menu_Main_EquipClass, 
 	Menu_Main_ClassSelection
 };
@@ -105,6 +106,7 @@ void InitEquipMenu()
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Keep Current Weapons\n \n");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Create Custom Class");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Change Category Item");
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Select Skill");
 		
 	SetMenuExitButton(g_EquipMenu[Menu_Main], false);
 	
@@ -196,6 +198,11 @@ public int Handler_Main(Menu menu, MenuAction action, int client, int param)
 					case Menu_Main_ChangeCategory:
 					{
 						DisplayMenu(g_EquipMenu[Menu_ChangeCategory], client, MENU_TIME_FOREVER);
+					}
+					
+					case Menu_Main_SelectSkill:
+					{
+						g_HumanSkillMenu.Display(client, MENU_TIME_FOREVER);
 					}
 					
 					case Menu_Main_EquipClass:

@@ -50,10 +50,7 @@ public Action Timer_ShowZombieInfo(Handle timer)
 	if (!g_bModActive || g_bRoundEnded)
 		return Plugin_Continue;
 	
-	// Check if display is enabled via ConVar
-	if (!g_ConVarBools[ConVar_Show_Zombie_Info])
-		return Plugin_Continue;
-	
+	// Show zombie info to all humans (ESP skill controls class visibility)
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client) || !IsPlayerAlive(client) || IsFakeClient(client))
@@ -100,42 +97,50 @@ void ShowZombieInfoToHuman(int client)
 	bool isCritical = g_ClientInfo_Bool[target][ClientInfo_IsCritical];
 	ZombieClass class = ZombieClasses_GetClass(target);
 	
-	// Ghost zombies are completely hidden from humans - show nothing
+	// Ghost zombies are ALWAYS completely hidden - even with ESP
 	if (class == ZombieClass_Ghost)
 		return;
 	
-	// Display based on critical status and class
+	// Check if human has ESP skill
+	bool hasESP = HumanSkills_HasESP(client);
+	
+	// Display based on critical status, ESP skill, and class
 	if (isCritical)
 	{
-		// Critical zombies - no health display, just class/name
-		if (class == ZombieClass_Gas)
+		// Critical zombies - no health display, just name/class
+		if (hasESP && class == ZombieClass_Gas)
 		{
+			// ESP reveals Gas zombie class
 			PrintCenterText(client, "%t", "Critical Gas Zombie Display", name);
 		}
-		else if (class == ZombieClass_TNT)
+		else if (hasESP && class == ZombieClass_TNT)
 		{
+			// ESP reveals TNT zombie class
 			PrintCenterText(client, "%t", "Critical TNT Zombie Display", name);
 		}
 		else
 		{
-			// Ghost, Normal, and Teleporter - generic display (don't reveal Ghost class)
+			// Without ESP or Normal class: Generic display (no class indicator)
 			PrintCenterText(client, "%t", "Critical Zombie Display", name);
 		}
 	}
 	else
 	{
-		// Normal zombies - show health and class
-		if (class == ZombieClass_Gas)
+		// Normal health zombies - show health
+		if (hasESP && class == ZombieClass_Gas)
 		{
+			// ESP reveals Gas zombie class
 			PrintCenterText(client, "%t", "Gas Zombie Display", name, health);
 		}
-		else if (class == ZombieClass_TNT)
+		else if (hasESP && class == ZombieClass_TNT)
 		{
+			// ESP reveals TNT zombie class
 			PrintCenterText(client, "%t", "TNT Zombie Display", name, health);
 		}
 		else
 		{
-			// Ghost, Normal, and Teleporter - generic display (don't reveal Ghost class)
+			// Without ESP or Normal class: Generic display (no class indicator)
+			// Format: "{name} ({health} HP)"
 			PrintCenterText(client, "%t", "Zombie Info Display", name, health);
 		}
 	}

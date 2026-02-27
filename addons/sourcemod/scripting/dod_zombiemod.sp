@@ -47,6 +47,7 @@
 #include "zombiemod/config.sp"
 #include "zombiemod/gamerules.sp"
 #include "zombiemod/equipmenu.sp"
+#include "zombiemod/human_skill.sp"
 #include "zombiemod/killrewards.sp"
 #include "zombiemod/player.sp"
 #include "zombiemod/commands.sp"
@@ -72,6 +73,7 @@ public void OnPluginStart()
 	InitOffsets();
 	InitConVars();
 	InitEquipMenu();
+	HumanSkills_Init();
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
