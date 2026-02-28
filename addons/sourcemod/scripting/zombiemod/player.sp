@@ -45,9 +45,6 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHook(client, SDKHook_ShouldCollide, OnShouldCollide);
 	
-	// Initialize spawn protection
-	SpawnProtection_OnClientConnect(client);
-	
 	// Initialize human skills
 	HumanSkills_OnClientConnect(client);
 		
@@ -89,9 +86,6 @@ public void OnClientDisconnect_Post(int client)
 	
 	// Clean up pickup boosts
 	Pickups_OnClientDisconnect(client);
-	
-	// Clean up spawn protection
-	SpawnProtection_OnClientDisconnect(client);
 	
 	// Clean up human skills
 	HumanSkills_OnClientDisconnect(client);
@@ -239,20 +233,11 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					g_ClientInfo_Float[client][ClientInfo_Health] = g_ConVarFloats[ConVar_Zombie_Health];
 					g_ClientInfo_Bool[client][ClientInfo_IsCritical] = false;
 					
-					// Activate spawn protection
-					SpawnProtection_Activate(client);
-					
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
 					
-					// Assign zombie class
+					// Assign zombie class (includes Ghost alpha activation if needed)
 					ZombieClasses_OnSpawn(client);
-					
-					// Apply spawn protection visual effect (but not for Ghost zombies who have their own alpha)
-					if (g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
-					{
-						SpawnProtection_ApplyVisuals(client);
-					}
 					
 					SetPlayerModel(client, Model_Zombie_Default);
 					
@@ -579,12 +564,6 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 			damage = Pickups_ModifyDamage(attacker, damage);
 		}
 		
-		// Check spawn protection (visual color indicator, no text spam)
-		if (attacker && attacker < MaxClients && GetClientTeam(client) == Team_Axis && SpawnProtection_IsProtected(client))
-		{
-			return Plugin_Handled;
-		}
-		
 		if (g_ClientInfo_Float[client][ClientInfo_DamageScale] != 1.0)
 		{
 			static damageAccumulatorOffset;
@@ -630,11 +609,6 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
-	// Remove spawn protection if zombie attacks while protected
-	if (g_bModActive && buttons & IN_ATTACK)
-	{
-		SpawnProtection_OnPlayerAttack(client);
-	}
 	return Plugin_Continue;
 }
 
@@ -668,9 +642,6 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 
 void ResetPlayerVisuals(int client)
 {
-	// Remove spawn protection effects
-	SpawnProtection_Remove(client);
-	
 	// Deactivate ghost zombie effects if active
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
 	{

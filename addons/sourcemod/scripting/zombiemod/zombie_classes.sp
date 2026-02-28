@@ -645,17 +645,12 @@ public Action Timer_RemoveTeleportSpark(Handle timer, int ref)
 
 void ActivateGhostEffect(int client)
 {
+	// Set render mode to support alpha transparency
+	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
+	
 	// Initialize alpha values
 	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
 	g_bGhostAlphaIncreasing[client] = true;
-	
-	// Only set render mode if spawn protection is NOT active
-	// Calling SetEntityRenderMode resets alpha to 255, which would override spawn protection alpha
-	// Spawn protection has already set RENDER_TRANSCOLOR, so we can skip this
-	if (!SpawnProtection_IsProtected(client))
-	{
-		SetEntityRenderMode(client, RENDER_TRANSCOLOR);
-	}
 	
 	// Make weapon invisible (same alpha as body)
 	int weapon = GetPlayerWeaponSlot(client, 2);  // Slot 2 = melee (spade)
@@ -665,16 +660,10 @@ void ActivateGhostEffect(int client)
 		SetEntityRenderColor(weapon, 255, 255, 255, RoundToNearest(GHOST_ALPHA_MIN));
 	}
 	
-	// Only create alpha timer if spawn protection is NOT active
-	// If spawn protection is active, it's already handling alpha oscillation
-	// and will transition to Ghost alpha when protection ends
-	if (!SpawnProtection_IsProtected(client))
-	{
-		// Create ghost alpha oscillation timer
-		int userid = GetClientUserId(client);
-		g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
-			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	}
+	// Create ghost alpha oscillation timer
+	int userid = GetClientUserId(client);
+	g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
+		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void DeactivateGhostEffect(int client)

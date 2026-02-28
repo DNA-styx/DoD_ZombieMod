@@ -130,15 +130,9 @@ void SpawnProtection_Remove(int client)
 	// Handle visual transition based on zombie class
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
 	{
-		// Ghost zombies: Start Ghost alpha timer to continue the oscillation effect
-		// Copy current protection alpha state to Ghost alpha state for seamless transition
-		g_fGhostAlpha[client] = g_fProtectionAlpha[client];
-		g_bGhostAlphaIncreasing[client] = g_bProtectionAlphaIncreasing[client];
-		
-		// Start Ghost alpha timer
-		int userid = GetClientUserId(client);
-		g_hGhostAlphaTimers[client] = CreateTimer(0.05, Timer_GhostAlpha, userid, 
-			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		// Ghost zombies: Delegate to zombie_classes.sp to start Ghost alpha timer
+		// Pass current alpha state for seamless transition
+		ZombieClasses_OnProtectionEnd(client, g_fProtectionAlpha[client], g_bProtectionAlphaIncreasing[client]);
 	}
 	else
 	{
