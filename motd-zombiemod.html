@@ -13,7 +13,6 @@
             color: #e0e0e0;
             line-height: 1.6;
         }
-        
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -22,7 +21,6 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
-        
         h1 {
             color: #ff4444;
             text-align: center;
@@ -32,14 +30,12 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        
         .subtitle {
             text-align: center;
             color: #888;
             font-size: 1.1em;
             margin-bottom: 30px;
         }
-        
         h2 {
             color: #ff6666;
             border-bottom: 2px solid #ff4444;
@@ -48,31 +44,26 @@
             margin-bottom: 15px;
             font-size: 1.8em;
         }
-        
         h3 {
             color: #ff8888;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 1.3em;
         }
-        
         p {
             margin: 10px 0;
             color: #cccccc;
         }
-        
         ul {
             list-style-type: none;
             padding-left: 0;
         }
-        
         li {
             padding: 8px 0;
             padding-left: 30px;
             position: relative;
             color: #cccccc;
         }
-        
         li:before {
             content: "▸";
             color: #ff4444;
@@ -80,7 +71,6 @@
             position: absolute;
             left: 10px;
         }
-        
         .highlight {
             background-color: #2a2a2a;
             border-left: 4px solid #ff4444;
@@ -88,7 +78,6 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        
         .highlight-green {
             background-color: #1a2a1a;
             border-left: 4px solid #44ff44;
@@ -96,7 +85,6 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        
         .highlight-yellow {
             background-color: #2a2a1a;
             border-left: 4px solid #ffaa44;
@@ -104,7 +92,6 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        
         .highlight-blue {
             background-color: #1a1a2a;
             border-left: 4px solid #4488ff;
@@ -112,7 +99,6 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        
         .highlight-red {
             background-color: #2a1a1a;
             border-left: 4px solid #ff4444;
@@ -120,32 +106,37 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        
+        .highlight-purple {
+            background-color: #2a1a2a;
+            border-left: 4px solid #aa44ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
         .important {
             color: #ff6666;
             font-weight: bold;
         }
-        
         .green-text {
             color: #44ff44;
             font-weight: bold;
         }
-        
         .yellow-text {
             color: #ffaa44;
             font-weight: bold;
         }
-        
         .blue-text {
             color: #4488ff;
             font-weight: bold;
         }
-        
         .red-text {
             color: #ff4444;
             font-weight: bold;
         }
-        
+        .purple-text {
+            color: #aa44ff;
+            font-weight: bold;
+        }
         .discord, .github {
             text-align: center;
             margin-top: 30px;
@@ -153,7 +144,6 @@
             background-color: #2a2a2a;
             border-radius: 8px;
         }
-        
         .discord-link, .github-link {
             display: inline-block;
             padding: 12px 30px;
@@ -164,25 +154,20 @@
             transition: all 0.3s;
             margin: 5px;
         }
-        
         .discord-link {
             background-color: #5865F2;
             color: white;
         }
-        
         .discord-link:hover {
             background-color: #4752C4;
         }
-        
         .github-link {
             background-color: #238636;
             color: white;
         }
-        
         .github-link:hover {
             background-color: #2ea043;
         }
-        
         .zombie-class {
             display: inline-block;
             padding: 4px 10px;
@@ -191,17 +176,18 @@
             font-weight: bold;
             margin: 0 5px;
         }
-        
         .class-gas {
             background-color: #1a3a1a;
             color: #66ff66;
         }
-        
         .class-tnt {
             background-color: #3a1a1a;
             color: #ff6666;
         }
-        
+        .class-ghost {
+            background-color: #2a2a3a;
+            color: #aaaaff;
+        }
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -210,12 +196,23 @@
             color: #666;
             font-size: 0.9em;
         }
+        .new-badge {
+            display: inline-block;
+            background-color: #ff4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧟 Zombie Mod 🧟</h1>
-        <div class="subtitle">Day of Defeat: Source - v0.7.107 BETA</div>
+        <div class="subtitle">Day of Defeat: Source - v0.7.156 BETA</div>
         
         <h2>📋 How It Works</h2>
         <p>At the start of each round, <span class="important">one player becomes a zombie</span>. Everyone else is human.</p>
@@ -226,30 +223,22 @@
         <ul>
             <li><span class="important">One zombie</span> at round start</li>
             <li><span class="important">Everyone else is human</span></li>
-            <li>Zombies can <span class="important">break down some walls and doors</span></li>
-            <li>Humans have guns, zombies have melee (spade)</li>
+            <li>Zombies can <span class="important">break down most objects, walls and doors</span></li>
+            <li>Humans have guns, zombies have spade</li>
+            <li>Humans can move props by right clicking on them with their knife. Press and hold to pick up, release to drop</li>
             <li>Survive as long as possible!</li>
         </ul>
         
         <h2>⚔️ Combat & Features</h2>
         
-        <h3>🛡️ Zombie Spawn Protection</h3>
-        <div class="highlight-green">
-            <p>Zombies are <span class="green-text">green and translucent</span> when protected (default: 5 seconds after spawning).</p>
-            <p>You cannot damage them during this time. <span class="important">Wait for the green effect to disappear!</span></p>
-            <p><strong>Note:</strong> Protection is removed if the zombie attacks.</p>
-        </div>
-        
         <h3>🎯 Critical Headshots</h3>
         <div class="highlight">
-            <p><span class="important">Pistol headshots</span> (Colt & P38) deal critical damage to zombies!</p>
+            <p><span class="important">Pistol headshots</span> deal critical damage to zombies!</p>
             <p>When you land a critical hit:</p>
             <ul>
-                <li>Zombie's helmet pops off</li>
                 <li>Zombie reduced to critical health (2 HP)</li>
                 <li>Finish them off for bonus rewards!</li>
             </ul>
-            <p><strong>Also works with:</strong> Knives, Rifles, Rocket Launchers</p>
         </div>
         
         <h3>🎁 Kill Rewards</h3>
@@ -263,9 +252,22 @@
             <p><strong>Finish Critical Zombies:</strong> Double rewards!</p>
         </div>
         
+        <h3>🔍 Human Skills <span class="new-badge">NEW</span></h3>
+        <div class="highlight-blue">
+            <p>Humans can select a skill from the equipment menu:</p>
+            <ul>
+                <li><span class="blue-text">ESP Skill:</span> See zombie class names when aiming at them</li>
+                <li>Reveals Gas and TNT zombies before they die</li>
+                <li>Ghost zombies remain hidden (stealth advantage)</li>
+                <li>Skill resets each spawn</li>
+            </ul>
+            <p><strong>Without ESP:</strong> All zombies show generic name/health</p>
+            <p><strong>With ESP:</strong> "Gas Zombie: PlayerName (HP)" or "TNT Zombie: PlayerName (HP)"</p>
+        </div>
+        
         <h3>📦 Supply Drops (Pickups)</h3>
         <div class="highlight">
-            <p>Pickups spawn randomly with a <span class="important">dramatic sky beam effect</span>:</p>
+            <p>Pickups spawn randomly with a <span class="important">sky beam effect</span>:</p>
         </div>
         
         <div class="highlight-green">
@@ -288,21 +290,30 @@
             <p>Increases <span class="important">damage by 50%</span> (lasts 30 seconds)</p>
         </div>
         
-        <p style="color: #888; font-size: 0.9em; margin-top: 10px;"><em>Pickups auto-destroy after 30 seconds if not collected</em></p>
+        <p style="color: #888; font-size: 0.9em; margin-top: 10px;"><em>Pickups auto-destroy after 30 seconds if not collected, or if a Zombie walks over them first</em></p>
         
         <h3>🧟 Special Zombie Classes</h3>
         <div class="highlight">
-            <p>Zombies have a <span class="important">50% chance</span> to spawn as a special class:</p>
+            <p>Bot Zombies have a <span class="important">50% chance</span> to spawn as a special class with unique abilities!</p>
+            <p><strong>Players:</strong> Choose your class from the menu when you spawn as zombie</p>
+            <p><strong>Bots:</strong> Get random classes automatically</p>
         </div>
         
         <div class="highlight-green">
-            <p><span class="class-gas">GAS ZOMBIE</span></p>
-            <p>Creates a <span class="green-text">toxic gas cloud</span> on death that damages humans over time.</p>
+            <p><span class="class-gas">GAS ZOMBIE</span> <span class="new-badge">UPGRADED</span></p>
+            <p><span class="green-text">Active Ability:</span> Right-click to spawn gas cloud at aim position!</p>
+            <ul>
+                <li><strong>Cooldown:</strong> 15 seconds between uses</li>
+                <li><strong>Range:</strong> Unlimited (wherever you aim)</li>
+                <li><strong>Tactical:</strong> Block doorways, cover retreat, area denial</li>
+            </ul>
+            <p><span class="green-text">Death Ability:</span> Creates toxic gas cloud on death</p>
             <ul>
                 <li>Radius: 150 units</li>
                 <li>Duration: 10 seconds</li>
                 <li>Damage: 5 HP per second</li>
             </ul>
+            <p><strong>Combo Potential:</strong> Use ability + die = 2 gas clouds!</p>
         </div>
         
         <div class="highlight-red">
@@ -312,41 +323,77 @@
                 <li>Radius: 300 units</li>
                 <li>Max Damage: 150 HP (at center)</li>
                 <li>Friendly fire: YES (damages other zombies too!)</li>
+                <li><strong>Strategy:</strong> Rush into groups of humans</li>
             </ul>
         </div>
         
-        <h3>📊 Zombie Info Display</h3>
-        <div class="highlight">
-            <p>Aim at a zombie to see:</p>
+        <div class="highlight-purple">
+            <p><span class="class-ghost">GHOST ZOMBIE</span></p>
+            <p><span class="purple-text">Nearly invisible</span> with oscillating transparency!</p>
             <ul>
-                <li>Player name</li>
-                <li>Current health</li>
-                <li>Special class type (Gas/TNT)</li>
-                <li>Critical status (if applicable)</li>
+                <li>Alpha: 0-50 (extremely hard to see)</li>
+                <li>No name/health display for humans (even with ESP)</li>
+                <li><strong>Perfect stealth:</strong> Ambush and flank</li>
+                <li><strong>Tip:</strong> Stay still in dark areas for maximum effect</li>
+            </ul>
+        </div>
+        
+        <h3>🌀 Zombie Teleportation</h3>
+        <div class="highlight-blue">
+            <p><span class="blue-text">All zombies</span> have a <span class="important">25% chance</span> to teleport to human spawn on respawn!</p>
+            <ul>
+                <li>Activates 60 seconds after round start</li>
+                <li>Spark effect and sound when teleporting</li>
+                <li>Prevents camping in spawn areas</li>
+                <li>Adds unpredictability to zombie spawns</li>
             </ul>
         </div>
         
         <h2>💡 Strategy Tips</h2>
+        
+        <h3>For Humans:</h3>
         <ul>
-            <li><span class="important">Stick together</span> - strength in numbers, but watch out for TNT zombies!</li>
-            <li><span class="important">Watch for green zombies</span> - they're spawn protected, save your ammo</li>
+            <li><span class="important">Select ESP skill</span> - identify Gas/TNT zombies before they kill you</li>
+            <li><span class="important">Watch for gas clouds</span> - Gas zombies can deploy them with right-click!</li>
+            <li><span class="important">Keep distance from TNT zombies</span> - they explode on death</li>
+            <li><span class="important">Ghost zombies are nearly invisible</span> - listen for footsteps and movement</li>
             <li><span class="important">Aim for headshots</span> - pistol crits reduce zombies to 2 HP</li>
             <li><span class="important">Grab pickups</span> - follow the colored beams for power-ups</li>
-            <li><span class="important">Beware special classes</span> - Gas clouds linger, TNT zombies explode!</li>
-            <li><span class="important">Use the environment</span> - some areas are easier to defend</li>
-            <li><span class="important">Listen for audio cues</span> - spawns, deaths, and pickups all have sounds</li>
+            <li><span class="important">Stick together</span> - but spread out vs TNT zombies</li>
             <li><span class="important">Manage your ammo</span> - pistols limited to 3 clips (21 rounds)</li>
         </ul>
         
-        <h2>🎮 Equipment Menu</h2>
+        <h3>For Zombies:</h3>
+        <ul>
+            <li><span class="important">Choose your class wisely</span> - each has different playstyles</li>
+            <li><span class="green-text">Gas Zombie:</span> Pre-place clouds before engaging, block escape routes</li>
+            <li><span class="red-text">TNT Zombie:</span> Rush into groups, coordinate with teammates for max damage</li>
+            <li><span class="purple-text">Ghost Zombie:</span> Ambush from dark corners, stay still to be invisible</li>
+            <li><span class="important">Use teleportation</span> - 25% chance to spawn behind enemy lines</li>
+            <li><span class="important">Coordinate attacks</span> - overwhelm isolated humans</li>
+        </ul>
+        
+        <h2>🎮 Equipment & Skill Menu</h2>
         <div class="highlight">
-            <p>At spawn, choose your loadout:</p>
+            <p>At spawn, customize your loadout:</p>
             <ul>
                 <li><strong>Primary Weapon:</strong> Rifle, SMG, MG, Sniper, etc.</li>
                 <li><strong>Pistol:</strong> Colt (7 rounds/clip) or P38 (8 rounds/clip)</li>
                 <li><strong>Equipment Bonus:</strong> Extra pistol ammo (adds 1 clip)</li>
+                <li><strong>Human Skill:</strong> ESP (see zombie classes) or No Skill</li>
             </ul>
-            <p>Choose wisely - your loadout affects your survival!</p>
+            <p>Choose wisely - your loadout and skill affect your survival!</p>
+        </div>
+        
+        <h2>📊 Zombie Info Display</h2>
+        <div class="highlight">
+            <p>Aim at a zombie to see their info:</p>
+            <ul>
+                <li><strong>Without ESP:</strong> "PlayerName (HP)"</li>
+                <li><strong>With ESP:</strong> "Gas Zombie: PlayerName (HP)" or "TNT Zombie: PlayerName (HP)"</li>
+                <li><strong>Ghost Zombies:</strong> No display (hidden from all humans)</li>
+                <li><strong>Critical Status:</strong> Shows when zombie has 2 HP or less</li>
+            </ul>
         </div>
         
         <div class="github">
@@ -362,8 +409,8 @@
         </div>
         
         <div class="footer">
-            <p><strong>Good luck, soldier. Survive the horde!</strong></p>
-            <p style="margin-top: 15px; font-size: 0.85em;">DoD:S Zombie Mod v0.7.107 BETA | By Andersso, Root, Colster | Updated by DNA.styx with Claude AI</p>
+            <p><strong>Long live Root_</strong></p>
+            <p style="margin-top: 15px; font-size: 0.85em;">DoD:S Zombie Mod v0.7.156 BETA | By Andersso, Root, Colster | Updated by DNA.styx with Claude AI</p>
         </div>
     </div>
 </body>
