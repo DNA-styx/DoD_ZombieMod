@@ -32,7 +32,9 @@
 // GLOBALS
 // ============================================================================
 
+// Gas Zombie globals
 Handle g_hGasCloudTimers[MAXPLAYERS+1];
+float g_fGasAbilityNextUse[MAXPLAYERS+1];  // Cooldown tracking for gas ability
 
 // Teleporter globals
 bool g_bTeleportActive = false;
@@ -61,6 +63,7 @@ void ZombieClasses_Init()
 	{
 		g_iZombieClass[i] = view_as<int>(ZombieClass_Normal);
 		g_hGasCloudTimers[i] = INVALID_HANDLE;
+		g_fGasAbilityNextUse[i] = 0.0;
 		g_hGhostAlphaTimers[i] = INVALID_HANDLE;
 		g_fGhostAlpha[i] = GHOST_ALPHA_MIN;
 		g_bGhostAlphaIncreasing[i] = true;
@@ -355,6 +358,100 @@ void CreateGasCloudAtDeath(int client)
 }
 
 // ============================================================================
+// Add after CreateGasCloudAtDeath function (around line 356)
+
+// ============================================================================
+// GAS ZOMBIE - ACTIVE ABILITY (Right-Click)
+// ============================================================================
+
+bool ZombieClasses_TryUseGasAbility(int client)
+{
+	if (ZombieClasses_GetClass(client) != ZombieClass_Gas)
+		return false;
+	
+	float currentTime = GetGameTime();
+	if (currentTime < g_fGasAbilityNextUse[client])
+		return false;
+	
+	SpawnGasCloudAtAim(client);
+	
+	float cooldown = g_ConVarFloats[ConVar_Gas_Cooldown];
+	g_fGasAbilityNextUse[client] = currentTime + cooldown;
+	
+	return true;
+}
+
+void SpawnGasCloudAtAim(int client)
+{
+	float eyePos[3], eyeAngles[3], endPos[3];
+	GetClientEyePosition(client, eyePos);
+	GetClientEyeAngles(client, eyeAngles);
+	
+	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAngles, MASK_SOLID, 
+		RayType_Infinite, TraceFilter_World);
+	
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(endPos, trace);
+		CloseHandle(trace);
+		
+		float location[3];
+		GetClientAbsOrigin(client, location);
+		
+		int gascloud = CreateEntityByName("env_smokestack");
+		if (gascloud == -1)
+		{
+			LogError("[Zombie Classes] Failed to create gas cloud entity");
+			return;
+		}
+		
+		char originData[64];
+		Format(originData, sizeof(originData), "%f %f %f", 
+			endPos[0], endPos[1], endPos[2] + 10.0);
+		
+		char colorData[64];
+		Format(colorData, sizeof(colorData), "%i %i %i", GAS_COLOR_R, GAS_COLOR_G, GAS_COLOR_B);
+		
+		DispatchKeyValue(gascloud, "Origin", originData);
+		DispatchKeyValue(gascloud, "BaseSpread", "50");
+		DispatchKeyValue(gascloud, "SpreadSpeed", "10");
+		DispatchKeyValue(gascloud, "Speed", "50");
+		DispatchKeyValue(gascloud, "StartSize", "100");
+		DispatchKeyValue(gascloud, "EndSize", "1");
+		DispatchKeyValue(gascloud, "Rate", "15");
+		DispatchKeyValue(gascloud, "JetLength", "200");
+		DispatchKeyValue(gascloud, "Twist", "2");
+		DispatchKeyValue(gascloud, "RenderColor", colorData);
+		DispatchKeyValue(gascloud, "RenderAmt", "100");
+		DispatchKeyValue(gascloud, "SmokeMaterial", "particle/particle_smokegrenade1.vmt");
+		
+		DispatchSpawn(gascloud);
+		AcceptEntityInput(gascloud, "TurnOn");
+		
+		Handle pack = CreateDataPack();
+		WritePackCell(pack, client);
+		WritePackFloat(pack, endPos[0]);
+		WritePackFloat(pack, endPos[1]);
+		WritePackFloat(pack, endPos[2]);
+		WritePackCell(pack, gascloud);
+		WritePackFloat(pack, GetGameTime());
+		
+		CreateTimer(GAS_TICK_RATE, Timer_GasDamage, pack, 
+			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE | TIMER_DATA_HNDL_CLOSE);
+		
+		Handle cleanupPack = CreateDataPack();
+		WritePackCell(cleanupPack, gascloud);
+		
+		CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
+		
+		EmitSoundToAll(TELEPORT_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
+		PrintToChat(client, "[Zombie Mod] Gas cloud deployed!");
+	}
+	else
+	{
+		CloseHandle(trace);
+	}
+}
 // GAS DAMAGE TIMER
 // ============================================================================
 

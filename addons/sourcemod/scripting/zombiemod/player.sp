@@ -47,6 +47,9 @@ public void OnClientPutInServer(int client)
 	
 	// Initialize human skills
 	HumanSkills_OnClientConnect(client);
+	
+	// Initialize button tracking for gas ability
+	g_iLastButtons[client] = 0;
 		
 	g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] = 
 	g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] = 
@@ -609,6 +612,19 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
+	// Gas Zombie ability - Right-click (detect PRESS, not HOLD)
+	if (g_bModActive && GetClientTeam(client) == Team_Axis)
+	{
+		// Check if button was just pressed (not held from previous frame)
+		if ((buttons & IN_ATTACK2) && !(g_iLastButtons[client] & IN_ATTACK2))
+		{
+			ZombieClasses_TryUseGasAbility(client);
+		}
+		
+		// Store current buttons for next frame comparison
+		g_iLastButtons[client] = buttons;
+	}
+	
 	return Plugin_Continue;
 }
 

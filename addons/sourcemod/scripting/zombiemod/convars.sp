@@ -21,6 +21,7 @@ enum
 	// ConVar_Zombie_Spawn_Protect_Time,  // REMOVED v0.7.154 - Spawn protection removed entirely
 	// ConVar_Show_Zombie_Info,  // REMOVED - Zombie info now always shown (ESP skill controls class visibility) - Removed v0.7.152
 	ConVar_Class_Chance,
+	ConVar_Gas_Cooldown,
 	ConVar_Pickup_Timeout,
 	ConVar_Ghost_Alpha_Max,
 	ConVar_Teleport_Chance,
@@ -51,6 +52,7 @@ void InitConVars()
 	
 	// Zombie Classes
 	AddConVar(ConVar_Class_Chance, CreateConVar("dod_zombiemod_class_chance", "50", "Percentage chance zombie gets special class (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
+	AddConVar(ConVar_Gas_Cooldown, CreateConVar("dod_zombiemod_gas_cooldown", "15.0", "Seconds between Gas Zombie ability uses (right-click to spawn gas cloud)", FCVAR_PLUGIN, true, 5.0, true, 60.0));
 	
 	// Pickups
 	AddConVar(ConVar_Pickup_Timeout, CreateConVar("dod_zombiemod_pickup_timeout", "30.0", "Seconds before pickup auto-destroys if not picked up", FCVAR_PLUGIN, true, 5.0, true, 120.0));

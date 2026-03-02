@@ -83,3 +83,6 @@ enum HumanSkill
 // Human skill tracking (needed by multiple files)
 int g_iHumanSkill[MAXPLAYERS+1];
 Menu g_HumanSkillMenu = null;
+
+// Button tracking for gas ability (OnPlayerRunCmd)
+int g_iLastButtons[MAXPLAYERS+1];
