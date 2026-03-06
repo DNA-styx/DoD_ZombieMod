@@ -72,6 +72,18 @@ void Pickups_OnMapStart()
 	// Precache model
 	PrecacheModel(PICKUP_MODEL, true);
 	
+	// Add model files to downloads table (so clients download them)
+	AddFileToDownloadsTable("models/props_misc/ration_box02.mdl");
+	AddFileToDownloadsTable("models/props_misc/ration_box02.dx80.vtx");
+	AddFileToDownloadsTable("models/props_misc/ration_box02.dx90.vtx");
+	AddFileToDownloadsTable("models/props_misc/ration_box02.sw.vtx");
+	AddFileToDownloadsTable("models/props_misc/ration_box02.vvd");
+	AddFileToDownloadsTable("models/props_misc/ration_box02.phy");
+	
+	// Add material files to downloads table
+	AddFileToDownloadsTable("materials/models/props_misc/ration_box02.vmt");
+	AddFileToDownloadsTable("materials/models/props_misc/ration_box02.vtf");
+	
 	// Precache sprite
 	PrecacheModel(PICKUP_SPRITE, true);
 	
