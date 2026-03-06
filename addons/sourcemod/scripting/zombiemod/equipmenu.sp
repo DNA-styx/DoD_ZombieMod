@@ -202,7 +202,7 @@ public int Handler_Main(Menu menu, MenuAction action, int client, int param)
 					
 					case Menu_Main_SelectSkill:
 					{
-						g_HumanSkillMenu.Display(client, MENU_TIME_FOREVER);
+						ShowSkillMenu(client);
 					}
 					
 					case Menu_Main_EquipClass:

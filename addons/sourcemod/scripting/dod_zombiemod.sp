@@ -48,6 +48,7 @@
 #include "zombiemod/gamerules.sp"
 #include "zombiemod/equipmenu.sp"
 #include "zombiemod/human_skill.sp"
+#include "zombiemod/modular_skills.sp"
 #include "zombiemod/killrewards.sp"
 #include "zombiemod/player.sp"
 #include "zombiemod/commands.sp"
@@ -73,6 +74,7 @@ public void OnPluginStart()
 	InitConVars();
 	InitEquipMenu();
 	HumanSkills_Init();
+	ModularSkills_Init();
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
@@ -95,6 +97,16 @@ public void OnMapEnd()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	MarkNativeAsOptional("Steam_SetGameDescription");
+	
+	// Register natives for modular skill system
+	CreateNative("ZM_RegisterHumanSkill", Native_RegisterHumanSkill);
+	CreateNative("ZM_GetClientSkill", Native_GetClientSkill);
+	CreateNative("ZM_IsClientHuman", Native_IsClientHuman);
+	CreateNative("ZM_IsClientZombie", Native_IsClientZombie);
+	CreateNative("ZM_IsModActive", Native_IsModActive);
+	
+	// Register library for skill plugins to check
+	RegPluginLibrary("dod_zm_core");
 	
 	return APLRes_Success;
 }

@@ -123,5 +123,7 @@ HumanSkill HumanSkills_GetSkill(int client)
 
 bool HumanSkills_HasESP(int client)
 {
-	return g_iHumanSkill[client] == view_as<int>(HumanSkill_ESP);
+	// Delegate to modular skills system
+	// ESP is now skill ID 1 in the modular system
+	return ModularSkills_HasESP(client);
 }

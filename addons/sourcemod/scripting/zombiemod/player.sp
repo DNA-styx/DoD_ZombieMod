@@ -47,6 +47,7 @@ public void OnClientPutInServer(int client)
 	
 	// Initialize human skills
 	HumanSkills_OnClientConnect(client);
+	ModularSkills_OnClientConnect(client);
 	
 	// Initialize button tracking for gas ability
 	g_iLastButtons[client] = 0;
@@ -92,6 +93,7 @@ public void OnClientDisconnect_Post(int client)
 	
 	// Clean up human skills
 	HumanSkills_OnClientDisconnect(client);
+	ModularSkills_OnClientDisconnect(client);
 	
 	if (g_bModActive)
 	{
@@ -229,6 +231,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 						// Give Colt ammo (use ConVar limit)
 						SetWeaponAmmo(client, Ammo_Colt, g_ConVarInts[ConVar_Human_Pistol_MaxAmmo]);
 					}
+						
+						// Notify modular skills system
+						ModularSkills_OnClientSpawn(client, Team_Allies);
 				}
 				case Team_Axis:
 				{
@@ -254,6 +259,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					{
 						HUD_ShowZombieSpawnInfo(clientUserId);
 					}
+						
+						// Notify modular skills system
+						ModularSkills_OnClientSpawn(client, Team_Axis);
 				}
 			}
 		}
@@ -327,6 +335,9 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 				g_ClientInfo_Int[attacker][ClientInfo_KillsAsHuman]++;
 			}
 		}
+			
+			// Notify modular skills system
+			ModularSkills_OnClientDeath(client);
 	}
 	return Plugin_Continue;
 }
@@ -612,17 +623,24 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
+	// Store previous button state before updating
+	int lastButtons = g_iLastButtons[client];
+	g_iLastButtons[client] = buttons;
+	
 	// Gas Zombie ability - Right-click (detect PRESS, not HOLD)
-	if (g_bModActive && GetClientTeam(client) == Team_Axis)
+	if (!g_bModActive)
+		return Plugin_Continue;
+	
+	if (!IsClientInGame(client) || !IsPlayerAlive(client))
+		return Plugin_Continue;
+	
+	if (GetClientTeam(client) == Team_Axis)
 	{
 		// Check if button was just pressed (not held from previous frame)
-		if ((buttons & IN_ATTACK2) && !(g_iLastButtons[client] & IN_ATTACK2))
+		if ((buttons & IN_ATTACK2) && !(lastButtons & IN_ATTACK2))
 		{
 			ZombieClasses_TryUseGasAbility(client);
 		}
-		
-		// Store current buttons for next frame comparison
-		g_iLastButtons[client] = buttons;
 	}
 	
 	return Plugin_Continue;

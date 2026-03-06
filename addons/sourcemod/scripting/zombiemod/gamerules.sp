@@ -151,6 +151,9 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			AcceptEntityInput(entity, "Kill");
 		}
 	}
+		
+		// Notify modular skills system
+		ModularSkills_OnRoundStart();
 }
 
 public Action Timer_CreateRoundTimer(Handle timer)

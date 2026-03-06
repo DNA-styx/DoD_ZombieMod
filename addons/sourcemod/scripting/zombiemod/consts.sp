@@ -30,7 +30,7 @@
  */
 
 #define PLUGIN_NAME "DoD:S Zombie Mod"
-#define PLUGIN_VERSION "0.7.156 BETA"
+#define PLUGIN_VERSION "0.8.1 BETA"
 #define SCOREBOARD_MAX_ELEMENTS 5
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS 33
@@ -160,3 +160,17 @@ enum
 	ExtraAmmoRiflegren_US = 3,  // is equal to 4 in inventory...
 	ExtraAmmoRiflegren_GER = 3
 }; 
+// ============================================================================
+// MODULAR SKILL SYSTEM CONSTANTS
+// ============================================================================
+
+// Match the API definitions from dod_zm.inc
+#define ZM_MAX_SKILL_NAME 64
+#define ZM_MAX_SKILL_DESC 128
+
+// Skill ID enum (matching dod_zm.inc)
+enum ZMSkillID
+{
+	ZM_SKILL_INVALID = -1,
+	ZM_SKILL_NONE = 0,
+};
