@@ -5,6 +5,9 @@
  * Handles all HUD display messages:
  * - "View as Human" (humans aiming at zombies - shows zombie info)
  * - Human name display (zombies aiming at humans)
+ * 
+ * Enemy name display technique based on sm-enemy-names by Dron-elektron
+ * https://github.com/dronelektron/sm-enemy-names/
  * =============================================================================
  */
 
