@@ -3,6 +3,9 @@
  * Zombie Mod for Day of Defeat Source - Zombie Classes Module
  * 
  * Handles special zombie classes with unique abilities
+ * 
+ * Zombie teleport feature based on sm-player-teleport by Dron-elektron
+ * https://github.com/dronelektron/sm-player-teleport
  * =============================================================================
  */
 
