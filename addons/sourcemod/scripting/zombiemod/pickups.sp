@@ -3,6 +3,9 @@
  * Zombie Mod for Day of Defeat Source - Pickups Module
  * 
  * Spawns random pickups on the map that give humans temporary boosts
+ * 
+ * Entity spawning code based on DoD_Dropmanager by zadroot
+ * https://github.com/zadroot/DoD_Dropmanager/
  * =============================================================================
  */
 
@@ -368,8 +371,8 @@ public Action Timer_CreatePickupDelayed(Handle timer, DataPack pack)
 void CreatePickup(float position[3], PickupType type)
 {
 	
-	// Create visual prop (prop_dynamic)
-	int pickup = CreateEntityByName("prop_dynamic");
+	// Create visual prop (prop_physics_override like original DoD_Dropmanager)
+	int pickup = CreateEntityByName("prop_physics_override");
 	
 	if (pickup == -1)
 	{
@@ -387,14 +390,21 @@ void CreatePickup(float position[3], PickupType type)
 	// Set color based on type
 	SetPickupColor(pickup, type);
 	
-	// Teleport to position BEFORE spawning
-	TeleportEntity(pickup, position, NULL_VECTOR, NULL_VECTOR);
-	
 	// Spawn it
 	DispatchSpawn(pickup);
 	
 	// Activate the entity
 	ActivateEntity(pickup);
+	
+	// Set collision properties (from original DoD_Dropmanager - critical!)
+	SetEntProp(pickup, Prop_Send, "m_usSolidFlags", 152);
+	SetEntProp(pickup, Prop_Send, "m_CollisionGroup", 11);
+	
+	// NOW teleport to correct position (after spawn and collision setup)
+	TeleportEntity(pickup, position, NULL_VECTOR, NULL_VECTOR);
+	
+	// Disable physics motion so it stays in place (not thrown like original dropmanager items)
+	SetEntityMoveType(pickup, MOVETYPE_NONE);
 	
 	// Create glowing sprite for visibility
 	int sprite = CreateEntityByName("env_sprite");
