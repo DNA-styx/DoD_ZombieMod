@@ -227,22 +227,41 @@ void ModularSkills_OnRoundEnd()
 
 public int Native_RegisterHumanSkill(Handle plugin, int numParams)
 {
-	// Check if we have space
+	// Get skill name and description
+	char name[ZM_MAX_SKILL_NAME];
+	GetNativeString(1, name, sizeof(name));
+	
+	char description[ZM_MAX_SKILL_DESC];
+	GetNativeString(2, description, sizeof(description));
+	
+	// Check if this plugin already registered a skill (handle plugin reload)
+	for (int i = 0; i < g_SkillCount; i++)
+	{
+		if (g_RegisteredSkills[i].plugin == plugin)
+		{
+			// Plugin is re-registering (probably reloaded)
+			// Update the skill info and return existing ID
+			strcopy(g_RegisteredSkills[i].name, ZM_MAX_SKILL_NAME, name);
+			strcopy(g_RegisteredSkills[i].description, ZM_MAX_SKILL_DESC, description);
+			
+			int existingID = i + 1;  // Skills start at ID 1
+			
+			// Rebuild menu with updated info
+			RebuildSkillMenu();
+			
+			PrintToServer("[Zombie Mod] Updated skill '%s' (ID %d) - plugin reloaded", name, existingID);
+			return existingID;
+		}
+	}
+	
+	// Check if we have space for new skill
 	if (g_SkillCount >= MAX_SKILLS)
 	{
 		ThrowNativeError(SP_ERROR_NATIVE, "Maximum skills (%d) reached", MAX_SKILLS);
 		return view_as<int>(ZM_SKILL_INVALID);
 	}
 	
-	// Get skill name
-	char name[ZM_MAX_SKILL_NAME];
-	GetNativeString(1, name, sizeof(name));
-	
-	// Get skill description
-	char description[ZM_MAX_SKILL_DESC];
-	GetNativeString(2, description, sizeof(description));
-	
-	// Register the skill
+	// Register new skill
 	strcopy(g_RegisteredSkills[g_SkillCount].name, ZM_MAX_SKILL_NAME, name);
 	strcopy(g_RegisteredSkills[g_SkillCount].description, ZM_MAX_SKILL_DESC, description);
 	g_RegisteredSkills[g_SkillCount].plugin = plugin;
@@ -253,7 +272,7 @@ public int Native_RegisterHumanSkill(Handle plugin, int numParams)
 	// Rebuild menu with new skill
 	RebuildSkillMenu();
 	
-	PrintToServer("[Zombie Mod] Registered skill '%s' with ID %d", name, skillID);
+	PrintToServer("[Zombie Mod] Registered new skill '%s' with ID %d", name, skillID);
 	
 	return skillID;
 }
