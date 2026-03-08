@@ -1,6 +1,6 @@
 Based on https://forums.alliedmods.net/showthread.php?t=219990    
 
-Refreshed by https://claude.ai/ closely guided by DNA.styx. Any mistakes or sub-optimal solutions are my responsibility. Happy to receive feedback and guidance from those more knowledgable.    
+Refreshed by https://claude.ai/ closely guided by DNA.styx.        
 
 Additional plugins available here: https://github.com/DNA-styx/DoD_ZombieMod_Plugins     
 
