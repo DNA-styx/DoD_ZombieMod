@@ -87,10 +87,12 @@ public int MenuHandler_HumanSkill(Menu menu, MenuAction action, int client, int 
 			case 0:  // No Skill
 			{
 				g_iHumanSkill[client] = view_as<int>(HumanSkill_None);
+				ZM_PrintToChat(client, "%t", "No Skill Selected");
 			}
 			case 1:  // ESP
 			{
 				g_iHumanSkill[client] = view_as<int>(HumanSkill_ESP);
+				ZM_PrintToChat(client, "%t", "ESP Skill Selected");
 			}
 		}
 		
@@ -126,4 +128,143 @@ bool HumanSkills_HasESP(int client)
 	// Delegate to modular skills system
 	// ESP is now skill ID 1 in the modular system
 	return ModularSkills_HasESP(client);
+}
+
+// ============================================================================
+// SKILL ASSIGNMENT HANDLER
+// ============================================================================
+
+// Handle skill assignment for built-in skills (ESP, No Skill)
+// This is called by modular_skills.sp via the ZM_OnSkillAssigned forward
+public void ZM_OnSkillAssigned(int client, int skillID)
+{
+	// Only handle built-in skills (0 = No Skill, 1 = ESP)
+	// External skill plugins handle their own messages
+	if (skillID == 0)
+	{
+		// No Skill selected
+		g_iHumanSkill[client] = view_as<int>(HumanSkill_None);
+		PrintCenterText(client, "%t", "No Skill Selected");
+		
+		// Refresh centerprint to keep it visible (~5 seconds total)
+		CreateTimer(1.0, Timer_RepeatNoSkillMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(2.0, Timer_RepeatNoSkillMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Timer_RepeatNoSkillMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(4.0, Timer_RepeatNoSkillMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else if (skillID == 1)
+	{
+		// ESP selected
+		g_iHumanSkill[client] = view_as<int>(HumanSkill_ESP);
+		PrintCenterText(client, "%t", "ESP Skill Selected");
+		
+		// Refresh centerprint to keep it visible (~5 seconds total)
+		CreateTimer(1.0, Timer_RepeatESPMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(2.0, Timer_RepeatESPMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Timer_RepeatESPMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(4.0, Timer_RepeatESPMessage, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+// ============================================================================
+// ESP ZOMBIE IDENTIFICATION
+// ============================================================================
+
+void HumanSkills_OnPlayerRunCmd(int client, int buttons, int lastButtons)
+{
+	// Human ESP ability - Right-click with knife to identify zombie
+	if (!ModularSkills_HasESP(client))
+		return;
+	
+	// Check if right-click pressed (not held)
+	if (!(buttons & IN_ATTACK2) || (lastButtons & IN_ATTACK2))
+		return;
+	
+	// Check if knife equipped
+	int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if (activeWeapon == -1)
+		return;
+	
+	char weaponName[32];
+	GetEntityClassname(activeWeapon, weaponName, sizeof(weaponName));
+	
+	if (!StrEqual(weaponName, "weapon_amerknife"))
+		return;
+	
+	// Get aim target
+	int target = GetClientAimTarget(client, false);
+	
+	if (target <= 0 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target))
+		return;
+	
+	// Check if target is zombie
+	if (GetClientTeam(target) != Team_Axis)
+		return;
+	
+	// NOW check cooldown (only if aiming at valid zombie target)
+	float currentTime = GetGameTime();
+	if (currentTime < g_fESPIdentifyCooldown[client])
+	{
+		float remaining = g_fESPIdentifyCooldown[client] - currentTime;
+		int roundedSeconds = RoundToCeil(remaining);  // Round up to nearest second
+		if (roundedSeconds < 1)
+			roundedSeconds = 1;  // Minimum 1 second display
+		ZM_PrintToChat(client, "%t", "ESP Identify Cooldown", roundedSeconds);
+		return;
+	}
+	
+	// Get zombie class
+	ZombieClass zombieClass = ZombieClasses_GetClass(target);
+	char className[32];
+	char targetName[MAX_NAME_LENGTH];
+	char reporterName[MAX_NAME_LENGTH];
+	
+	// Get class name
+	switch (zombieClass)
+	{
+		case ZombieClass_Normal: strcopy(className, sizeof(className), "Normal Zombie");
+		case ZombieClass_Gas: strcopy(className, sizeof(className), "Gas Zombie");
+		case ZombieClass_TNT: strcopy(className, sizeof(className), "TNT Zombie");
+		case ZombieClass_Ghost: strcopy(className, sizeof(className), "Ghost Zombie");
+	}
+	
+	// Get names
+	GetClientName(target, targetName, sizeof(targetName));
+	GetClientName(client, reporterName, sizeof(reporterName));
+	
+	// Broadcast to all players (simple version - color formatting to be revisited later)
+	PrintToChatAll("[ZM] %s reports: %s is %s", reporterName, targetName, className);
+	
+	// Set cooldown
+	g_fESPIdentifyCooldown[client] = currentTime + ESP_IDENTIFY_COOLDOWN;
+}
+
+// ============================================================================
+// TIMER CALLBACKS - Repeated centerprint to keep messages visible
+// ============================================================================
+
+public Action Timer_RepeatESPMessage(Handle timer, int userId)
+{
+	int client = GetClientOfUserId(userId);
+	
+	if (client == 0 || !IsClientInGame(client))
+		return Plugin_Stop;
+	
+	// Refresh centerprint to keep it visible
+	PrintCenterText(client, "%t", "ESP Skill Selected");
+	
+	return Plugin_Stop;
+}
+
+public Action Timer_RepeatNoSkillMessage(Handle timer, int userId)
+{
+	int client = GetClientOfUserId(userId);
+	
+	if (client == 0 || !IsClientInGame(client))
+		return Plugin_Stop;
+	
+	// Refresh centerprint to keep it visible
+	PrintCenterText(client, "%t", "No Skill Selected");
+	
+	return Plugin_Stop;
 }

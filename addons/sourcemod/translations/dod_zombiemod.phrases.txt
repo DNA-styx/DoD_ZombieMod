@@ -32,6 +32,22 @@
 		"en"		"You are now a {1}!"
 	}
 	
+	"ESP Skill Selected"
+	{
+		"en"		"ESP Skill Selected! Right-click with knife to identify zombies"
+	}
+	
+	"ESP Identify Cooldown"
+	{
+		"#format"	"{1:i}"
+		"en"		"ESP identification on cooldown: {1} seconds"
+	}
+	
+	"No Skill Selected"
+	{
+		"en"		"No Skill Selected"
+	}
+	
 	"Zombie Self Info"
 	{
 		"#format"	"{1:d}"

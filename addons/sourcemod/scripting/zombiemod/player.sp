@@ -153,6 +153,9 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 		// Track spawn time for no-clip period
 		g_flPlayerSpawnTime[client] = GetGameTime();
 		
+		// Reset ESP identification cooldown
+		g_fESPIdentifyCooldown[client] = 0.0;
+		
 		g_ClientInfo_Float[client][ClientInfo_Health] = MAX_HEALTH;
 		g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = true;
 		
@@ -627,14 +630,21 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	int lastButtons = g_iLastButtons[client];
 	g_iLastButtons[client] = buttons;
 	
-	// Gas Zombie ability - Right-click (detect PRESS, not HOLD)
 	if (!g_bModActive)
 		return Plugin_Continue;
 	
 	if (!IsClientInGame(client) || !IsPlayerAlive(client))
 		return Plugin_Continue;
 	
-	if (GetClientTeam(client) == Team_Axis)
+	int team = GetClientTeam(client);
+	
+	// Human ESP ability - delegated to human_skill.sp
+	if (team == Team_Allies)
+	{
+		HumanSkills_OnPlayerRunCmd(client, buttons, lastButtons);
+	}
+	// Gas Zombie ability - Right-click (detect PRESS, not HOLD)
+	else if (team == Team_Axis)
 	{
 		// Check if button was just pressed (not held from previous frame)
 		if ((buttons & IN_ATTACK2) && !(lastButtons & IN_ATTACK2))

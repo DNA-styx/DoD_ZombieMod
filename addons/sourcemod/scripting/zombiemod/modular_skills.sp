@@ -147,17 +147,7 @@ public int Menu_SkillSelect_Handler(Menu menu, MenuAction action, int param1, in
 			Call_PushCell(skillID);
 			Call_Finish();
 			
-			// Show confirmation
-			if (skillID == 0)
-			{
-				PrintToChat(client, "[Zombie Mod] No skill selected");
-			}
-			else
-			{
-				PrintToChat(client, "[Zombie Mod] Skill selected: %s", g_RegisteredSkills[skillID - 1].name);
-			}
-			
-			// Return to equip menu
+			// Return to equip menu immediately (centerprint handled by repeated timers in forward handlers)
 			DisplayMenu(g_EquipMenu[Menu_Main], client, MENU_TIME_FOREVER);
 		}
 		case MenuAction_Cancel:

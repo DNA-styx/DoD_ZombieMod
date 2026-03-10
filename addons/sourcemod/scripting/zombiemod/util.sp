@@ -30,40 +30,33 @@
  */
 
 // ============================================================================
-// DEPRECATED WRAPPER FUNCTIONS (v0.7.52)
-// ============================================================================
-// These wrapper functions have been removed in favor of direct PrintToChat
-// calls with translation support. Kept here commented for reference.
-//
-// void ZM_PrintToChat(int client, const char[] format, any ...)
-// {
-//     char buffer[192];
-//     VFormat(buffer, sizeof(buffer), format, 3);
-//     
-//     PrintToChat(client, ZM_PRINT_FORMAT, buffer);
-// }
-// 
-// void ZM_PrintToChatAll(const char[] format, any ...)
-// {
-//     char buffer[192];
-//     VFormat(buffer, sizeof(buffer), format, 2);
-//     
-//     for (int i = 1; i <= MaxClients; i++)
-//     {
-//         if (IsClientInGame(i))
-//         {
-//             PrintToChat(i, ZM_PRINT_FORMAT, buffer);
-//         }
-//     }
-// }
+// MESSAGE HELPER FUNCTIONS
 // ============================================================================
 
+// Message prefix for personal messages (olive/yellow)
+#define ZM_PREFIX_PERSONAL "\x04[ZM]\x01"
+
+// Message prefix for broadcast messages (green)
+#define ZM_PREFIX_BROADCAST "\x03[ZM]\x01"
+
+// Send personal message to one client with standard prefix
+void ZM_PrintToChat(int client, const char[] format, any ...)
+{
+	char buffer[256];
+	VFormat(buffer, sizeof(buffer), format, 3);
+	PrintToChat(client, "%s %s", ZM_PREFIX_PERSONAL, buffer);
+}
+
+// Broadcast message to all clients with standard prefix
+void ZM_PrintToChatAll(const char[] format, any ...)
+{
+	char buffer[256];
+	VFormat(buffer, sizeof(buffer), format, 2);
+	PrintToChatAll("%s %s", ZM_PREFIX_BROADCAST, buffer);
+}
+
 // ============================================================================
-// PHASE 2: SPAWN PROTECTION - Changed from distance to time-based
-// ============================================================================
-// OLD: Zombies protected within 400 units of spawn (problematic on small maps)
-// NEW: Zombies protected for configurable seconds after spawning (default 10s)
-// ConVar: dod_zombiemod_zombie_spawn_protect_time
+// UTILITY FUNCTIONS
 // ============================================================================
 
 void ScreenOverlay(int client, const char[] material)

@@ -86,3 +86,7 @@ Menu g_HumanSkillMenu = null;
 
 // Button tracking for gas ability (OnPlayerRunCmd)
 int g_iLastButtons[MAXPLAYERS+1];
+
+// ESP zombie identification cooldown (OnPlayerRunCmd)
+float g_fESPIdentifyCooldown[MAXPLAYERS+1];
+#define ESP_IDENTIFY_COOLDOWN 5.0  // Seconds between identifications
