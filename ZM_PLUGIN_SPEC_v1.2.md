@@ -1,14 +1,18 @@
-# DoD:S Zombie Mod - Plugin Development Specification v1.1
+# DoD:S Zombie Mod - Plugin Development Specification v1.2
 
 ## Overview
 
 Complete guide for creating custom human skill plugins for the DoD:S Zombie Mod. This modular plugin system allows developers to create custom skills without modifying the main plugin.
 
-**Version 1.1 Features:**
-- Standardized message prefix system
-- Helper functions for chat messages  
-- Visual distinction between personal and broadcast messages
+**Version 1.2 Changes (v1.0.0+):**
+- Removed message helper functions from public API (use native PrintToChat with color codes)
+- Simplified API to core functionality only
+- Full color code reference and examples provided
+
+**Previous Features:**
 - Duplicate registration protection (v0.8.8+)
+- Modular skill system with dynamic menu
+- Forward-based communication
 
 ---
 
@@ -98,76 +102,57 @@ Done! Your skill appears in the equipment menu.
 
 ---
 
-## Message System (v1.1)
+## Chat Messages
 
-### Standardized Prefixes
+### Standard Message Format
 
-All skill plugins should use standard `[ZM]` prefix with color-coding:
+Skill plugins should use native SourceMod `PrintToChat()` functions with the standard `[ZM]` prefix for consistency.
 
 **Personal Messages (to one player):**
 ```sourcepawn
-ZM_PrintToChat(client, "Ability activated!");
+PrintToChat(client, "\x04[ZM]\x01 Ability activated!");
 // Shows: [ZM] Ability activated! 
 // Prefix color: Olive/Yellow (indicates targeted message)
 ```
 
 **Broadcast Messages (to all players):**
 ```sourcepawn
-ZM_PrintToChatAll("Round starting!");
+PrintToChatAll("\x03[ZM]\x01 Round starting!");
 // Shows: [ZM] Round starting!
 // Prefix color: Green (indicates server-wide message)
 ```
 
-### Why Two Colors?
-- **Olive prefix** = "This message is just for you"
-- **Green prefix** = "Everyone sees this message"
+### Color Codes
+
+SourceMod chat uses color code escape sequences:
+
+| Code | Color | Usage |
+|------|-------|-------|
+| `\x01` | White/Default | Normal text |
+| `\x03` | Green | Highlights, team color |
+| `\x04` | Olive/Yellow | Personal messages, warnings |
+
+**Examples:**
+```sourcepawn
+// Simple message
+PrintToChat(client, "\x04[ZM]\x01 Skill activated!");
+
+// With formatting
+PrintToChat(client, "\x04[ZM]\x01 Cooldown: \x03%d\x01 seconds", time);
+
+// Player names
+PrintToChatAll("\x03[ZM]\x01 Player \x03%N\x01 selected a skill!", client);
+```
+
+### Why Two Prefix Colors?
+- **Olive `\x04` prefix** = "This message is just for you"
+- **Green `\x03` prefix** = "Everyone sees this message"
 
 This helps players instantly understand message context.
 
 ---
 
 ## Complete API Reference
-
-### Message Helper Functions (Stock)
-
-#### `ZM_PrintToChat`
-```sourcepawn
-stock void ZM_PrintToChat(int client, const char[] format, any ...)
-```
-**Purpose:** Send personal message to one client with standard prefix  
-**Color:** Olive/yellow prefix `[ZM]` (targeted message)  
-**Parameters:**
-- `client` - Client to send message to
-- `format` - Message format string (printf-style)
-- `...` - Format arguments
-
-**Example:**
-```sourcepawn
-ZM_PrintToChat(client, "Ability activated!");
-ZM_PrintToChat(client, "Cooldown: %d seconds", cooldown);
-```
-
----
-
-#### `ZM_PrintToChatAll`
-```sourcepawn
-stock void ZM_PrintToChatAll(const char[] format, any ...)
-```
-**Purpose:** Broadcast message to all clients with standard prefix  
-**Color:** Green prefix `[ZM]` (server-wide message)  
-**Parameters:**
-- `format` - Message format string (printf-style)
-- `...` - Format arguments
-
-**Example:**
-```sourcepawn
-ZM_PrintToChatAll("Round starting in %d seconds!", time);
-ZM_PrintToChatAll("Player %N selected Engineer skill!", client);
-```
-
----
-
-### Natives (Functions You Call)
 
 #### `ZM_RegisterHumanSkill`
 ```sourcepawn
@@ -273,7 +258,7 @@ public void ZM_OnSkillAssigned(int client, ZMSkillID skillID)
 {
     if (skillID == g_SkillID)
     {
-        ZM_PrintToChat(client, "Medic skill selected!");
+        PrintToChat(client, "\x04[ZM]\x01 Medic skill selected!");
     }
 }
 ```
@@ -398,7 +383,7 @@ void ActivateAbility(int client)
     if (currentTime < g_NextUseTime[client])
     {
         float remaining = g_NextUseTime[client] - currentTime;
-        ZM_PrintToChat(client, "Ability on cooldown: %.1f seconds", remaining);
+        PrintToChat(client, "\x04[ZM]\x01 Ability on cooldown: \x03%.1f\x01 seconds", remaining);
         return;
     }
     
@@ -407,7 +392,7 @@ void ActivateAbility(int client)
     
     // Set cooldown
     g_NextUseTime[client] = currentTime + 15.0;  // 15 seconds
-    ZM_PrintToChat(client, "Ability activated!");
+    PrintToChat(client, "\x04[ZM]\x01 Ability activated!");
 }
 
 // Reset on spawn
@@ -436,7 +421,7 @@ void ApplyBuff(int client)
     g_BuffTimer[client] = CreateTimer(10.0, Timer_RemoveBuff, 
         GetClientUserId(client));
     
-    ZM_PrintToChat(client, "Low gravity activated for 10 seconds!");
+    PrintToChat(client, "\x04[ZM]\x01 Low gravity activated for \x0310\x01 seconds!");
 }
 
 public Action Timer_RemoveBuff(Handle timer, int userId)
@@ -448,7 +433,7 @@ public Action Timer_RemoveBuff(Handle timer, int userId)
         SetEntityGravity(client, 1.0);
         g_BuffTimer[client] = null;
         
-        ZM_PrintToChat(client, "Buff expired!");
+        PrintToChat(client, "\x04[ZM]\x01 Buff expired!");
     }
     return Plugin_Stop;
 }
@@ -478,8 +463,8 @@ public void ZM_OnSkillAssigned(int client, ZMSkillID skillID)
         int health = GetClientHealth(client);
         SetEntityHealth(client, health + 50);
         
-        ZM_PrintToChat(client, "+50 HP bonus!");
-        ZM_PrintToChatAll("Player %N selected Tank skill!", client);
+        PrintToChat(client, "\x04[ZM]\x01 \x03+50 HP\x01 bonus!");
+        PrintToChatAll("\x03[ZM]\x01 Player \x03%N\x01 selected Tank skill!", client);
     }
 }
 ```
@@ -496,7 +481,7 @@ void UseCharge(int client)
 {
     if (g_Charges[client] >= MAX_CHARGES)
     {
-        ZM_PrintToChat(client, "No charges left (%d/%d)", 
+        PrintToChat(client, "\x04[ZM]\x01 No charges left (\x03%d/%d\x01)", 
             g_Charges[client], MAX_CHARGES);
         return;
     }
@@ -504,7 +489,7 @@ void UseCharge(int client)
     g_Charges[client]++;
     
     // Do ability
-    ZM_PrintToChat(client, "Charge used (%d/%d)", 
+    PrintToChat(client, "\x04[ZM]\x01 Charge used (\x03%d/%d\x01)", 
         g_Charges[client], MAX_CHARGES);
 }
 
@@ -615,7 +600,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, /*...*/)
 5. **Handle OnLibraryRemoved:** Clean up and reset `g_SkillID`
 6. **Check skill active:** Always use `ZM_GetClientSkill(client) == g_SkillID`
 7. **Check team:** Use `ZM_IsClientHuman(client)` for human-only abilities
-8. **Use standard messages:** Use `ZM_PrintToChat()` or `ZM_PrintToChatAll()` for feedback
+8. **Use standard prefix:** Use `\x04[ZM]\x01` for personal or `\x03[ZM]\x01` for broadcast messages
 
 ### Common Mistakes:
 
@@ -671,9 +656,9 @@ Before releasing your skill plugin:
 - [ ] Resets on round start
 - [ ] Timers cleaned up on disconnect
 - [ ] No console errors
-- [ ] Uses standard message prefixes (ZM_PrintToChat/ZM_PrintToChatAll)
-- [ ] Personal messages use olive prefix
-- [ ] Broadcast messages use green prefix
+- [ ] Uses standard `[ZM]` prefix with appropriate colors
+- [ ] Personal messages use olive `\x04[ZM]` prefix
+- [ ] Broadcast messages use green `\x03[ZM]` prefix
 - [ ] Good player feedback (clear messages, sounds)
 - [ ] Works with other skills (no conflicts)
 - [ ] Handles main plugin reload gracefully
@@ -738,8 +723,8 @@ A: Share the .sp file! Others can compile it themselves. Consider posting on Git
 3. Track button state to prevent spam
 4. Clean up timers in disconnect/death handlers
 5. Use `ZM_IsClientHuman()` for human-only abilities
-6. Use `ZM_PrintToChat()` for personal messages (olive prefix)
-7. Use `ZM_PrintToChatAll()` for broadcasts (green prefix)
+6. Use `\x04[ZM]\x01` prefix for personal messages (olive color)
+7. Use `\x03[ZM]\x01` prefix for broadcast messages (green color)
 8. Test with main plugin reload scenarios
 9. Document your skill's usage
 10. Balance carefully (cooldowns, costs, effects)
@@ -801,7 +786,8 @@ public void OnLibraryRemoved(const char[] name)
 }
 
 // Add your skill logic here
-// Remember to use ZM_PrintToChat() and ZM_PrintToChatAll()!
+// Use PrintToChat(client, "\x04[ZM]\x01 Message") for personal messages
+// Use PrintToChatAll("\x03[ZM]\x01 Message") for broadcasts
 ```
 
 ---
