@@ -27,7 +27,12 @@ The foundation of this zombie mod, including the core gameplay mechanics, team m
 - **Source:** https://github.com/dronelektron/sm-enemy-names/
 - **Used for:** Enemy name display technique
 
-### **Continued Development (v0.7.16+)**
+### **Zombie Teleport Feature**
+- **Based on:** sm-player-teleport by Dron-elektron
+- **Source:** https://github.com/dronelektron/sm-player-teleport
+- **Used for:** Teleporter spawn point system for zombie classes
+
+### **Continued Development (v0.7.147+)**
 - **Author:** DNA.styx with Claude AI (Anthropic)
 - **Includes:** Modular skill system, zombie class improvements, translation system, ESP skill, and various enhancements
 
