@@ -59,7 +59,7 @@ Menu g_ZombieClassMenu = null;
 // INITIALIZATION
 // ============================================================================
 
-void ZombieClasses_Init()
+void ZombieClasses_OnPluginStart()
 {
 	// Initialize arrays
 	for (int i = 0; i <= MAXPLAYERS; i++)

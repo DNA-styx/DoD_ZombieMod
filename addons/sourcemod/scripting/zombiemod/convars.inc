@@ -31,7 +31,7 @@ enum
 
 // Properly typed storage for ConVars
 
-void InitConVars()
+void ConVars_OnPluginStart()
 {
 	CreateConVar("sm_zombiemod_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	

@@ -64,7 +64,7 @@ int g_iOffset_LaggedMovementValue;
 int g_iOffset_bPlayerDominatingMe;
 int g_iOffset_bPlayerDominated;
 
-void InitOffsets()
+void Offsets_OnPluginStart()
 {
 	if ((g_iOffset_Ammo = FindSendPropInfo("CBasePlayer", "m_iAmmo")) == -1)
 	{

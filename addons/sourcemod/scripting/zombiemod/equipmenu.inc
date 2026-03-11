@@ -97,7 +97,7 @@ bool IsPlayerValid(int iClient)
 	return !g_bBlockChangeClass && IsClientInGame(iClient) && IsPlayerAlive(iClient) && GetClientTeam(iClient) == Team_Allies;
 }
 
-void InitEquipMenu()
+void EquipMenu_OnPluginStart()
 {
 	g_EquipMenu[Menu_Main] = CreateMenu(Handler_Main, MenuAction_DrawItem | MenuAction_Display);
 	

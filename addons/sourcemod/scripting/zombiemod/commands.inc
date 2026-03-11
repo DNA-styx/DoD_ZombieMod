@@ -29,7 +29,7 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-void InitCommands()
+void Commands_OnPluginStart()
 {
 	AddCommandListener(CommandListener_TimeLeft, "timeleft");
 	AddCommandListener(CommandListener_JoinTeam, "jointeam");

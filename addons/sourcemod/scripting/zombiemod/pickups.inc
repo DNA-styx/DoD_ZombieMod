@@ -59,7 +59,7 @@ float g_flOriginalSpeed[MAXPLAYERS+1];
 // INITIALIZATION
 // ============================================================================
 
-void Pickups_Init()
+void Pickups_OnPluginStart()
 {
 	// Initialize player arrays
 	for (int i = 0; i <= MAXPLAYERS; i++)

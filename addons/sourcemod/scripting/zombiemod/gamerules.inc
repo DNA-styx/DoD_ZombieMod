@@ -29,11 +29,20 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-InitGameRules()
+// ============================================================================
+// Initialization
+// ============================================================================
+
+void GameRules_OnPluginStart()
 {
 	HookEvent("dod_round_start", Event_RoundStart, EventHookMode_PostNoCopy);
 	HookEvent("dod_round_active", Event_RoundActive, EventHookMode_PostNoCopy);
 }
+
+
+// ============================================================================
+// Round Events
+// ============================================================================
 
 public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
@@ -156,6 +165,11 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		ModularSkills_OnRoundStart();
 }
 
+
+// ============================================================================
+// Win Condition Checks
+// ============================================================================
+
 public Action Timer_CreateRoundTimer(Handle timer)
 {
 	if ((g_iRoundTimer = CreateEntityByName("dod_round_timer")) != -1)
@@ -183,6 +197,12 @@ public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast
 		g_hRoundTimer = CreateTimer(1.0, Timer_RoundTimerThink, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
 }
+
+
+// ============================================================================
+// Timers
+// Round timer, end game, and restart timers.
+// ============================================================================
 
 bool CheckWinConditions()
 {

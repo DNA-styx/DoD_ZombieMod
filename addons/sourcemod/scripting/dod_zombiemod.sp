@@ -39,22 +39,23 @@
 /**
  * Don't change the order of these!
  */
-#include "zombiemod/consts.sp"
-#include "zombiemod/globals.sp"
-#include "zombiemod/util.sp"
-#include "zombiemod/offsets.sp"
-#include "zombiemod/convars.sp"
-#include "zombiemod/config.sp"
-#include "zombiemod/gamerules.sp"
-#include "zombiemod/equipmenu.sp"
-#include "zombiemod/human_skill.sp"
-#include "zombiemod/modular_skills.sp"
-#include "zombiemod/killrewards.sp"
-#include "zombiemod/player.sp"
-#include "zombiemod/commands.sp"
-#include "zombiemod/zombie_classes.sp"
-#include "zombiemod/hud_messages.sp"
-#include "zombiemod/pickups.sp"
+#include "zombiemod/consts.inc"
+#include "zombiemod/globals.inc"
+#include "zombiemod/util.inc"
+#include "zombiemod/offsets.inc"
+#include "zombiemod/convars.inc"
+#include "zombiemod/config.inc"
+#include "zombiemod/gamerules.inc"
+#include "zombiemod/equipmenu.inc"
+#include "zombiemod/human_skill.inc"
+#include "zombiemod/modular_skills.inc"
+#include "zombiemod/api.inc"
+#include "zombiemod/killrewards.inc"
+#include "zombiemod/player.inc"
+#include "zombiemod/commands.inc"
+#include "zombiemod/zombie_classes.inc"
+#include "zombiemod/hud_messages.inc"
+#include "zombiemod/pickups.inc"
 
 public Plugin myinfo = 
 {
@@ -70,16 +71,18 @@ public void OnPluginStart()
 {
 	LoadTranslations("dod_zombiemod.phrases");
 	
-	InitOffsets();
-	InitConVars();
-	InitEquipMenu();
-	HumanSkills_Init();
-	ModularSkills_Init();
-	InitPlayers();
-	InitCommands();
-	InitGameRules();
-	ZombieClasses_Init();
-	Pickups_Init();
+	API_CreateForwards();
+	
+	Offsets_OnPluginStart();
+	ConVars_OnPluginStart();
+	EquipMenu_OnPluginStart();
+	HumanSkills_OnPluginStart();
+	ModularSkills_OnPluginStart();
+	Players_OnPluginStart();
+	Commands_OnPluginStart();
+	GameRules_OnPluginStart();
+	ZombieClasses_OnPluginStart();
+	Pickups_OnPluginStart();
 	
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 	
@@ -98,15 +101,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	
-	// Register natives for modular skill system
-	CreateNative("ZM_RegisterHumanSkill", Native_RegisterHumanSkill);
-	CreateNative("ZM_GetClientSkill", Native_GetClientSkill);
-	CreateNative("ZM_IsClientHuman", Native_IsClientHuman);
-	CreateNative("ZM_IsClientZombie", Native_IsClientZombie);
-	CreateNative("ZM_IsModActive", Native_IsModActive);
-	
-	// Register library for skill plugins to check
-	RegPluginLibrary("dod_zm_core");
+	API_Init();
 	
 	return APLRes_Success;
 }

@@ -1,9 +1,9 @@
 /**
  * =============================================================================
  * Zombie Mod for Day of Defeat Source - Modular Skill System
- * 
- * Handles registration and management of modular human skill plugins
- * NOTE: Native registration happens in main plugin's AskPluginLoad2
+ *
+ * Handles registration and management of external human skill plugins.
+ * Native handlers live here; registration and forward creation are in api.inc.
  * =============================================================================
  */
 
@@ -49,20 +49,13 @@ Handle g_Forward_OnClientSpawn = null;
 // INITIALIZATION
 // ============================================================================
 
-void ModularSkills_Init()
+void ModularSkills_OnPluginStart()
 {
 	// Initialize all clients with no skill
 	for (int i = 0; i <= MAXPLAYERS; i++)
 	{
 		g_ClientSkillID[i] = 0;  // No skill
 	}
-	
-	// Create forwards
-	g_Forward_OnSkillAssigned = CreateGlobalForward("ZM_OnSkillAssigned", ET_Ignore, Param_Cell, Param_Cell);
-	g_Forward_OnRoundStart = CreateGlobalForward("ZM_OnRoundStart", ET_Ignore);
-	g_Forward_OnRoundEnd = CreateGlobalForward("ZM_OnRoundEnd", ET_Ignore);
-	g_Forward_OnClientDeath = CreateGlobalForward("ZM_OnClientDeath", ET_Ignore, Param_Cell);
-	g_Forward_OnClientSpawn = CreateGlobalForward("ZM_OnClientSpawn", ET_Ignore, Param_Cell, Param_Cell);
 	
 	// Register built-in ESP skill
 	RegisterBuiltInSkills();
@@ -270,33 +263,21 @@ public int Native_RegisterHumanSkill(Handle plugin, int numParams)
 public int Native_GetClientSkill(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	
-	if (client < 1 || client > MaxClients)
-	{
-		ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index %d", client);
-		return 0;
-	}
-	
+	APIValidateClientIndex(client);
 	return g_ClientSkillID[client];
 }
 
 public int Native_IsClientHuman(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	
-	if (client < 1 || client > MaxClients || !IsClientInGame(client))
-		return false;
-	
+	APIValidateClientIndex(client);
 	return GetClientTeam(client) == Team_Allies;
 }
 
 public int Native_IsClientZombie(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	
-	if (client < 1 || client > MaxClients || !IsClientInGame(client))
-		return false;
-	
+	APIValidateClientIndex(client);
 	return GetClientTeam(client) == Team_Axis;
 }
 

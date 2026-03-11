@@ -10,7 +10,7 @@
 // INITIALIZATION
 // ============================================================================
 
-void HumanSkills_Init()
+void HumanSkills_OnPluginStart()
 {
 	// Initialize all clients with no skill
 	for (int i = 0; i <= MAXPLAYERS; i++)

@@ -29,7 +29,11 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-InitPlayers()
+// ============================================================================
+// Initialization
+// ============================================================================
+
+void Players_OnPluginStart()
 {
 	HookEvent("player_team", Event_PlayerTeam, EventHookMode_Pre);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
@@ -38,6 +42,11 @@ InitPlayers()
 	
 	AddNormalSoundHook(OnNormalSoundPlayed);
 }
+
+
+// ============================================================================
+// Client Connection / Disconnection
+// ============================================================================
 
 public void OnClientPutInServer(int client)
 {
@@ -142,6 +151,11 @@ SetPlayerModel(client, model)
 		SetEntityModel(client, g_szModel[model]);
 	}
 }
+
+
+// ============================================================================
+// Spawn / Death Events
+// ============================================================================
 
 public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
@@ -383,6 +397,11 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 	return Plugin_Continue;
 }
 
+
+// ============================================================================
+// Team Change
+// ============================================================================
+
 public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	if (g_bModActive)
@@ -401,6 +420,11 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 	
 	return Plugin_Continue;
 }
+
+
+// ============================================================================
+// Damage Handling
+// ============================================================================
 
 public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcast)
 {
@@ -624,6 +648,12 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 	return Plugin_Continue;
 }
 
+
+// ============================================================================
+// Per-Frame Input (OnPlayerRunCmd)
+// Gas zombie active ability and ESP identification triggered here.
+// ============================================================================
+
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
 	// Store previous button state before updating
@@ -661,8 +691,8 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 	if (!g_bModActive)
 		return originalResult;
 	
-	// Allow humans to pass through each other for 3 seconds after spawn
-	// This prevents spawn blocking by bots
+	/* Allow humans to pass through each other for ConVar_Spawn_NoClip_Time seconds after spawn.
+	 * Prevents spawn blocking by bots. */
 	if (client > 0 && client <= MaxClients && IsClientInGame(client))
 	{
 		if (GetClientTeam(client) == Team_Allies)
@@ -681,7 +711,7 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 }
 
 // ============================================================================
-// VISUAL CLEANUP
+// Utility
 // ============================================================================
 
 void ResetPlayerVisuals(int client)
@@ -696,3 +726,4 @@ void ResetPlayerVisuals(int client)
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
 }
+
