@@ -22,14 +22,10 @@
 #define GAS_COLOR_G     205
 #define GAS_COLOR_B     50
 
-// Explosion settings
-#define EXPLODE_RADIUS       300.0
-#define EXPLODE_DAMAGE       150
-#define EXPLODE_SOUND        "ambient/explosions/explode_3.wav"
-
 // Teleporter settings
 #define TELEPORT_DELAY       60.0   // Seconds after round start before teleports activate
 #define TELEPORT_SOUND       "buttons/spark6.wav"
+#define GAS_FAIL_SOUND       "buttons/spark1.wav"
 
 // ============================================================================
 // GLOBALS
@@ -37,7 +33,8 @@
 
 // Gas Zombie globals
 Handle g_hGasCloudTimers[MAXPLAYERS+1];
-float g_fGasAbilityNextUse[MAXPLAYERS+1];  // Cooldown tracking for gas ability
+float g_fGasAbilityNextUse[MAXPLAYERS+1];       /* Timestamp when gas ability can next fire */
+float g_fGasCooldownMessageNext[MAXPLAYERS+1];  /* Throttle: earliest time to print next cooldown message */
 
 // Teleporter globals
 bool g_bTeleportActive = false;
@@ -61,21 +58,29 @@ Menu g_ZombieClassMenu = null;
 
 void ZombieClasses_OnPluginStart()
 {
-	// Initialize arrays
+	/* Initialize per-client arrays */
 	for (int i = 0; i <= MAXPLAYERS; i++)
 	{
-		g_iZombieClass[i] = view_as<int>(ZombieClass_Normal);
-		g_hGasCloudTimers[i] = INVALID_HANDLE;
-		g_fGasAbilityNextUse[i] = 0.0;
-		g_hGhostAlphaTimers[i] = INVALID_HANDLE;
-		g_fGhostAlpha[i] = GHOST_ALPHA_MIN;
+		g_iZombieClass[i]         = view_as<int>(ZombieClass_Normal);
+		g_hGasCloudTimers[i]      = INVALID_HANDLE;
+		g_fGasAbilityNextUse[i]        = 0.0;
+		g_fGasCooldownMessageNext[i]   = 0.0;
+		g_hGhostAlphaTimers[i]    = INVALID_HANDLE;
+		g_fGhostAlpha[i]          = GHOST_ALPHA_MIN;
 		g_bGhostAlphaIncreasing[i] = true;
 	}
-	
-	// Initialize teleporter spawn cache
+
+	/* Register built-in classes in ZombieClass enum order.
+	 * IDs must match: Normal=0, Gas=1, TNT=2, Ghost=3 */
+	ModularClasses_RegisterBuiltIn("Normal Zombie", "Standard zombie");
+	ModularClasses_RegisterBuiltIn("Gas Zombie",    "Toxic cloud on death");
+	ModularClasses_RegisterBuiltIn("TNT Zombie",    "Explodes on death");
+	ModularClasses_RegisterBuiltIn("Ghost Zombie",  "Nearly invisible");
+
+	/* Initialize teleporter spawn cache */
 	g_AlliedSpawns = new ArrayList(3);
-	
-	// Create zombie class selection menu
+
+	/* Create zombie class selection menu */
 	CreateZombieClassMenu();
 }
 
@@ -87,16 +92,14 @@ void CreateZombieClassMenu()
 	g_ZombieClassMenu.AddItem("1", "Gas Zombie (Toxic cloud on death)");
 	g_ZombieClassMenu.AddItem("2", "TNT Zombie (Explodes on death)");
 	g_ZombieClassMenu.AddItem("3", "Ghost Zombie (Nearly invisible)");
-	g_ZombieClassMenu.ExitButton = false;  // Force selection (or timeout)
+	g_ZombieClassMenu.ExitButton = true;   /* 0. Exit — assigns random class same as timeout */
 }
 
 void ZombieClasses_OnMapStart()
 {
-	// Precache explosion sound
-	PrecacheSound(EXPLODE_SOUND, true);
-	
 	// Precache teleport sound
 	PrecacheSound(TELEPORT_SOUND, true);
+	PrecacheSound(GAS_FAIL_SOUND, true);
 	
 	// Cache Allied spawn points for teleporter
 	g_AlliedSpawns.Clear();
@@ -138,7 +141,9 @@ public Action Timer_EnableTeleport(Handle timer)
 
 void ZombieClasses_OnClientDisconnect(int client)
 {
-	g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
+	g_iZombieClass[client]              = view_as<int>(ZombieClass_Normal);
+	g_fGasAbilityNextUse[client]        = 0.0;  /* Clear stale cooldown for next occupant of this slot */
+	g_fGasCooldownMessageNext[client]   = 0.0;
 	
 	// Clean up any active gas timer
 	if (g_hGasCloudTimers[client] != INVALID_HANDLE)
@@ -272,21 +277,22 @@ void CheckAndApplyTeleport(int client)
 
 void ZombieClasses_OnDeath(int client)
 {
-	// Only process zombie deaths
+	/* Only process zombie deaths */
 	if (GetClientTeam(client) != Team_Axis)
 		return;
-	
-	ZombieClass class = view_as<ZombieClass>(g_iZombieClass[client]);
-	
+
+	int classID = g_iZombieClass[client];
+
+	/* Notify external class plugins first */
+	ModularSkills_OnZombieDeath(client, classID);
+
+	ZombieClass class = view_as<ZombieClass>(classID);
+
 	switch (class)
 	{
 		case ZombieClass_Gas:
 		{
 			CreateGasCloudAtDeath(client);
-		}
-		case ZombieClass_TNT:
-		{
-			CreateExplosionAtDeath(client);
 		}
 		case ZombieClass_Ghost:
 		{
@@ -371,89 +377,104 @@ bool ZombieClasses_TryUseGasAbility(int client)
 {
 	if (ZombieClasses_GetClass(client) != ZombieClass_Gas)
 		return false;
-	
+
 	float currentTime = GetGameTime();
 	if (currentTime < g_fGasAbilityNextUse[client])
+	{
+		/* Throttle message to once per second to avoid chat spam */
+		if (currentTime >= g_fGasCooldownMessageNext[client])
+		{
+			int remaining = RoundToCeil(g_fGasAbilityNextUse[client] - currentTime);
+			if (remaining < 1)
+				remaining = 1;
+			PrintToChat(client, "[ZM] Gas ability on cooldown: %d seconds", remaining);
+			g_fGasCooldownMessageNext[client] = currentTime + 1.0;
+		}
 		return false;
-	
-	SpawnGasCloudAtAim(client);
-	
+	}
+
+	/* Only set cooldown if the cloud was actually created */
+	if (!SpawnGasCloudAtAim(client))
+		return false;
+
 	float cooldown = g_ConVarFloats[ConVar_Gas_Cooldown];
 	g_fGasAbilityNextUse[client] = currentTime + cooldown;
-	
+
 	return true;
 }
 
-void SpawnGasCloudAtAim(int client)
+bool SpawnGasCloudAtAim(int client)
 {
 	float eyePos[3], eyeAngles[3], endPos[3];
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAngles);
-	
-	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAngles, MASK_SOLID, 
+
+	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAngles, MASK_SOLID,
 		RayType_Infinite, TraceFilter_World);
-	
+
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPos, trace);
 		CloseHandle(trace);
-		
-		float location[3];
-		GetClientAbsOrigin(client, location);
-		
-		int gascloud = CreateEntityByName("env_smokestack");
-		if (gascloud == -1)
-		{
-			LogError("[Zombie Classes] Failed to create gas cloud entity");
-			return;
-		}
-		
-		char originData[64];
-		Format(originData, sizeof(originData), "%f %f %f", 
-			endPos[0], endPos[1], endPos[2] + 10.0);
-		
-		char colorData[64];
-		Format(colorData, sizeof(colorData), "%i %i %i", GAS_COLOR_R, GAS_COLOR_G, GAS_COLOR_B);
-		
-		DispatchKeyValue(gascloud, "Origin", originData);
-		DispatchKeyValue(gascloud, "BaseSpread", "50");
-		DispatchKeyValue(gascloud, "SpreadSpeed", "10");
-		DispatchKeyValue(gascloud, "Speed", "50");
-		DispatchKeyValue(gascloud, "StartSize", "100");
-		DispatchKeyValue(gascloud, "EndSize", "1");
-		DispatchKeyValue(gascloud, "Rate", "15");
-		DispatchKeyValue(gascloud, "JetLength", "200");
-		DispatchKeyValue(gascloud, "Twist", "2");
-		DispatchKeyValue(gascloud, "RenderColor", colorData);
-		DispatchKeyValue(gascloud, "RenderAmt", "100");
-		DispatchKeyValue(gascloud, "SmokeMaterial", "particle/particle_smokegrenade1.vmt");
-		
-		DispatchSpawn(gascloud);
-		AcceptEntityInput(gascloud, "TurnOn");
-		
-		Handle pack = CreateDataPack();
-		WritePackCell(pack, client);
-		WritePackFloat(pack, endPos[0]);
-		WritePackFloat(pack, endPos[1]);
-		WritePackFloat(pack, endPos[2]);
-		WritePackCell(pack, gascloud);
-		WritePackFloat(pack, GetGameTime());
-		
-		CreateTimer(GAS_TICK_RATE, Timer_GasDamage, pack, 
-			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE | TIMER_DATA_HNDL_CLOSE);
-		
-		Handle cleanupPack = CreateDataPack();
-		WritePackCell(cleanupPack, gascloud);
-		
-		CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
-		
-		EmitSoundToAll(TELEPORT_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
-		PrintToChat(client, "[Zombie Mod] Gas cloud deployed!");
 	}
 	else
 	{
+		/* Ray missed all geometry — play failure sound and abort */
 		CloseHandle(trace);
+		EmitSoundToClient(client, GAS_FAIL_SOUND);
+		return false;
 	}
+
+	int gascloud = CreateEntityByName("env_smokestack");
+	if (gascloud == -1)
+	{
+		LogError("[Zombie Classes] Failed to create gas cloud entity");
+		return false;
+	}
+
+	char originData[64];
+	Format(originData, sizeof(originData), "%f %f %f",
+		endPos[0], endPos[1], endPos[2] + 10.0);
+
+	char colorData[64];
+	Format(colorData, sizeof(colorData), "%i %i %i", GAS_COLOR_R, GAS_COLOR_G, GAS_COLOR_B);
+
+	DispatchKeyValue(gascloud, "Origin", originData);
+	DispatchKeyValue(gascloud, "BaseSpread", "50");
+	DispatchKeyValue(gascloud, "SpreadSpeed", "10");
+	DispatchKeyValue(gascloud, "Speed", "50");
+	DispatchKeyValue(gascloud, "StartSize", "100");
+	DispatchKeyValue(gascloud, "EndSize", "1");
+	DispatchKeyValue(gascloud, "Rate", "15");
+	DispatchKeyValue(gascloud, "JetLength", "200");
+	DispatchKeyValue(gascloud, "Twist", "2");
+	DispatchKeyValue(gascloud, "RenderColor", colorData);
+	DispatchKeyValue(gascloud, "RenderAmt", "100");
+	DispatchKeyValue(gascloud, "SmokeMaterial", "particle/particle_smokegrenade1.vmt");
+
+	DispatchSpawn(gascloud);
+	AcceptEntityInput(gascloud, "TurnOn");
+
+	Handle pack = CreateDataPack();
+	WritePackCell(pack, client);
+	WritePackFloat(pack, endPos[0]);
+	WritePackFloat(pack, endPos[1]);
+	WritePackFloat(pack, endPos[2]);
+	WritePackCell(pack, gascloud);
+	WritePackFloat(pack, GetGameTime());
+
+	CreateTimer(GAS_TICK_RATE, Timer_GasDamage, pack,
+		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE | TIMER_DATA_HNDL_CLOSE);
+
+	Handle cleanupPack = CreateDataPack();
+	WritePackCell(cleanupPack, gascloud);
+
+	CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
+
+	EmitSoundToAll(TELEPORT_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
+	PrintToChat(client, "[ZM] Gas cloud deployed!");
+
+	return true;
 }
 // GAS DAMAGE TIMER
 // ============================================================================
@@ -534,119 +555,6 @@ public Action Timer_KillGasEntity(Handle timer, int entity)
 		AcceptEntityInput(entity, "Kill");
 	}
 	return Plugin_Stop;
-}
-
-// ============================================================================
-// TNT ZOMBIE
-// ============================================================================
-
-void CreateExplosionAtDeath(int client)
-{
-	float origin[3];
-	GetClientAbsOrigin(client, origin);
-	
-	// Play explosion sound (full 3 second sound will play)
-	EmitAmbientSound(EXPLODE_SOUND, origin, SOUND_FROM_WORLD, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
-	
-	// Create explosion visual effect (TE_SetupExplosion)
-	TE_SetupExplosion(
-		origin,                 // Position
-		PrecacheModel("sprites/sprite_fire01.vmt"),  // Sprite
-		10.0,                   // Scale
-		15,                     // Framerate
-		0,                      // Flags
-		RoundFloat(EXPLODE_RADIUS),  // Radius (convert float to int)
-		EXPLODE_DAMAGE          // Magnitude (already an int)
-	);
-	TE_SendToAll();
-	
-	// Create localized screen shake using env_shake
-	int shake = CreateEntityByName("env_shake");
-	if (shake != -1)
-	{
-		DispatchKeyValueFloat(shake, "amplitude", 20.0);      // Shake intensity
-		DispatchKeyValueFloat(shake, "radius", EXPLODE_RADIUS); // Shake radius
-		DispatchKeyValueFloat(shake, "duration", 1.5);         // Shake duration
-		DispatchKeyValueFloat(shake, "frequency", 100.0);      // Shake frequency
-		DispatchKeyValue(shake, "spawnflags", "12");           // 4 (Everyone) + 8 (Physics objects)
-		
-		// Position and activate
-		TeleportEntity(shake, origin, NULL_VECTOR, NULL_VECTOR);
-		DispatchSpawn(shake);
-		ActivateEntity(shake);
-		
-		// Trigger the shake
-		AcceptEntityInput(shake, "StartShake");
-		
-		// Remove after duration
-		CreateTimer(1.5, Timer_RemoveShake, EntIndexToEntRef(shake), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	
-	// Damage nearby humans and zombies
-	DamageNearbyEntities(origin, EXPLODE_RADIUS, EXPLODE_DAMAGE, client);
-}
-
-public Action Timer_RemoveShake(Handle timer, int ref)
-{
-	int shake = EntRefToEntIndex(ref);
-	
-	if (shake != INVALID_ENT_REFERENCE && IsValidEntity(shake))
-	{
-		AcceptEntityInput(shake, "StopShake");
-		RemoveEntity(shake);
-	}
-	
-	return Plugin_Stop;
-}
-
-void DamageNearbyEntities(float origin[3], float radius, int damage, int attacker)
-{
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (!IsClientInGame(i) || !IsPlayerAlive(i))
-			continue;
-		
-		// Skip the TNT zombie that exploded
-		if (i == attacker)
-			continue;
-		
-		// Damage both humans (Allies) and other zombies (Axis)
-		// Note: Mod forces all players onto teams, no spectators/unassigned in game
-		
-		float targetPos[3];
-		GetClientAbsOrigin(i, targetPos);
-		
-		float distance = GetVectorDistance(origin, targetPos);
-		
-		if (distance <= radius)
-		{
-			// Calculate damage falloff (full damage at center, less at edges)
-			float damageScale = 1.0 - (distance / radius);
-			int finalDamage = RoundFloat(float(damage) * damageScale);
-			
-			if (finalDamage > 0)
-			{
-				// Apply damage
-				SDKHooks_TakeDamage(i, attacker, attacker, float(finalDamage), DMG_BLAST, -1, NULL_VECTOR, origin);
-			}
-		}
-	}
-	
-	// Damage props in radius
-	int entity = -1;
-	while ((entity = FindEntityByClassname(entity, "prop_*")) != -1)
-	{
-		float propPos[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", propPos);
-		
-		float distance = GetVectorDistance(origin, propPos);
-		
-		if (distance <= radius)
-		{
-			// Break the prop
-			AcceptEntityInput(entity, "Break");
-		}
-	}
 }
 
 // ============================================================================
@@ -882,16 +790,15 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 		// Update HUD to show new class
 		HUD_ShowZombieSpawnInfo(GetClientUserId(client));
 	}
-	else if (action == MenuAction_Cancel && selection == MenuCancel_Timeout)
+	else if (action == MenuAction_Cancel
+		&& (selection == MenuCancel_Timeout || selection == MenuCancel_Exit))
 	{
-		// Timeout - assign random class
+		/* Timeout or manual exit — assign random class */
 		if (IsClientInGame(client) && GetClientTeam(client) == Team_Axis)
 		{
 			int chance = g_ConVarInts[ConVar_Class_Chance];
 			AssignRandomZombieClass(client, chance);
 			ApplyZombieClassEffects(client);
-			
-			// Update HUD to show class
 			HUD_ShowZombieSpawnInfo(GetClientUserId(client));
 		}
 	}

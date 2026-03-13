@@ -37,23 +37,34 @@
 #tryinclude <steamtools>
 
 /**
- * Don't change the order of these!
+ * Include order is intentional — do not reorder without good reason.
+ *
+ * consts.inc  - All #defines and enums used across files. Must be first.
+ * globals.inc - All shared variables and forward handles. Must precede any
+ *               file that references them.
+ * util.inc    - Helper functions with no dependencies on other modules.
+ * api.inc     - Native registration and forward creation. Must load early
+ *               so natives are available in AskPluginLoad2 before any
+ *               implementation file tries to reference them.
+ *
+ * Implementation files follow in dependency order below.
  */
 #include "zombiemod/consts.inc"
 #include "zombiemod/globals.inc"
 #include "zombiemod/util.inc"
+#include "zombiemod/api.inc"
 #include "zombiemod/offsets.inc"
 #include "zombiemod/convars.inc"
 #include "zombiemod/config.inc"
 #include "zombiemod/gamerules.inc"
 #include "zombiemod/equipmenu.inc"
-#include "zombiemod/human_skill.inc"
-#include "zombiemod/modular_skills.inc"
-#include "zombiemod/api.inc"
+#include "zombiemod/human_skills_core.inc"
+#include "zombiemod/human_skills_modular.inc"
 #include "zombiemod/killrewards.inc"
 #include "zombiemod/player.inc"
 #include "zombiemod/commands.inc"
-#include "zombiemod/zombie_classes.inc"
+#include "zombiemod/zombie_classes_core.inc"
+#include "zombiemod/zombie_classes_modular.inc"
 #include "zombiemod/hud_messages.inc"
 #include "zombiemod/pickups.inc"
 
@@ -81,6 +92,7 @@ public void OnPluginStart()
 	Players_OnPluginStart();
 	Commands_OnPluginStart();
 	GameRules_OnPluginStart();
+	ModularClasses_OnPluginStart();
 	ZombieClasses_OnPluginStart();
 	Pickups_OnPluginStart();
 	

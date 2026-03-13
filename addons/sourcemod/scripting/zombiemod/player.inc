@@ -289,6 +289,7 @@ public Action Timer_ShowEquipMenu(Handle timer, int client)
 {
 	if ((client = GetClientOfUserId(client)) && GetClientTeam(client) == Team_Allies)
 	{
+		g_flEquipMenuExpiry[client] = GetGameTime() + 30.0;
 		DisplayMenu(g_EquipMenu[Menu_Main], client, 30);
 	}
 	return Plugin_Continue;

@@ -108,7 +108,7 @@ void EquipMenu_OnPluginStart()
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Change Category Item");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Select Skill");
 		
-	SetMenuExitButton(g_EquipMenu[Menu_Main], false);
+	SetMenuExitButton(g_EquipMenu[Menu_Main], true);
 	
 	g_EquipMenu[Menu_Primary] = CreateMenu(Handler_Primary, MenuAction_DrawItem | MenuAction_Display);
 	
@@ -172,6 +172,25 @@ void EquipMenu_OnPluginStart()
 	SetMenuExitBackButton(g_EquipMenu[Menu_KeepCustomClass], true);
 }
 
+// ============================================================================
+// TIMEOUT HELPER
+// ============================================================================
+
+/**
+ * Returns the remaining seconds for the equip menu window for this client.
+ * Passed to all sub-menu DisplayMenu() calls instead of MENU_TIME_FOREVER,
+ * so the entire menu tree closes when the initial 30-second window expires.
+ * Returns 1 as minimum — passing 0 to Display() would mean forever in SM.
+ *
+ * @param client    Client index
+ * @return          Remaining seconds (minimum 1)
+ */
+int EquipMenu_GetRemainingTime(int client)
+{
+	int remaining = RoundToFloor(g_flEquipMenuExpiry[client] - GetGameTime());
+	return remaining > 1 ? remaining : 1;
+}
+
 public int Handler_Main(Menu menu, MenuAction action, int client, int param)
 {
 	switch (action)
@@ -192,12 +211,12 @@ public int Handler_Main(Menu menu, MenuAction action, int client, int param)
 				{
 					case Menu_Main_CreateClass:
 					{
-						DisplayMenu(g_EquipMenu[Menu_Primary], client, MENU_TIME_FOREVER);
+						DisplayMenu(g_EquipMenu[Menu_Primary], client, EquipMenu_GetRemainingTime(client));
 					}
 					
 					case Menu_Main_ChangeCategory:
 					{
-						DisplayMenu(g_EquipMenu[Menu_ChangeCategory], client, MENU_TIME_FOREVER);
+						DisplayMenu(g_EquipMenu[Menu_ChangeCategory], client, EquipMenu_GetRemainingTime(client));
 					}
 					
 					case Menu_Main_SelectSkill:
@@ -243,7 +262,7 @@ public int Handler_Primary(Menu menu, MenuAction action, int client, int param)
 			{
 				g_ClientInfo_Int[client][ClientInfo_PrimaryWeapon] = param;
 				
-				DisplayMenu(g_EquipMenu[Menu_Pistol], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Pistol], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 		
@@ -251,7 +270,7 @@ public int Handler_Primary(Menu menu, MenuAction action, int client, int param)
 		{
 			if (param == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Main], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Main], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 	}
@@ -268,7 +287,7 @@ public int Handler_Pistol(Menu menu, MenuAction action, int client, int param)
 			if (IsPlayerValid(client))
 			{
 				g_ClientInfo_Int[client][ClientInfo_Pistol] = param;
-				DisplayMenu(g_EquipMenu[Menu_Equipment], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Equipment], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 		
@@ -276,7 +295,7 @@ public int Handler_Pistol(Menu menu, MenuAction action, int client, int param)
 		{
 			if (param == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Primary], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Primary], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 	}
@@ -294,7 +313,7 @@ public int Handler_Equipment(Menu menu, MenuAction action, int client, int param
 			{
 				g_ClientInfo_Int[client][ClientInfo_EquipmentItem] = param;
 				
-				DisplayMenu(g_EquipMenu[Menu_KeepCustomClass], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_KeepCustomClass], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 		
@@ -302,7 +321,7 @@ public int Handler_Equipment(Menu menu, MenuAction action, int client, int param
 		{
 			if (param == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Pistol], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Pistol], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 	}
@@ -322,15 +341,15 @@ public int Handler_ChangeCategory(Menu menu, MenuAction action, int client, int 
 				{
 					case Menu_ChangeCategory_Primary:
 					{
-						DisplayMenu(g_EquipMenu[Menu_Primary], client, MENU_TIME_FOREVER);
+						DisplayMenu(g_EquipMenu[Menu_Primary], client, EquipMenu_GetRemainingTime(client));
 					}
 					case Menu_ChangeCategory_Pistol:
 					{
-						DisplayMenu(g_EquipMenu[Menu_Pistol], client, MENU_TIME_FOREVER);
+						DisplayMenu(g_EquipMenu[Menu_Pistol], client, EquipMenu_GetRemainingTime(client));
 					}
 					case Menu_ChangeCategory_Equipment:
 					{
-						DisplayMenu(g_EquipMenu[Menu_Equipment], client, MENU_TIME_FOREVER);
+						DisplayMenu(g_EquipMenu[Menu_Equipment], client, EquipMenu_GetRemainingTime(client));
 					}
 				}
 			}
@@ -340,7 +359,7 @@ public int Handler_ChangeCategory(Menu menu, MenuAction action, int client, int 
 		{
 			if (param == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Main], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Main], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 	}
@@ -366,7 +385,7 @@ public int Handler_KeepCustomClass(Menu menu, MenuAction action, int client, int
 		{
 			if (param == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Equipment], client, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Equipment], client, EquipMenu_GetRemainingTime(client));
 			}
 		}
 	}

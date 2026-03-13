@@ -77,11 +77,11 @@ float g_ConVarFloats[ConVar_Size];
 
 // ============================================================================
 // Zombie Classes
-// Class enum and per-client tracking. See zombie_classes.inc for behaviour.
+// Class enum and per-client tracking. See zombie_classes_core.inc for behaviour.
 // ============================================================================
 
 /**
- * ZombieClass - used by zombie_classes.inc, player.inc, hud_messages.inc.
+ * ZombieClass - used by zombie_classes_core.inc, player.inc, hud_messages.inc.
  */
 enum ZombieClass
 {
@@ -96,11 +96,11 @@ int g_iZombieClass[MAXPLAYERS+1];
 // ============================================================================
 // Human Skills (Built-in)
 // Legacy built-in skill system. ESP is the only remaining built-in skill.
-// External skills use modular_skills.inc / api.inc instead.
+// External skills use human_skills_modular.inc / api.inc instead.
 // ============================================================================
 
 /**
- * HumanSkill - used by equipmenu.inc, human_skill.inc, hud_messages.inc.
+ * HumanSkill - used by equipmenu.inc, human_skills_core.inc, hud_messages.inc.
  */
 enum HumanSkill
 {
@@ -117,5 +117,17 @@ Menu g_HumanSkillMenu = null;
 // ============================================================================
 
 int g_iLastButtons[MAXPLAYERS+1];           /* Previous frame buttons for edge detection */
-float g_fESPIdentifyCooldown[MAXPLAYERS+1];
-#define ESP_IDENTIFY_COOLDOWN 5.0           /* Seconds between ESP identifications */
+float g_fESPIdentifyCooldown[MAXPLAYERS+1]; /* Per-client ESP ability cooldown */
+float g_flEquipMenuExpiry[MAXPLAYERS+1];    /* GameTime when equip menu window closes */
+
+// ============================================================================
+// Forward Handles
+// Declared here so api.inc and human_skills_modular.inc can both reference them.
+// ============================================================================
+
+Handle g_Forward_OnSkillAssigned = null;
+Handle g_Forward_OnRoundStart    = null;
+Handle g_Forward_OnRoundEnd      = null;
+Handle g_Forward_OnClientDeath   = null;
+Handle g_Forward_OnClientSpawn   = null;
+Handle g_Forward_OnZombieDeath   = null;

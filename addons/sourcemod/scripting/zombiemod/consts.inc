@@ -30,7 +30,7 @@
  */
 
 #define PLUGIN_NAME "DoD:S Zombie Mod"
-#define PLUGIN_VERSION "0.9.8 BETA"
+#define PLUGIN_VERSION "0.9.18 BETA"
 #define SCOREBOARD_MAX_ELEMENTS 5
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS 33
@@ -164,11 +164,15 @@ enum
 // MODULAR SKILL SYSTEM CONSTANTS
 // ============================================================================
 
-// Match the API definitions from dod_zm.inc
+/* Match the API definitions from dod_zm.inc */
 #define ZM_MAX_SKILL_NAME 64
 #define ZM_MAX_SKILL_DESC 128
 
-// Skill ID enum (matching dod_zm.inc)
+/* Zombie class name/description lengths */
+#define ZM_MAX_CLASS_NAME 64
+#define ZM_MAX_CLASS_DESC 128
+
+/* Skill ID enum (matching dod_zm.inc) */
 enum ZMSkillID
 {
 	ZM_SKILL_INVALID = -1,

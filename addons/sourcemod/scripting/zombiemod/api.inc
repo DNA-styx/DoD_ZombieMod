@@ -3,7 +3,7 @@
  * Zombie Mod for Day of Defeat Source - Public API Module
  *
  * Registers all natives and forwards exposed to external plugins.
- * Native handlers are implemented in modular_skills.inc.
+ * Native handlers are implemented in human_skills_modular.inc.
  * Include dod_zm.inc in external plugins to consume this API.
  * =============================================================================
  */
@@ -24,6 +24,11 @@ void API_Init()
 
 	// Mod state native
 	CreateNative("ZM_IsModActive", Native_IsModActive);
+
+	// Zombie class system natives
+	CreateNative("ZM_RegisterZombieClass",   Native_RegisterZombieClass);
+	CreateNative("ZM_GetClientZombieClass",  Native_GetClientZombieClass);
+	CreateNative("ZM_GetZombieClassName",    Native_GetZombieClassName);
 
 	RegPluginLibrary("dod_zm_core");
 }
@@ -58,4 +63,5 @@ void API_CreateForwards()
 	g_Forward_OnRoundEnd      = CreateGlobalForward("ZM_OnRoundEnd",      ET_Ignore);
 	g_Forward_OnClientDeath   = CreateGlobalForward("ZM_OnClientDeath",   ET_Ignore, Param_Cell);
 	g_Forward_OnClientSpawn   = CreateGlobalForward("ZM_OnClientSpawn",   ET_Ignore, Param_Cell, Param_Cell);
+	g_Forward_OnZombieDeath   = CreateGlobalForward("ZM_OnZombieDeath",   ET_Ignore, Param_Cell, Param_Cell);
 }

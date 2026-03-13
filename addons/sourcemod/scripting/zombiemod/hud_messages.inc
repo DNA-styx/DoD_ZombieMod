@@ -12,13 +12,7 @@
  */
 
 // ============================================================================
-// GLOBALS
-// ============================================================================
-
-// No globals needed - zombie info timer uses TIMER_FLAG_NO_MAPCHANGE auto-cleanup
-
-// ============================================================================
-// INITIALIZATION & CLEANUP
+// Initialization
 // ============================================================================
 
 void HUD_OnMapStart()
@@ -31,17 +25,10 @@ void HUD_OnMapStart()
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Get zombie class display name from ZombieClass enum
+/* Get zombie class display name via class registry */
 void GetZombieClassDisplayName(ZombieClass class, char[] buffer, int maxlength)
 {
-	switch (class)
-	{
-		case ZombieClass_Normal: strcopy(buffer, maxlength, "Normal Zombie");
-		case ZombieClass_Gas: strcopy(buffer, maxlength, "Gas Zombie");
-		case ZombieClass_TNT: strcopy(buffer, maxlength, "TNT Zombie");
-		case ZombieClass_Ghost: strcopy(buffer, maxlength, "Ghost Zombie");
-		default: strcopy(buffer, maxlength, "Zombie");
-	}
+	ModularClasses_GetClassName(view_as<int>(class), buffer, maxlength);
 }
 
 // ============================================================================

@@ -1,9 +1,13 @@
 /**
  * =============================================================================
- * Zombie Mod for Day of Defeat Source - Modular Skill System
+ * Zombie Mod for Day of Defeat Source - Human Skills (Modular / External)
  *
- * Handles registration and management of external human skill plugins.
- * Native handlers live here; registration and forward creation are in api.inc.
+ * Manages registration of external human skill plugins and the dynamic
+ * skill selection menu. Native handlers live here; forward creation and
+ * native registration are in api.inc.
+ *
+ * External plugins register via ZM_RegisterHumanSkill() in dod_zm.inc.
+ * Built-in skills (ESP) are handled by human_skills_core.inc.
  * =============================================================================
  */
 
@@ -21,7 +25,7 @@ enum struct SkillInfo
 {
 	char name[ZM_MAX_SKILL_NAME];
 	char description[ZM_MAX_SKILL_DESC];
-	Handle plugin;  // Handle to the plugin that registered this skill
+	Handle plugin;  /* null = built-in; otherwise the registering plugin handle */
 }
 
 // ============================================================================
@@ -35,15 +39,8 @@ int g_SkillCount = 0;
 // Current skill ID for each client (0 = none, 1+ = skill ID)
 int g_ClientSkillID[MAXPLAYERS+1];
 
-// Dynamic skill menu (rebuilt when skills register)
+/* Dynamic skill menu — rebuilt each time a skill registers */
 Menu g_DynamicSkillMenu = null;
-
-// Forwards
-Handle g_Forward_OnSkillAssigned = null;
-Handle g_Forward_OnRoundStart = null;
-Handle g_Forward_OnRoundEnd = null;
-Handle g_Forward_OnClientDeath = null;
-Handle g_Forward_OnClientSpawn = null;
 
 // ============================================================================
 // INITIALIZATION
@@ -54,24 +51,24 @@ void ModularSkills_OnPluginStart()
 	// Initialize all clients with no skill
 	for (int i = 0; i <= MAXPLAYERS; i++)
 	{
-		g_ClientSkillID[i] = 0;  // No skill
+		g_ClientSkillID[i] = 0;  /* ZM_SKILL_NONE */
 	}
 	
-	// Register built-in ESP skill
+	/* Register built-in ESP skill (ID 1) */
 	RegisterBuiltInSkills();
 	
-	// Build initial menu
+	/* Build initial dynamic menu */
 	RebuildSkillMenu();
 }
 
 void RegisterBuiltInSkills()
 {
-	// Register ESP as a built-in skill (ID will be 1)
+	/* ESP is the only built-in skill; ID will be 1 */
 	if (g_SkillCount < MAX_SKILLS)
 	{
-		strcopy(g_RegisteredSkills[g_SkillCount].name, ZM_MAX_SKILL_NAME, "ESP");
+		strcopy(g_RegisteredSkills[g_SkillCount].name,        ZM_MAX_SKILL_NAME, "ESP");
 		strcopy(g_RegisteredSkills[g_SkillCount].description, ZM_MAX_SKILL_DESC, "See Zombie Class");
-		g_RegisteredSkills[g_SkillCount].plugin = null;  // Built-in
+		g_RegisteredSkills[g_SkillCount].plugin = null;
 		g_SkillCount++;
 	}
 }
@@ -82,27 +79,24 @@ void RegisterBuiltInSkills()
 
 void RebuildSkillMenu()
 {
-	// Delete old menu if exists
 	if (g_DynamicSkillMenu != null)
-	{
 		delete g_DynamicSkillMenu;
-	}
 	
-	// Create new menu
+	/* Build fresh menu */
 	g_DynamicSkillMenu = new Menu(Menu_SkillSelect_Handler);
 	g_DynamicSkillMenu.SetTitle("%t", "Skill Menu Title");
 	g_DynamicSkillMenu.ExitBackButton = true;
 	
-	// Add "No Skill" option
+	/* No Skill option — always first */
 	char display[128];
 	Format(display, sizeof(display), "%t", "Skill No Skill");
 	g_DynamicSkillMenu.AddItem("0", display);
 	
-	// Add all registered skills
+	/* Registered skills follow */
 	for (int i = 0; i < g_SkillCount; i++)
 	{
 		char skillID[8];
-		IntToString(i + 1, skillID, sizeof(skillID));  // Skills start at ID 1
+		IntToString(i + 1, skillID, sizeof(skillID));  /* Skills start at ID 1 */
 		
 		Format(display, sizeof(display), "%s (%s)", 
 			g_RegisteredSkills[i].name, 
@@ -116,7 +110,7 @@ void ShowSkillMenu(int client)
 {
 	if (g_DynamicSkillMenu != null)
 	{
-		g_DynamicSkillMenu.Display(client, MENU_TIME_FOREVER);
+		g_DynamicSkillMenu.Display(client, EquipMenu_GetRemainingTime(client));
 	}
 }
 
@@ -134,20 +128,20 @@ public int Menu_SkillSelect_Handler(Menu menu, MenuAction action, int param1, in
 			int skillID = StringToInt(info);
 			g_ClientSkillID[client] = skillID;
 			
-			// Call forward to notify skill plugins
+			/* Fire ZM_OnSkillAssigned forward */
 			Call_StartForward(g_Forward_OnSkillAssigned);
 			Call_PushCell(client);
 			Call_PushCell(skillID);
 			Call_Finish();
 			
-			// Return to equip menu immediately (centerprint handled by repeated timers in forward handlers)
-			DisplayMenu(g_EquipMenu[Menu_Main], client, MENU_TIME_FOREVER);
+			/* Return to equip menu; centerprint is handled in ZM_OnSkillAssigned */
+			DisplayMenu(g_EquipMenu[Menu_Main], client, EquipMenu_GetRemainingTime(client));
 		}
 		case MenuAction_Cancel:
 		{
 			if (param2 == MenuCancel_ExitBack)
 			{
-				DisplayMenu(g_EquipMenu[Menu_Main], param1, MENU_TIME_FOREVER);
+				DisplayMenu(g_EquipMenu[Menu_Main], param1, EquipMenu_GetRemainingTime(param1));
 			}
 		}
 	}
@@ -161,7 +155,7 @@ public int Menu_SkillSelect_Handler(Menu menu, MenuAction action, int param1, in
 
 void ModularSkills_OnClientConnect(int client)
 {
-	g_ClientSkillID[client] = 0;  // No skill
+	g_ClientSkillID[client] = 0;
 }
 
 void ModularSkills_OnClientDisconnect(int client)
@@ -183,9 +177,16 @@ void ModularSkills_OnClientSpawn(int client, int team)
 
 void ModularSkills_OnClientDeath(int client)
 {
-	// Call forward
 	Call_StartForward(g_Forward_OnClientDeath);
 	Call_PushCell(client);
+	Call_Finish();
+}
+
+void ModularSkills_OnZombieDeath(int client, int classID)
+{
+	Call_StartForward(g_Forward_OnZombieDeath);
+	Call_PushCell(client);
+	Call_PushCell(classID);
 	Call_Finish();
 }
 
@@ -217,27 +218,30 @@ public int Native_RegisterHumanSkill(Handle plugin, int numParams)
 	char description[ZM_MAX_SKILL_DESC];
 	GetNativeString(2, description, sizeof(description));
 	
-	// Check if this plugin already registered a skill (handle plugin reload)
+	/* Check for an existing slot matching by name (catches new .smx upload with
+	 * same skill name) or by plugin handle (catches sm plugins reload).
+	 * Update the slot in-place and return the existing ID rather than appending. */
 	for (int i = 0; i < g_SkillCount; i++)
 	{
-		if (g_RegisteredSkills[i].plugin == plugin)
+		bool sameHandle = (g_RegisteredSkills[i].plugin == plugin);
+		bool sameName   = (strcmp(g_RegisteredSkills[i].name, name, false) == 0);
+
+		if (sameHandle || sameName)
 		{
-			// Plugin is re-registering (probably reloaded)
-			// Update the skill info and return existing ID
-			strcopy(g_RegisteredSkills[i].name, ZM_MAX_SKILL_NAME, name);
+			strcopy(g_RegisteredSkills[i].name,        ZM_MAX_SKILL_NAME, name);
 			strcopy(g_RegisteredSkills[i].description, ZM_MAX_SKILL_DESC, description);
-			
-			int existingID = i + 1;  // Skills start at ID 1
-			
-			// Rebuild menu with updated info
+			g_RegisteredSkills[i].plugin = plugin;  /* Update handle (new .smx has new handle) */
+
+			int existingID = i + 1;  /* Skills start at ID 1 */
+
 			RebuildSkillMenu();
-			
+
 			PrintToServer("[Zombie Mod] Updated skill '%s' (ID %d) - plugin reloaded", name, existingID);
 			return existingID;
 		}
 	}
-	
-	// Check if we have space for new skill
+
+	/* New skill - check capacity */
 	if (g_SkillCount >= MAX_SKILLS)
 	{
 		ThrowNativeError(SP_ERROR_NATIVE, "Maximum skills (%d) reached", MAX_SKILLS);
