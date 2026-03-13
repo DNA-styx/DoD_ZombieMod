@@ -1,17 +1,22 @@
-# DoD:S Zombie Mod - Plugin Development Specification v1.2
+# DoD:S Zombie Mod - Plugin Development Specification v1.3
 
 ## Overview
 
-Complete guide for creating custom human skill plugins for the DoD:S Zombie Mod. This modular plugin system allows developers to create custom skills without modifying the main plugin.
+Complete guide for creating custom human skill plugins and zombie class plugins for the DoD:S Zombie Mod. This modular plugin system allows developers to create custom skills and zombie classes without modifying the main plugin.
 
-**Version 1.2 Changes (v1.0.0+):**
+**Version 1.3 Changes (dod_zm.inc v1.3.0):**
+- Added zombie class API: `ZM_RegisterZombieClass`, `ZM_GetClientZombieClass`, `ZM_GetZombieClassName`
+- Added `ZMClassID` enum and `ZM_MAX_CLASS_NAME` / `ZM_MAX_CLASS_DESC` constants
+- Added `ZM_OnZombieDeath` forward — implement this to attach a death effect to your class
+- Backward compatible: skill plugins compiled against v1.1.0 load without changes
+
+**Version 1.2 Changes:**
 - Removed message helper functions from public API (use native PrintToChat with color codes)
 - Simplified API to core functionality only
-- Full color code reference and examples provided
 
 **Previous Features:**
-- Duplicate registration protection (v0.8.8+)
-- Modular skill system with dynamic menu
+- Duplicate registration protection — by name and plugin handle (v0.9.10+)
+- Modular skill and class system with dynamic menus
 - Forward-based communication
 
 ---
@@ -337,6 +342,141 @@ enum ZMTeam
 
 ---
 
+## Zombie Class API
+
+The zombie class system allows external plugins to register new zombie classes and attach death effects. Built-in classes (Normal, Gas, TNT, Ghost) are pre-registered with IDs 0–3.
+
+---
+
+### `ZM_RegisterZombieClass`
+```sourcepawn
+ZMClassID ZM_RegisterZombieClass(const char[] name, const char[] description)
+```
+**Purpose:** Register a zombie class with the main plugin  
+**When:** Call in `OnAllPluginsLoaded()` or `OnLibraryAdded()`  
+**Returns:** `ZMClassID` or `ZM_CLASS_INVALID` (-1) on failure
+
+**Note:** If a class with the same name is already registered (e.g. a built-in), the existing slot is returned and updated. This means a plugin registering "TNT Zombie" will claim the pre-registered ID 2 — class selection menus and random assignment are unaffected.
+
+---
+
+### `ZM_GetClientZombieClass`
+```sourcepawn
+ZMClassID ZM_GetClientZombieClass(int client)
+```
+**Purpose:** Get the current zombie class ID for a client  
+**Returns:** Class ID (0=Normal, 1=Gas, 2=TNT, 3=Ghost for built-ins)
+
+---
+
+### `ZM_GetZombieClassName`
+```sourcepawn
+void ZM_GetZombieClassName(ZMClassID classID, char[] buffer, int maxlength)
+```
+**Purpose:** Get the display name for any registered class ID
+
+---
+
+### `ZM_OnZombieDeath` (Forward)
+```sourcepawn
+forward void ZM_OnZombieDeath(int client, ZMClassID classID);
+```
+**Purpose:** Called when a zombie dies. Implement this to attach a death effect to your class.  
+**Always check** `classID == g_ClassID` before acting — this fires for every zombie death.
+
+**Example:**
+```sourcepawn
+public void ZM_OnZombieDeath(int client, ZMClassID classID)
+{
+    if (classID != g_ClassID)
+        return;
+
+    // Your death effect here
+    float origin[3];
+    GetClientAbsOrigin(client, origin);
+    EmitAmbientSound("your/sound.wav", origin, SOUND_FROM_WORLD);
+}
+```
+
+---
+
+### Zombie Class Enums & Constants
+```sourcepawn
+#define ZM_MAX_CLASS_NAME 64
+#define ZM_MAX_CLASS_DESC 128
+
+enum ZMClassID
+{
+    ZM_CLASS_INVALID = -1,  // Registration failed
+    // Built-in IDs: 0=Normal, 1=Gas, 2=TNT, 3=Ghost
+    // External classes start at 4+
+};
+```
+
+---
+
+### Zombie Class Plugin Template
+
+```sourcepawn
+#include <sourcemod>
+#include <sdktools>
+#include <dod_zm>
+
+#pragma semicolon 1
+#pragma newdecls required
+
+#define PLUGIN_VERSION "1.0.0"
+
+public Plugin myinfo =
+{
+    name        = "DoD:S ZM Zombie Class - [Class Name]",
+    author      = "[Your Name]",
+    description = "[Class description]",
+    version     = PLUGIN_VERSION,
+    url         = ""
+};
+
+ZMClassID g_ClassID = ZM_CLASS_INVALID;
+
+public void OnPluginStart()
+{
+    // Create ConVars, hook events, etc.
+}
+
+public void OnMapStart()
+{
+    // Precache sounds and models here
+}
+
+public void OnAllPluginsLoaded()
+{
+    if (g_ClassID == ZM_CLASS_INVALID && ZM_IsLoaded())
+        g_ClassID = ZM_RegisterZombieClass("[Class Name]", "[Description]");
+}
+
+public void OnLibraryAdded(const char[] name)
+{
+    if (StrEqual(name, ZM_LIBRARY) && g_ClassID == ZM_CLASS_INVALID)
+        g_ClassID = ZM_RegisterZombieClass("[Class Name]", "[Description]");
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+    if (StrEqual(name, ZM_LIBRARY))
+        g_ClassID = ZM_CLASS_INVALID;
+}
+
+public void ZM_OnZombieDeath(int client, ZMClassID classID)
+{
+    if (classID != g_ClassID)
+        return;
+
+    // Implement your death effect here
+}
+```
+
+---
+
 ## Common Patterns
 
 ### Pattern 1: Button-Activated Ability
@@ -621,24 +761,30 @@ public Action OnPlayerRunCmd(int client, int &buttons, /*...*/)
 dod_zm_skillname.sp
 ```
 
-**Examples:**
+**Examples (skill plugins):**
 - `dod_zm_medic.sp` - Medic skill
 - `dod_zm_engineer.sp` - Engineer skill
 - `dod_zm_scout.sp` - Scout skill
+
+**Examples (zombie class plugins):**
+- `dod_zm_tnt.sp` - TNT zombie death effect
+- `dod_zm_gas.sp` - Gas zombie (if extracted)
 
 ### Directory Structure
 ```
 addons/sourcemod/
 ├── scripting/
 │   ├── include/
-│   │   └── dod_zm.inc              ← API header (SKILL PLUGINS ONLY)
-│   └── dod_zm_yourskill.sp         ← Your plugin
+│   │   └── dod_zm.inc              ← API header (skill & class plugins)
+│   ├── dod_zm_yourskill.sp         ← Your skill plugin
+│   └── dod_zm_yourclass.sp         ← Your class plugin
 └── plugins/
     ├── dod_zombiemod.smx           ← Main plugin
-    └── dod_zm_yourskill.smx        ← Your skill
+    ├── dod_zm_yourskill.smx        ← Your skill
+    └── dod_zm_yourclass.smx        ← Your class
 ```
 
-**Important:** The main plugin (`dod_zombiemod.smx`) does **NOT** need `dod_zm.inc`. The .inc file is **ONLY** for skill plugin developers.
+**Important:** The main plugin (`dod_zombiemod.smx`) does **NOT** need `dod_zm.inc`. The .inc file is **ONLY** for skill and class plugin developers.
 
 ---
 
@@ -694,7 +840,7 @@ sm plugins unload myskill    // Unload your skill
 ## FAQ
 
 **Q: Can I make skills for zombies?**  
-A: Not yet - this system is for human skills only. A zombie class system may be added later.
+A: Yes — use `ZM_RegisterZombieClass` and implement `ZM_OnZombieDeath` to attach a death effect to your class. See the Zombie Class API section above.
 
 **Q: How many skills can be registered?**  
 A: Currently 32, but this can be increased if needed.
@@ -708,8 +854,8 @@ A: No - each skill has a unique ID and only activates when selected.
 **Q: Can I make skills that cost money/points?**  
 A: Not built-in, but you could integrate with an economy plugin.
 
-**Q: What happens when I reload my skill plugin?**  
-A: As of v0.8.8+, the main plugin detects duplicate registrations and updates the existing entry. No duplicate menu entries!
+**Q: What happens when I reload my skill plugin or upload a new .smx?**  
+A: The main plugin matches by skill name (case-insensitive) and by plugin handle. Either match updates the existing slot in-place — no duplicate menu entries. This means `sm plugins reload`, map restarts with a new .smx, and plugin updates all work correctly without a full server restart.
 
 **Q: How do I share my skill with others?**  
 A: Share the .sp file! Others can compile it themselves. Consider posting on GitHub.
@@ -792,6 +938,6 @@ public void OnLibraryRemoved(const char[] name)
 
 ---
 
-**End of Specification v1.1**
+**End of Specification v1.3**
 
-*This document contains everything needed to create custom skill plugins for DoD:S Zombie Mod.*
+*This document contains everything needed to create custom skill and zombie class plugins for DoD:S Zombie Mod.*
