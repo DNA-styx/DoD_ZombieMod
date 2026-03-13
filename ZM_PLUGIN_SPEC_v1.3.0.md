@@ -255,7 +255,9 @@ forward void ZM_OnSkillAssigned(int client, ZMSkillID skillID);
 - `client` - Client who selected skill
 - `skillID` - The skill ID they selected (0 = none, 1+ = skill)
 
-**Use Case:** Initialize skill state when player selects your skill
+**Use Case:** Initialize skill state and confirm selection to the player.
+Use `PrintCenterText(client, "...")` so the confirmation is clearly visible —
+the equipment menu covers most of the screen at this point.
 
 **Example:**
 ```sourcepawn
@@ -263,7 +265,8 @@ public void ZM_OnSkillAssigned(int client, ZMSkillID skillID)
 {
     if (skillID == g_SkillID)
     {
-        PrintToChat(client, "\x04[ZM]\x01 Medic skill selected!");
+        PrintCenterText(client, "Medic skill selected!");
+        PrintToChat(client, "\x04[ZM]\x01 Medic selected — right-click to heal.");
     }
 }
 ```
@@ -395,6 +398,9 @@ public void ZM_OnZombieDeath(int client, ZMClassID classID)
     float origin[3];
     GetClientAbsOrigin(client, origin);
     EmitAmbientSound("your/sound.wav", origin, SOUND_FROM_WORLD);
+
+    // Optionally notify nearby players
+    PrintToChatAll("\x03[ZM]\x01 %N triggered a death effect!", client);
 }
 ```
 
