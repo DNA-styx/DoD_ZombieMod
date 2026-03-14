@@ -800,7 +800,7 @@ Before releasing your skill plugin:
 
 - [ ] Plugin loads without main ZM plugin
 - [ ] Plugin registers skill when ZM loads
-- [ ] Plugin can be reloaded without duplicates (v0.8.8+)
+- [ ] Plugin can be reloaded without duplicates (v0.9.10+)
 - [ ] Skill appears in equipment menu
 - [ ] Skill activates correctly
 - [ ] Only works for humans (not zombies)
