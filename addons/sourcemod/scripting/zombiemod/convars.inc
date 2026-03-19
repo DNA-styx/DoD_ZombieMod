@@ -25,7 +25,8 @@ enum
 	ConVar_Pickup_Timeout,
 	ConVar_Ghost_Alpha_Max,
 	ConVar_Teleport_Chance,
-	
+	ConVar_Barrier_Health_Display,
+
 	ConVar_Size
 }
 
@@ -62,6 +63,9 @@ void ConVars_OnPluginStart()
 	
 	// Teleportation
 	AddConVar(ConVar_Teleport_Chance, CreateConVar("dod_zombiemod_teleport_chance", "25", "Percentage chance any zombie will teleport to human spawn on respawn (0=disabled, 100=always)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
+
+	// Barrier Health Display
+	AddConVar(ConVar_Barrier_Health_Display, CreateConVar("dod_zombiemod_barrier_health_display", "1", "Show barrier health to zombie when they damage a barricade (1=enabled, 0=disabled)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

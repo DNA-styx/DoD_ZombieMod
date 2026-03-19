@@ -1,11 +1,12 @@
 /**
  * =============================================================================
  * Zombie Mod for Day of Defeat Source - HUD Messages Module
- * 
+ *
  * Handles all HUD display messages:
  * - "View as Human" (humans aiming at zombies - shows zombie info)
  * - Human name display (zombies aiming at humans)
- * 
+ * - Barrier health display (zombies damaging barricade props)
+ *
  * Enemy name display technique based on sm-enemy-names by Dron-elektron
  * https://github.com/dronelektron/sm-enemy-names/
  * =============================================================================
@@ -265,3 +266,46 @@ public Action Timer_Countdown_1(Handle timer)
 	return Plugin_Stop;
 }
 
+// ============================================================================
+// Barrier Health Display
+// Shows remaining health of a damaged prop to the attacking zombie.
+// Triggered via SDKHook_OnTakeDamagePost on every entity.
+// ============================================================================
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	/* Hook all non-player entities for post-damage so zombies see barrier health */
+	if (entity > MaxClients && IsValidEntity(entity))
+		SDKHook(entity, SDKHook_OnTakeDamagePost, OnBarrierTakeDamagePost);
+}
+
+public void OnBarrierTakeDamagePost(int entity, int attacker, int inflictor,
+	float damage, int damageType)
+{
+	if (!g_bModActive)
+		return;
+
+	if (!g_ConVarBools[ConVar_Barrier_Health_Display])
+		return;
+
+	/* Only show to live human-controlled zombies */
+	if (attacker < 1 || attacker > MaxClients)
+		return;
+
+	if (!IsClientInGame(attacker) || !IsPlayerAlive(attacker) || IsFakeClient(attacker))
+		return;
+
+	if (GetClientTeam(attacker) != Team_Axis)
+		return;
+
+	if (!IsValidEntity(entity) || !HasEntProp(entity, Prop_Data, "m_iHealth"))
+		return;
+
+	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	/* Health <= 0 means unbreakable or already destroyed */
+	if (health <= 0)
+		return;
+
+	PrintCenterText(attacker, "%t", "Barrier Health Display", health);
+}

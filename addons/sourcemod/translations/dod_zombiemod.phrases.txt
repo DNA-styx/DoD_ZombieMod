@@ -256,4 +256,10 @@
 		"#format"	"{1:N}"
 		"en"		"Player {1} is now a Zombie."
 	}
+
+	"Barrier Health Display"
+	{
+		"#format"	"{1:d}"
+		"en"		"Barrier Health: {1}"
+	}
 }
