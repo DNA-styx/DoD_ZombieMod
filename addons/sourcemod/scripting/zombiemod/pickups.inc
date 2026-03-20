@@ -382,9 +382,7 @@ void CreatePickup(float position[3], PickupType type)
 	// Set model
 	SetEntityModel(pickup, PICKUP_MODEL);
 	
-	// Type is passed as parameter (already chosen in SpawnPickupWithBeam)
-	
-	// Store type in entity
+	/* Store type in entity */
 	SetEntProp(pickup, Prop_Data, "m_iHammerID", view_as<int>(type));
 	
 	// Set color based on type

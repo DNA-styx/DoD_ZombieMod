@@ -101,7 +101,6 @@ void GiveHumanReward(int client)
 	
 	CloseHandle(array);
 	
-	//ZM_PrintToChat(client, "You already have max damage resistance and ammo!");
 }
 
 bool HumanReward_GiveReward(int client, int reward)
@@ -257,10 +256,6 @@ void GiveZombieReward(int client)
 		
 		PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Speed Boost");
 	}
-	/* else
-	{
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Max Speed Reached");
-	} */
 }
 
 // ============================================================================

@@ -367,8 +367,6 @@ void CreateGasCloudAtDeath(int client)
 }
 
 // ============================================================================
-// Add after CreateGasCloudAtDeath function (around line 356)
-
 // ============================================================================
 // GAS ZOMBIE - ACTIVE ABILITY (Right-Click)
 // ============================================================================
@@ -559,7 +557,6 @@ public Action Timer_KillGasEntity(Handle timer, int entity)
 
 // ============================================================================
 // TELEPORTER ZOMBIE
-// Code based on "Zombies Behind Us!" plugin by ChatGPT, Claude AI, guided by DNA.styx
 // ============================================================================
 
 void CacheAlliedSpawns()

@@ -101,7 +101,7 @@ void EquipMenu_OnPluginStart()
 {
 	g_EquipMenu[Menu_Main] = CreateMenu(Handler_Main, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_Main], "Equip Menu\n \n");
+	SetMenuTitle(g_EquipMenu[Menu_Main], "%T\n \n", "Equip Menu Title", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Keep Current Weapons\n \n");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Create Custom Class");
@@ -112,7 +112,7 @@ void EquipMenu_OnPluginStart()
 	
 	g_EquipMenu[Menu_Primary] = CreateMenu(Handler_Primary, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_Primary], "Equip Menu - Select Primary Weapon");
+	SetMenuTitle(g_EquipMenu[Menu_Primary], "%T", "Equip Menu Primary", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_Primary], NULL_STRING, "M1 Garand");
 	AddMenuItem(g_EquipMenu[Menu_Primary], NULL_STRING, "Karbiner 98K");
@@ -132,7 +132,7 @@ void EquipMenu_OnPluginStart()
 	
 	g_EquipMenu[Menu_Pistol] = CreateMenu(Handler_Pistol, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_Pistol], "Equip Menu - Select Pistol");
+	SetMenuTitle(g_EquipMenu[Menu_Pistol], "%T", "Equip Menu Pistol", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_Pistol], NULL_STRING, "Colt 45");
 	AddMenuItem(g_EquipMenu[Menu_Pistol], NULL_STRING, "P38");
@@ -142,7 +142,7 @@ void EquipMenu_OnPluginStart()
 	
 	g_EquipMenu[Menu_Equipment] = CreateMenu(Handler_Equipment, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_Equipment], "Equip Menu - Select Extra Equipment");
+	SetMenuTitle(g_EquipMenu[Menu_Equipment], "%T", "Equip Menu Equipment", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, "Extra Pistol Ammo (200%)");
 	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, "Extra Primary Ammo (200%)");
@@ -152,7 +152,7 @@ void EquipMenu_OnPluginStart()
 	
 	g_EquipMenu[Menu_ChangeCategory] = CreateMenu(Handler_ChangeCategory, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_ChangeCategory], "Equip Menu - Change Category Item");
+	SetMenuTitle(g_EquipMenu[Menu_ChangeCategory], "%T", "Equip Menu Change Category", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, "Primary");
 	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, "Pistol");
@@ -163,7 +163,7 @@ void EquipMenu_OnPluginStart()
 	
 	g_EquipMenu[Menu_KeepCustomClass] = CreateMenu(Handler_KeepCustomClass, MenuAction_DrawItem | MenuAction_Display);
 	
-	SetMenuTitle(g_EquipMenu[Menu_KeepCustomClass], "Equip Menu - Remember choice?");
+	SetMenuTitle(g_EquipMenu[Menu_KeepCustomClass], "%T", "Equip Menu Remember Choice", LANG_SERVER);
 	
 	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, "Yes");
 	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, "No");
