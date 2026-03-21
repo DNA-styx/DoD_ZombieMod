@@ -39,8 +39,11 @@ void Players_OnPluginStart()
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Pre);
 	HookEvent("dod_stats_player_damage", Event_PlayerDamage, EventHookMode_Post);
-	
+
 	AddNormalSoundHook(OnNormalSoundPlayed);
+
+	for (int i = 0; i <= MAXPLAYERS; i++)
+		g_hZombieInfoTimer[i] = null;
 }
 
 
@@ -74,19 +77,15 @@ public void OnClientPutInServer(int client)
 
 public void OnClientPostAdminCheck(int client)
 {
-	// Check if this is the first real player joining a bot-only game
-	// This fires after client is fully loaded and authenticated (better than OnClientPutInServer)
+	/* Check if this is the first real player joining a bot-only game */
 	if (g_bModActive && !g_bRoundEnded && !IsFakeClient(client))
 	{
 		if (GetRealPlayerCount() == 1)
 		{
-			// This is the first real player - restart the round
 			g_bRoundEnded = true;
 			
-			// Notify all players
 			PrintToChatAll("%t%t", ZM_PREFIX, "First Real Player Restart", client);
 			
-			// Restart after short delay
 			CreateTimer(3.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
@@ -94,9 +93,17 @@ public void OnClientPostAdminCheck(int client)
 
 public void OnClientDisconnect_Post(int client)
 {
+	/* Clear pending restart flag if this player disconnects before spawning */
 	// Clean up zombie class data
 	ZombieClasses_OnClientDisconnect(client);
-	
+
+	/* Kill any pending zombie spawn info timer */
+	if (g_hZombieInfoTimer[client] != null)
+	{
+		KillTimer(g_hZombieInfoTimer[client]);
+		g_hZombieInfoTimer[client] = null;
+	}
+
 	// Clean up pickup boosts
 	Pickups_OnClientDisconnect(client);
 	
@@ -144,12 +151,24 @@ public void OnClientDisconnect_Post(int client)
 	}
 }
 
-SetPlayerModel(client, model)
+SetPlayerModel(int client)
 {
-	if (g_szModel[model][0] != '\0')
+	/* Build a list of populated model slots then pick one at random.
+	 * Falls back to no change if no models are configured. */
+	int populated[Model_Size];
+	int count = 0;
+
+	for (int i = 0; i < Model_Size; i++)
 	{
-		SetEntityModel(client, g_szModel[model]);
+		if (g_szModel[i][0] != '\0')
+			populated[count++] = i;
 	}
+
+	if (count == 0)
+		return;
+
+	int chosen = populated[count > 1 ? GetRandomInt(0, count - 1) : 0];
+	SetEntityModel(client, g_szModel[chosen]);
 }
 
 
@@ -260,22 +279,31 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 					
 					RemoveWeapons(client);
 					GivePlayerItem(client, "weapon_spade");
-					
-					// Assign zombie class (includes Ghost alpha activation if needed)
+
+					/* Hide spade if CVar is off. Weapon entity is destroyed on
+					 * death so no cleanup needed. */
+					if (!g_ConVarBools[ConVar_Zombie_Show_Weapon])
+					{
+						int spade = GetPlayerWeaponSlot(client, Slot_Melee);
+						if (spade != -1)
+						{
+							SetEntityRenderMode(spade, RENDER_TRANSALPHA);
+							SetEntityRenderColor(spade, 255, 255, 255, 0);
+						}
+					}
 					ZombieClasses_OnSpawn(client);
 					
-					SetPlayerModel(client, Model_Zombie_Default);
+					SetPlayerModel(client);
 					
 					SetPlayerLaggedMovementValue(client, g_ConVarFloats[ConVar_Zombie_Speed]);
 					
 					// Play zombie spawn sound for all players (including bots)
 					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
-					
-					// Show messages to real players only (bots don't need these)
-					if (!IsFakeClient(client))
-					{
-						HUD_ShowZombieSpawnInfo(clientUserId);
-					}
+
+					/* Class info centre print is shown by MenuHandler_ZombieClass
+					 * after the player picks their class (or on timeout/exit).
+					 * Showing it here would display "Normal Zombie" before the
+					 * class menu has been interacted with. */
 						
 						// Notify modular skills system
 						ModularSkills_OnClientSpawn(client, Team_Axis);
@@ -408,17 +436,16 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 	if (g_bModActive)
 	{
 		CheckWinConditions();
-		
+
 		SetEventBroadcast(event, true);
 	}
-	
-	// Reset visual effects when changing teams
+
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if (client && IsClientInGame(client))
 	{
 		ResetPlayerVisuals(client);
 	}
-	
+
 	return Plugin_Continue;
 }
 

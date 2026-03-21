@@ -24,6 +24,7 @@ enum
 	ConVar_Ghost_Alpha_Max,
 	ConVar_Teleport_Chance,
 	ConVar_Barrier_Health_Display,
+	ConVar_Zombie_Show_Weapon,
 
 	ConVar_Size
 }
@@ -57,6 +58,7 @@ void ConVars_OnPluginStart()
 	AddConVar(ConVar_Ghost_Alpha_Max,  CreateConVar("dod_zombiemod_ghost_alpha_max", "50.0", "Ghost Zombie max alpha (0=invisible, 255=fully visible)", FCVAR_PLUGIN, true, 0.0, true, 255.0));
 	AddConVar(ConVar_Teleport_Chance,  CreateConVar("dod_zombiemod_teleport_chance", "25",   "Chance (%) zombie teleports to human spawn on respawn (0=disabled)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
 	AddConVar(ConVar_Barrier_Health_Display, CreateConVar("dod_zombiemod_barrier_health_display", "1", "Show barrier health to zombie when damaging a prop (1=on, 0=off)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
+	AddConVar(ConVar_Zombie_Show_Weapon,    CreateConVar("dod_zombiemod_zombie_show_weapon",     "1", "Show zombie weapon (spade) when spawning as zombie (1=visible, 0=hidden)", FCVAR_PLUGIN, true, 0.0, true, 1.0));
 }
 
 void AddConVar(int conVar, Handle conVarHandle)

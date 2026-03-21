@@ -119,6 +119,7 @@ Menu g_HumanSkillMenu = null;
 int g_iLastButtons[MAXPLAYERS+1];           /* Previous frame buttons for edge detection */
 float g_fESPIdentifyCooldown[MAXPLAYERS+1]; /* Per-client ESP ability cooldown */
 float g_flEquipMenuExpiry[MAXPLAYERS+1];    /* GameTime when equip menu window closes */
+Handle g_hZombieInfoTimer[MAXPLAYERS+1];    /* Handle for per-client zombie spawn info timer */
 
 // ============================================================================
 // Forward Handles

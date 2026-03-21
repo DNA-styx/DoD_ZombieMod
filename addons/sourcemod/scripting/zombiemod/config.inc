@@ -47,8 +47,14 @@ enum
 
 enum
 {
-	Model_Zombie_Default, 
-	
+	Model_Zombie_Default,
+	Model_Zombie_Custom1,
+	Model_Zombie_Custom2,
+	Model_Zombie_Custom3,
+	Model_Zombie_Custom4,
+	Model_Zombie_Custom5,
+	Model_Zombie_Custom6,
+
 	Model_Size
 }
 
@@ -84,9 +90,15 @@ static const char g_szSoundKeyNames[Sound_Size][] =
 	"Sound_FinishHim"
 };
 
-static const char g_szModelKeyNames[Model_Size][] = 
+static const char g_szModelKeyNames[Model_Size][] =
 {
-	"Model_Zombie_Default"
+	"Model_Zombie_Default",
+	"Model_Zombie_Custom1",
+	"Model_Zombie_Custom2",
+	"Model_Zombie_Custom3",
+	"Model_Zombie_Custom4",
+	"Model_Zombie_Custom5",
+	"Model_Zombie_Custom6"
 };
 
 static const char g_szOverlayKeyNames[Overlay_Size][] = 
@@ -106,7 +118,7 @@ bool g_bWhiteListed[WhiteList_Size];
 void LoadConfig()
 {
 	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod.cfg");
+	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod/zombiemod.cfg");
 	
 	if (FileExists(path))
 	{
@@ -180,7 +192,7 @@ void LoadConfig()
 		LogError("Unable to open config file: \"%s\" !", path);
 	}
 	
-	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod_whitelist.cfg");
+	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod/zombiemod_whitelist.cfg");
 	
 	if (FileExists(path))
 	{
@@ -220,7 +232,7 @@ void LoadConfig_ModelFiles()
 {
 	char path[PLATFORM_MAX_PATH];
 	Handle file;
-	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod_modelfiles.cfg");
+	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod/zombiemod_modelfiles.cfg");
 	
 	if ((file = OpenFile(path, "r")) != null)
 	{

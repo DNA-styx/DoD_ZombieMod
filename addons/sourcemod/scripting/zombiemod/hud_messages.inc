@@ -169,39 +169,50 @@ void ShowHumanNameToZombie(int client)
 // Called from player.sp when a zombie spawns
 void HUD_ShowZombieSpawnInfo(int userid)
 {
-	// Create timer that waits for spawn to fully complete, then shows info once
-	CreateTimer(0.3, Timer_ShowZombieSelfInfo, userid, TIMER_REPEAT);
+	int client = GetClientOfUserId(userid);
+	if (!client)
+		return;
+
+	/* Cancel any stale timer from a previous spawn — prevents the old
+	 * timer firing after respawn and printing the wrong class name. */
+	if (g_hZombieInfoTimer[client] != null)
+	{
+		KillTimer(g_hZombieInfoTimer[client]);
+		g_hZombieInfoTimer[client] = null;
+	}
+
+	g_hZombieInfoTimer[client] = CreateTimer(0.3, Timer_ShowZombieSelfInfo, userid, TIMER_REPEAT);
 }
 
 public Action Timer_ShowZombieSelfInfo(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
-	
-	// Client could have disconnected during the 0.3s delay
+
 	if (!client || !IsClientInGame(client))
+	{
+		if (client)
+			g_hZombieInfoTimer[client] = null;
 		return Plugin_Stop;
-	
-	// Wait for player to be alive
+	}
+
+	/* Wait until the player has actually spawned */
 	if (!IsPlayerAlive(client))
 		return Plugin_Continue;
-	
-	// Get zombie class name using helper function
+
+	g_hZombieInfoTimer[client] = null;
+
 	char className[64];
 	ZombieClass zombieClass = view_as<ZombieClass>(g_iZombieClass[client]);
 	GetZombieClassDisplayName(zombieClass, className, sizeof(className));
-	
-	// Get current health
+
 	int health = RoundFloat(g_ClientInfo_Float[client][ClientInfo_Health]);
-	
-	// Show "You are now a [Class]!" message in center
+
 	PrintCenterText(client, "%t", "Became Zombie", className);
-	
-	// Show health in hint text (class already shown above)
 	PrintHintText(client, "%t", "Zombie Self Info", health);
-	
-	// Possible DoD:S bug that PrintHintText doesn't display after being killed
+
+	/* Possible DoD:S bug that PrintHintText doesn't display after being killed */
 	PrintToChat(client, "%t", "Zombie Self Info", health);
-	
+
 	return Plugin_Stop;
 }
 
