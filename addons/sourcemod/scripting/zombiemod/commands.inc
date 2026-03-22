@@ -42,7 +42,7 @@ void ShowTimeleft()
 	{
 		if (IsClientInGame(i))
 		{
-			PrintToChat(i, "%t%t", ZM_PREFIX, "Rounds Played", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
+			ZM_PrintToChat(i, "%t", "Rounds Played", g_iRoundWins, g_ConVarInts[ConVar_WinLimit]);
 		}
 	}
 }
@@ -75,12 +75,12 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			}
 			else
 			{
-				PrintToChat(client, "%t%t", ZM_PREFIX, "Equip Once Per Spawn");
+				ZM_PrintToChat(client, "%t", "Equip Once Per Spawn");
 			}
 		}
 		else
 		{
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Equip Time Expired");
+			ZM_PrintToChat(client, "%t", "Equip Time Expired");
 		}
 		
 		return Plugin_Handled;

@@ -37,22 +37,22 @@
 #define ZM_PREFIX_PERSONAL "\x04[ZM]\x01"
 
 // Message prefix for broadcast messages (green)
-#define ZM_PREFIX_BROADCAST "\x03[ZM]\x01"
+#define ZM_PREFIX_BROADCAST "\x04[ZM]\x01"
 
-// Send personal message to one client with standard prefix
+/* Send a personal message to one client with the standard [ZM] prefix */
 void ZM_PrintToChat(int client, const char[] format, any ...)
 {
 	char buffer[256];
 	VFormat(buffer, sizeof(buffer), format, 3);
-	PrintToChat(client, "%s %s", ZM_PREFIX_PERSONAL, buffer);
+	PrintToChat(client, "\x04[ZM]\x01 %s", buffer);
 }
 
-// Broadcast message to all clients with standard prefix
+/* Broadcast a message to all clients with the standard [ZM] prefix */
 void ZM_PrintToChatAll(const char[] format, any ...)
 {
 	char buffer[256];
 	VFormat(buffer, sizeof(buffer), format, 2);
-	PrintToChatAll("%s %s", ZM_PREFIX_BROADCAST, buffer);
+	PrintToChatAll("\x04[ZM]\x01 %s", buffer);
 }
 
 // ============================================================================

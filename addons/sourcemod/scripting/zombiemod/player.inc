@@ -84,7 +84,7 @@ public void OnClientPostAdminCheck(int client)
 		{
 			g_bRoundEnded = true;
 			
-			PrintToChatAll("%t%t", ZM_PREFIX, "First Real Player Restart", client);
+			ZM_PrintToChatAll("%t", "First Real Player Restart", client);
 			
 			CreateTimer(3.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -142,7 +142,7 @@ public void OnClientDisconnect_Post(int client)
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);
 			
-			PrintToChatAll("%t%t", ZM_PREFIX, "Player Became Zombie", g_iZombie);
+			ZM_PrintToChatAll("%t", "Player Became Zombie", g_iZombie);
 		}
 		else if (numAllies == 0)
 		{
@@ -398,7 +398,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 		ChangeClientTeam(client, Team_Axis);
 		
 		// Notify all players
-		PrintToChatAll("%t%t", ZM_PREFIX, "Player Became Zombie", client);
+		ZM_PrintToChatAll("%t", "Player Became Zombie", client);
 	}
 	
 	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)
@@ -417,7 +417,7 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 				
 				g_ClientInfo_Bool[attacker][ClientInfo_IsCritical] = false;
 				
-				PrintToChat(attacker, "%t%t", ZM_PREFIX, "Crit Kill Bonus", g_ConVarInts[ConVar_Zombie_CritReward]);
+				ZM_PrintToChat(attacker, "%t", "Crit Kill Bonus", g_ConVarInts[ConVar_Zombie_CritReward]);
 			}
 			
 			GiveZombieReward(attacker);
@@ -503,7 +503,7 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					
 					EmitSoundToClient(attacker, g_szSounds[Sound_FinishHim]);
 					
-					PrintToChat(client, "%t%t", ZM_PREFIX, "Fatal Shot Warning");
+					ZM_PrintToChat(client, "%t", "Fatal Shot Warning");
 				}
 			}
 		}
@@ -523,7 +523,7 @@ public ActionOnJoinClass(client, &playerClass)
 		{
 			if (g_bBlockChangeClass)
 			{
-				PrintToChat(client, "%t%t", ZM_PREFIX, "Class Change Blocked");
+				ZM_PrintToChat(client, "%t", "Class Change Blocked");
 				
 				return Plugin_Handled;
 			}

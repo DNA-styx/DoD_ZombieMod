@@ -268,7 +268,7 @@ void CheckAndApplyTeleport(int client)
 					GetClientName(client, name, sizeof(name));
 					
 					// Announce to all players
-					PrintToChatAll("%t%t", ZM_PREFIX, "Player Teleported", name);
+					ZM_PrintToChatAll("%t", "Player Teleported", name);
 				}
 			}
 		}
@@ -385,7 +385,7 @@ bool ZombieClasses_TryUseGasAbility(int client)
 			int remaining = RoundToCeil(g_fGasAbilityNextUse[client] - currentTime);
 			if (remaining < 1)
 				remaining = 1;
-			PrintToChat(client, "[ZM] Gas ability on cooldown: %d seconds", remaining);
+			ZM_PrintToChat(client, "Gas ability on cooldown: %d seconds", remaining);
 			g_fGasCooldownMessageNext[client] = currentTime + 1.0;
 		}
 		return false;
@@ -470,7 +470,7 @@ bool SpawnGasCloudAtAim(int client)
 	CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
 
 	EmitSoundToAll(TELEPORT_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
-	PrintToChat(client, "[ZM] Gas cloud deployed!");
+	ZM_PrintToChat(client, "Gas cloud deployed!");
 
 	return true;
 }

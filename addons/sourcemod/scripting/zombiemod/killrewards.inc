@@ -147,7 +147,7 @@ bool HumanReward_PrimaryAmmo(int client, bool suppressMessage = false)
 					
 					if (!suppressMessage)
 					{
-						PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Primary Ammo");
+						ZM_PrintToChat(client, "%t", "Reward Primary Ammo");
 					}
 					
 					return true;
@@ -202,7 +202,7 @@ bool HumanReward_PistolAmmo(int client, bool suppressMessage = false)
 			
 			if (!suppressMessage)
 			{
-				PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Pistol Ammo");
+				ZM_PrintToChat(client, "%t", "Reward Pistol Ammo");
 			}
 			
 			return true;
@@ -218,7 +218,7 @@ bool HumanReward_Health(int client)
 	{
 		g_ClientInfo_Float[client][ClientInfo_DamageScale] -= 0.1;
 		
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Damage Resistance");
+		ZM_PrintToChat(client, "%t", "Reward Damage Resistance");
 		
 		return true;
 	}
@@ -238,7 +238,7 @@ bool HumanReward_Health(int client)
 		g_ClientInfo_Float[client][ClientInfo_Health] = float(newHealth);
 		SetEntityHealth(client, newHealth);
 		
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Health");
+		ZM_PrintToChat(client, "%t", "Reward Health");
 		
 		return true;
 	}
@@ -254,7 +254,7 @@ void GiveZombieReward(int client)
 	{
 		SetPlayerLaggedMovementValue(client, LMV * 1.1);
 		
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Reward Speed Boost");
+		ZM_PrintToChat(client, "%t", "Reward Speed Boost");
 	}
 }
 

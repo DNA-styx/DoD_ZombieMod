@@ -633,19 +633,19 @@ void ApplyPickup(int client, PickupType type)
 				newHealth = maxHealth;
 			
 			SetEntityHealth(client, newHealth);
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Health");
+			ZM_PrintToChat(client, "%t", "Pickup Health");
 		}
 		case Pickup_Ammo:
 		{
 			GiveAmmoClips(client);
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Ammo");
+			ZM_PrintToChat(client, "%t", "Pickup Ammo");
 		}
 		case Pickup_Speed:
 		{
 			// Don't stack speed boosts
 			if (g_bHasSpeedBoost[client])
 			{
-				PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Already Active");
+				ZM_PrintToChat(client, "%t", "Pickup Already Active");
 				return;
 			}
 			
@@ -659,13 +659,13 @@ void ApplyPickup(int client, PickupType type)
 			// Remove after duration
 			CreateTimer(BOOST_DURATION, Timer_RemoveSpeedBoost, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Speed");
+			ZM_PrintToChat(client, "%t", "Pickup Speed");
 		}
 		case Pickup_Damage:
 		{
 			if (g_bHasDamageBoost[client])
 			{
-				PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Already Active");
+				ZM_PrintToChat(client, "%t", "Pickup Already Active");
 				return;
 			}
 			
@@ -673,7 +673,7 @@ void ApplyPickup(int client, PickupType type)
 			
 			CreateTimer(BOOST_DURATION, Timer_RemoveDamageBoost, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			
-			PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Damage");
+			ZM_PrintToChat(client, "%t", "Pickup Damage");
 		}
 	}
 	
@@ -704,7 +704,7 @@ public Action Timer_RemoveSpeedBoost(Handle timer, int userid)
 		SetPlayerLaggedMovementValue(client, g_flOriginalSpeed[client]);
 		g_bHasSpeedBoost[client] = false;
 		
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Expired Speed");
+		ZM_PrintToChat(client, "%t", "Pickup Expired Speed");
 	}
 	
 	return Plugin_Stop;
@@ -717,7 +717,7 @@ public Action Timer_RemoveDamageBoost(Handle timer, int userid)
 	if (client && IsClientInGame(client))
 	{
 		g_bHasDamageBoost[client] = false;
-		PrintToChat(client, "%t%t", ZM_PREFIX, "Pickup Expired Damage");
+		ZM_PrintToChat(client, "%t", "Pickup Expired Damage");
 	}
 	
 	return Plugin_Stop;

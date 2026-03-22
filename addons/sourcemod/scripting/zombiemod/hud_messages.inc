@@ -211,7 +211,7 @@ public Action Timer_ShowZombieSelfInfo(Handle timer, int userid)
 	PrintHintText(client, "%t", "Zombie Self Info", health);
 
 	/* Possible DoD:S bug that PrintHintText doesn't display after being killed */
-	PrintToChat(client, "%t", "Zombie Self Info", health);
+	ZM_PrintToChat(client, "%t", "Zombie Self Info", health);
 
 	return Plugin_Stop;
 }
@@ -224,7 +224,7 @@ public Action Timer_ShowZombieSelfInfo(Handle timer, int userid)
 void HUD_ShowGameCommencing()
 {
 	// Show initial messages
-	PrintToChatAll("%t%t", ZM_PREFIX, "Game Commencing");
+	ZM_PrintToChatAll("%t", "Game Commencing");
 	PrintCenterTextAll("%t", "Game Commencing");
 	
 	// Create repeating commencing messages

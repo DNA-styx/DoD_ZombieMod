@@ -219,7 +219,7 @@ bool CheckWinConditions()
 	}
 	else if (numHumans == 1 && !g_iLastHuman)
 	{
-		PrintToChatAll("%t%t", ZM_PREFIX, "Last Human Beaconed");
+		ZM_PrintToChatAll("%t", "Last Human Beaconed");
 		EmitSoundToAll(g_szSounds[Sound_LastManStanding]);
 		
 		// Find and set the last human
@@ -248,7 +248,7 @@ RoundEnd(winningTeam)
 	
 	if (winLimitReached)
 	{
-		PrintToChatAll("%t%t", ZM_PREFIX, "Win Limit Reached");
+		ZM_PrintToChatAll("%t", "Win Limit Reached");
 		EmitSoundToAll(g_szSounds[Sound_End]);
 	}
 	else if (winningTeam == Team_Allies)

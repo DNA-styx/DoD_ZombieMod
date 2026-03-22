@@ -212,7 +212,7 @@ void HumanSkills_OnPlayerRunCmd(int client, int buttons, int lastButtons)
 	GetClientName(target,   targetName,   sizeof(targetName));
 	GetClientName(client,   reporterName, sizeof(reporterName));
 
-	PrintToChatAll("\x03[ZM]\x01 %s reports: %s is %s", reporterName, targetName, className);
+	ZM_PrintToChatAll("%s reports: %s is %s", reporterName, targetName, className);
 
 	g_fESPIdentifyCooldown[client] = currentTime + ESP_IDENTIFY_COOLDOWN;
 }
