@@ -1,8 +1,12 @@
-# DoD:S Zombie Mod - Plugin Development Specification v1.3
+# DoD:S Zombie Mod - Plugin Development Specification v1.3.1
 
 ## Overview
 
 Complete guide for creating custom human skill plugins and zombie class plugins for the DoD:S Zombie Mod. This modular plugin system allows developers to create custom skills and zombie classes without modifying the main plugin.
+
+**Version 1.3.1 Changes (dod_zm.inc v1.3.1):**
+- Added `ZM_PREFIX_PERSONAL` and `ZM_PREFIX_BROADCAST` chat prefix constants
+- Plugin developers should use these instead of raw color codes
 
 **Version 1.3 Changes (dod_zm.inc v1.3.0):**
 - Added zombie class API: `ZM_RegisterZombieClass`, `ZM_GetClientZombieClass`, `ZM_GetZombieClassName`
@@ -111,49 +115,44 @@ Done! Your skill appears in the equipment menu.
 
 ### Standard Message Format
 
-Skill plugins should use native SourceMod `PrintToChat()` functions with the standard `[ZM]` prefix for consistency.
+All chat messages must use `ZM_Chat()` or `ZM_ChatAll()` — stock functions
+defined in `dod_zm.inc` that handle the prefix and colour automatically.
+Do **not** call `PrintToChat` / `PrintToChatAll` directly with raw colour
+codes. Getting colour codes wrong (wrong position, leading space, wrong
+code for DoD:S) produces white text.
 
 **Personal Messages (to one player):**
 ```sourcepawn
-PrintToChat(client, "\x04[ZM]\x01 Ability activated!");
-// Shows: [ZM] Ability activated! 
-// Prefix color: Olive/Yellow (indicates targeted message)
+ZM_Chat(client, "Ability activated!");
+ZM_Chat(client, "Cooldown: %d seconds", remaining);
 ```
 
 **Broadcast Messages (to all players):**
 ```sourcepawn
-PrintToChatAll("\x03[ZM]\x01 Round starting!");
-// Shows: [ZM] Round starting!
-// Prefix color: Green (indicates server-wide message)
+ZM_ChatAll("%N selected a skill!", client);
 ```
 
-### Color Codes
+Both functions produce `[ZM] message` in green, regardless of the player's
+team. `\x04` is confirmed green in DoD:S for all teams. `\x03` is not used
+as it renders as team colour and appears white for some players.
 
-SourceMod chat uses color code escape sequences:
-
-| Code | Color | Usage |
-|------|-------|-------|
-| `\x01` | White/Default | Normal text |
-| `\x03` | Green | Highlights, team color |
-| `\x04` | Olive/Yellow | Personal messages, warnings |
-
-**Examples:**
+**Translation phrases** work the same way — pass `%t` as the format:
 ```sourcepawn
-// Simple message
-PrintToChat(client, "\x04[ZM]\x01 Skill activated!");
-
-// With formatting
-PrintToChat(client, "\x04[ZM]\x01 Cooldown: \x03%d\x01 seconds", time);
-
-// Player names
-PrintToChatAll("\x03[ZM]\x01 Player \x03%N\x01 selected a skill!", client);
+ZM_Chat(client, "%t", "My Phrase Key");
+ZM_ChatAll("%t", "My Broadcast Phrase", client);
 ```
 
-### Why Two Prefix Colors?
-- **Olive `\x04` prefix** = "This message is just for you"
-- **Green `\x03` prefix** = "Everyone sees this message"
+**Common mistake — do not do this:**
+```sourcepawn
+// Wrong — leading space before \x04 breaks colour
+PrintToChat(client, " \x04[ZM]\x01 message");
 
-This helps players instantly understand message context.
+// Wrong — \x04 passed as %s argument, not in literal format string
+PrintToChat(client, "%s message", "\x04[ZM]\x01");
+
+// Correct
+ZM_Chat(client, "message");
+```
 
 ---
 
@@ -256,8 +255,12 @@ forward void ZM_OnSkillAssigned(int client, ZMSkillID skillID);
 - `skillID` - The skill ID they selected (0 = none, 1+ = skill)
 
 **Use Case:** Initialize skill state and confirm selection to the player.
-Use `PrintCenterText(client, "...")` so the confirmation is clearly visible —
-the equipment menu covers most of the screen at this point.
+
+**You must use `PrintCenterText` to confirm skill selection.** The equipment
+menu covers most of the screen when this forward fires — a chat message alone
+will not be seen. Center text is visible over the top of the menu and gives
+the player clear confirmation of what they selected. Follow it with a
+`ZM_Chat` message describing how to use the skill.
 
 **Example:**
 ```sourcepawn
@@ -266,7 +269,7 @@ public void ZM_OnSkillAssigned(int client, ZMSkillID skillID)
     if (skillID == g_SkillID)
     {
         PrintCenterText(client, "Medic skill selected!");
-        PrintToChat(client, "\x04[ZM]\x01 Medic selected — right-click to heal.");
+        ZM_Chat(client, "Medic selected — right-click to heal.");
     }
 }
 ```
@@ -320,6 +323,11 @@ forward void ZM_OnClientSpawn(int client, ZMTeam team);
 
 ```sourcepawn
 #define ZM_LIBRARY "dod_zm_core"
+
+/* Chat prefix constants */
+#define ZM_PREFIX_PERSONAL  "\x04[ZM]\x01"  // Olive — personal messages
+#define ZM_PREFIX_BROADCAST "\x03[ZM]\x01"  // Green — broadcast messages
+
 #define ZM_MAX_SKILL_NAME 64
 #define ZM_MAX_SKILL_DESC 128
 
@@ -529,7 +537,7 @@ void ActivateAbility(int client)
     if (currentTime < g_NextUseTime[client])
     {
         float remaining = g_NextUseTime[client] - currentTime;
-        PrintToChat(client, "\x04[ZM]\x01 Ability on cooldown: \x03%.1f\x01 seconds", remaining);
+        ZM_Chat(client, "Ability on cooldown: %.1f seconds", remaining);
         return;
     }
     
@@ -538,7 +546,7 @@ void ActivateAbility(int client)
     
     // Set cooldown
     g_NextUseTime[client] = currentTime + 15.0;  // 15 seconds
-    PrintToChat(client, "\x04[ZM]\x01 Ability activated!");
+    ZM_Chat(client, "Ability activated!");
 }
 
 // Reset on spawn
@@ -567,7 +575,7 @@ void ApplyBuff(int client)
     g_BuffTimer[client] = CreateTimer(10.0, Timer_RemoveBuff, 
         GetClientUserId(client));
     
-    PrintToChat(client, "\x04[ZM]\x01 Low gravity activated for \x0310\x01 seconds!");
+    ZM_Chat(client, "Low gravity activated for 10 seconds!");
 }
 
 public Action Timer_RemoveBuff(Handle timer, int userId)
@@ -579,7 +587,7 @@ public Action Timer_RemoveBuff(Handle timer, int userId)
         SetEntityGravity(client, 1.0);
         g_BuffTimer[client] = null;
         
-        PrintToChat(client, "\x04[ZM]\x01 Buff expired!");
+        ZM_Chat(client, "Buff expired!");
     }
     return Plugin_Stop;
 }
@@ -610,7 +618,7 @@ public void ZM_OnSkillAssigned(int client, ZMSkillID skillID)
         SetEntityHealth(client, health + 50);
         
         PrintToChat(client, "\x04[ZM]\x01 \x03+50 HP\x01 bonus!");
-        PrintToChatAll("\x03[ZM]\x01 Player \x03%N\x01 selected Tank skill!", client);
+        ZM_ChatAll("Player %N selected Tank skill!", client);
     }
 }
 ```
@@ -627,7 +635,7 @@ void UseCharge(int client)
 {
     if (g_Charges[client] >= MAX_CHARGES)
     {
-        PrintToChat(client, "\x04[ZM]\x01 No charges left (\x03%d/%d\x01)", 
+        ZM_Chat(client, "No charges left (%d/%d)", 
             g_Charges[client], MAX_CHARGES);
         return;
     }
@@ -635,7 +643,7 @@ void UseCharge(int client)
     g_Charges[client]++;
     
     // Do ability
-    PrintToChat(client, "\x04[ZM]\x01 Charge used (\x03%d/%d\x01)", 
+    ZM_Chat(client, "Charge used (%d/%d)", 
         g_Charges[client], MAX_CHARGES);
 }
 
@@ -746,7 +754,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, /*...*/)
 5. **Handle OnLibraryRemoved:** Clean up and reset `g_SkillID`
 6. **Check skill active:** Always use `ZM_GetClientSkill(client) == g_SkillID`
 7. **Check team:** Use `ZM_IsClientHuman(client)` for human-only abilities
-8. **Use standard prefix:** Use `\x04[ZM]\x01` for personal or `\x03[ZM]\x01` for broadcast messages
+8. **Confirm skill selection:** Use `PrintCenterText` in `ZM_OnSkillAssigned` — chat alone is not visible over the menu
+9. **Use chat helpers:** Use `ZM_Chat(client, ...)` and `ZM_ChatAll(...)` — never call `PrintToChat` directly
 
 ### Common Mistakes:
 
@@ -756,7 +765,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, /*...*/)
 4. Not cleaning up timers - memory leaks
 5. Forgetting OnLibraryAdded - broken if ZM reloads
 6. Hardcoding skill ID - breaks when other skills load
-7. Using custom message prefixes - inconsistent player experience
+7. Calling PrintToChat directly instead of ZM_Chat — inconsistent prefix and colour
 
 ---
 
@@ -808,9 +817,9 @@ Before releasing your skill plugin:
 - [ ] Resets on round start
 - [ ] Timers cleaned up on disconnect
 - [ ] No console errors
-- [ ] Uses standard `[ZM]` prefix with appropriate colors
-- [ ] Personal messages use olive `\x04[ZM]` prefix
-- [ ] Broadcast messages use green `\x03[ZM]` prefix
+- [ ] Uses `ZM_Chat` / `ZM_ChatAll` for all chat messages
+- [ ] Does not call `PrintToChat` / `PrintToChatAll` directly
+- [ ] `ZM_OnSkillAssigned` uses `PrintCenterText` to confirm selection
 - [ ] Good player feedback (clear messages, sounds)
 - [ ] Works with other skills (no conflicts)
 - [ ] Handles main plugin reload gracefully
@@ -875,8 +884,8 @@ A: Share the .sp file! Others can compile it themselves. Consider posting on Git
 3. Track button state to prevent spam
 4. Clean up timers in disconnect/death handlers
 5. Use `ZM_IsClientHuman()` for human-only abilities
-6. Use `\x04[ZM]\x01` prefix for personal messages (olive color)
-7. Use `\x03[ZM]\x01` prefix for broadcast messages (green color)
+6. Use `ZM_Chat(client, ...)` for personal messages
+7. Use `ZM_ChatAll(...)` for broadcast messages
 8. Test with main plugin reload scenarios
 9. Document your skill's usage
 10. Balance carefully (cooldowns, costs, effects)
@@ -938,12 +947,12 @@ public void OnLibraryRemoved(const char[] name)
 }
 
 // Add your skill logic here
-// Use PrintToChat(client, "\x04[ZM]\x01 Message") for personal messages
-// Use PrintToChatAll("\x03[ZM]\x01 Message") for broadcasts
+// Use ZM_Chat(client, "Message") for personal messages
+// Use ZM_ChatAll("Message") for broadcasts
 ```
 
 ---
 
-**End of Specification v1.3**
+**End of Specification v1.3.1**
 
 *This document contains everything needed to create custom skill and zombie class plugins for DoD:S Zombie Mod.*
