@@ -470,7 +470,6 @@ bool SpawnGasCloudAtAim(int client)
 	CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
 
 	EmitSoundToAll(TELEPORT_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
-	ZM_PrintToChat(client, "Gas cloud deployed!");
 
 	return true;
 }
