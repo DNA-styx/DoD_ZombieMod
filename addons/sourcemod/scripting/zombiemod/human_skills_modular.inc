@@ -61,6 +61,41 @@ void ModularSkills_OnPluginStart()
 	RebuildSkillMenu();
 }
 
+void ModularSkills_OnMapStart()
+{
+	/* Scan for stale skill registrations from plugins that have been
+	 * unloaded or deleted since the last map. Remove them and compact
+	 * the array so the menu stays accurate. Runs at map start when no
+	 * clients have skills assigned, so no per-client cleanup needed. */
+	int i = 0;
+	while (i < g_SkillCount)
+	{
+		Handle plugin = g_RegisteredSkills[i].plugin;
+
+		/* Built-in skills (null handle) are always kept.
+		 * For external skills, check if the plugin is still running. */
+		if (plugin != null && GetPluginStatus(plugin) != Plugin_Running)
+		{
+			/* Plugin is gone — shift remaining entries down */
+			for (int j = i; j < g_SkillCount - 1; j++)
+			{
+				strcopy(g_RegisteredSkills[j].name,        ZM_MAX_SKILL_NAME, g_RegisteredSkills[j+1].name);
+				strcopy(g_RegisteredSkills[j].description, ZM_MAX_SKILL_DESC, g_RegisteredSkills[j+1].description);
+				g_RegisteredSkills[j].plugin = g_RegisteredSkills[j+1].plugin;
+			}
+			g_SkillCount--;
+			PrintToServer("[Zombie Mod] Removed stale skill registration (plugin unloaded)");
+			/* Don't increment i — re-check the slot now holding the shifted entry */
+		}
+		else
+		{
+			i++;
+		}
+	}
+
+	RebuildSkillMenu();
+}
+
 void RegisterBuiltInSkills()
 {
 	/* ESP is the only built-in skill; ID will be 1 */
