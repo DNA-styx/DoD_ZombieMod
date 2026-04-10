@@ -184,9 +184,6 @@ public Action Timer_CreateRoundTimer(Handle timer)
 	
 	// Reset pickup spawn timer for new round
 	Pickups_OnRoundStart();
-
-	// Start ambient sound track
-	Sounds_OnRoundStart();
 	
 	return Plugin_Continue;
 }
@@ -246,9 +243,6 @@ RoundEnd(winningTeam)
 {
 	// Disable zombie class features (teleporter, etc.)
 	ZombieClasses_OnRoundEnd();
-
-	// Stop ambient sound track
-	Sounds_OnRoundEnd();
 	
 	bool winLimitReached = ++g_iRoundWins >= g_ConVarInts[ConVar_WinLimit];
 	

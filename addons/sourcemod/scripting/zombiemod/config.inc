@@ -40,9 +40,8 @@ enum
 	Sound_HumansWin, 
 	Sound_LastManStanding, 
 	Sound_End, 
-	Sound_FinishHim,
-	Sound_Ambience,
-
+	Sound_FinishHim, 
+	
 	Sound_Size
 }
 
@@ -88,8 +87,7 @@ static const char g_szSoundKeyNames[Sound_Size][] =
 	"Sound_Humans_Win", 
 	"Sound_LastManStanding", 
 	"Sound_End", 
-	"Sound_FinishHim",
-	"Sound_Ambience"
+	"Sound_FinishHim"
 };
 
 static const char g_szModelKeyNames[Model_Size][] =

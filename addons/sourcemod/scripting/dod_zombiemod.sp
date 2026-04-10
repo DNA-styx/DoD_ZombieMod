@@ -67,7 +67,6 @@
 #include "zombiemod/zombie_classes_modular.inc"
 #include "zombiemod/hud_messages.inc"
 #include "zombiemod/pickups.inc"
-#include "zombiemod/sounds.inc"
 
 public Plugin myinfo = 
 {
@@ -170,16 +169,10 @@ public void OnMapStart()
 {
 	// Recreate pickup timer and precache
 	Pickups_OnMapStart();
-
+	
 	// Precache zombie class sounds/effects
 	ZombieClasses_OnMapStart();
-
+	
 	// Recreate HUD timers
 	HUD_OnMapStart();
-
-	// Remove any skill registrations from unloaded plugins
-	ModularSkills_OnMapStart();
-
-	// Precache and register ambience sound
-	Sounds_OnMapStart();
 }
