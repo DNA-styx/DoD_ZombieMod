@@ -25,6 +25,11 @@ Handle g_hAmbienceTimer = null;
 
 void Sounds_OnMapStart()
 {
+	/* Timer was auto-killed by TIMER_FLAG_NO_MAPCHANGE on map change.
+	 * Null the handle so Sounds_StopAmbience doesn't try to KillTimer
+	 * an already-dead handle on the next round start. */
+	g_hAmbienceTimer = null;
+
 	/* Precache ambience sound and add to downloads table if configured */
 	if (g_szSounds[Sound_Ambience][0] != '\0')
 	{
@@ -41,6 +46,10 @@ void Sounds_OnRoundStart()
 		return;
 
 	if (g_szSounds[Sound_Ambience][0] == '\0')
+		return;
+
+	/* Per-map override — some maps have their own ambient sounds */
+	if (!g_bWhiteListed[WhiteList_Ambience])
 		return;
 
 	Sounds_PlayAmbience();

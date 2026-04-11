@@ -40,8 +40,9 @@ enum
 	Sound_HumansWin, 
 	Sound_LastManStanding, 
 	Sound_End, 
-	Sound_FinishHim, 
-	
+	Sound_FinishHim,
+	Sound_Ambience,
+
 	Sound_Size
 }
 
@@ -71,8 +72,9 @@ enum
 	WhiteList_Objectives, 
 	WhiteList_Environment, 
 	WhiteList_TriggerHurts, 
-	WhiteList_TeamBlockers, 
-	
+	WhiteList_TeamBlockers,
+	WhiteList_Ambience,     /* 1 = play ZM ambience, 0 = leave map sounds alone */
+
 	WhiteList_Size
 }
 
@@ -87,7 +89,8 @@ static const char g_szSoundKeyNames[Sound_Size][] =
 	"Sound_Humans_Win", 
 	"Sound_LastManStanding", 
 	"Sound_End", 
-	"Sound_FinishHim"
+	"Sound_FinishHim",
+	"Sound_Ambience"
 };
 
 static const char g_szModelKeyNames[Model_Size][] =
@@ -205,10 +208,11 @@ void LoadConfig()
 		
 		if (KvJumpToKey(kv, mapName, false))
 		{
-			g_bWhiteListed[WhiteList_Objectives] = view_as<bool>(KvGetNum(kv, "Objectives", false));
-			g_bWhiteListed[WhiteList_Environment] = view_as<bool>(KvGetNum(kv, "Environment", false));
+			g_bWhiteListed[WhiteList_Objectives]   = view_as<bool>(KvGetNum(kv, "Objectives", false));
+			g_bWhiteListed[WhiteList_Environment]  = view_as<bool>(KvGetNum(kv, "Environment", false));
 			g_bWhiteListed[WhiteList_TriggerHurts] = view_as<bool>(KvGetNum(kv, "TriggerHurts", false));
 			g_bWhiteListed[WhiteList_TeamBlockers] = view_as<bool>(KvGetNum(kv, "TeamBlockers", false));
+			g_bWhiteListed[WhiteList_Ambience]     = view_as<bool>(KvGetNum(kv, "Ambience", true));
 		}
 		else
 		{
@@ -216,6 +220,8 @@ void LoadConfig()
 			{
 				g_bWhiteListed[i] = false;
 			}
+			/* Ambience defaults to on for maps not in the whitelist */
+			g_bWhiteListed[WhiteList_Ambience] = true;
 		}
 		
 		CloseHandle(kv);
