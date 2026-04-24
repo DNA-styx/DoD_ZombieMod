@@ -249,6 +249,9 @@ RoundEnd(winningTeam)
 
 	// Stop ambient sound track
 	Sounds_OnRoundEnd();
+
+	// Notify skill plugins
+	ModularSkills_OnRoundEnd();
 	
 	bool winLimitReached = ++g_iRoundWins >= g_ConVarInts[ConVar_WinLimit];
 	

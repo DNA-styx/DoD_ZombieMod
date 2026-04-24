@@ -88,10 +88,16 @@ enum ZombieClass
 	ZombieClass_Normal = 0,
 	ZombieClass_Gas,
 	ZombieClass_TNT,
-	ZombieClass_Ghost
+	ZombieClass_Ghost,
+
+	ZombieClass_Size
 }
 
 int g_iZombieClass[MAXPLAYERS+1];
+
+/* Tracks when each client last picked each zombie class (GetGameTime).
+ * Reset to 0.0 on round start and client disconnect. */
+float g_fClassLastPicked[MAXPLAYERS+1][ZombieClass_Size];
 
 // ============================================================================
 // Human Skills (Built-in)

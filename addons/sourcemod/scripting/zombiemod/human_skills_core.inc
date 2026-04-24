@@ -109,10 +109,7 @@ public int MenuHandler_HumanSkill(Menu menu, MenuAction action, int client, int 
 // Getters
 // ============================================================================
 
-HumanSkill HumanSkills_GetSkill(int client)
-{
-	return view_as<HumanSkill>(g_iHumanSkill[client]);
-}
+/* HumanSkills_GetSkill removed — unused */
 
 bool HumanSkills_HasESP(int client)
 {

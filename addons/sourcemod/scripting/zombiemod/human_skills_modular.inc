@@ -234,7 +234,6 @@ void ModularSkills_OnRoundStart()
 
 void ModularSkills_OnRoundEnd()
 {
-	// Call forward
 	Call_StartForward(g_Forward_OnRoundEnd);
 	Call_Finish();
 }
@@ -329,10 +328,7 @@ public int Native_IsModActive(Handle plugin, int numParams)
 // GETTERS
 // ============================================================================
 
-int ModularSkills_GetClientSkill(int client)
-{
-	return g_ClientSkillID[client];
-}
+/* ModularSkills_GetClientSkill removed — unused */
 
 // For backwards compatibility with ESP skill (which is now ID 1)
 bool ModularSkills_HasESP(int client)

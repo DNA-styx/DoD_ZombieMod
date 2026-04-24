@@ -50,7 +50,7 @@ bool g_bGhostAlphaIncreasing[MAXPLAYERS+1];
 Handle g_hGhostAlphaTimers[MAXPLAYERS+1];
 
 // Class selection menu
-Menu g_ZombieClassMenu = null;
+/* Class selection menu is built per-client at display time (see ShowZombieClassMenuToClient) */
 
 // ============================================================================
 // INITIALIZATION
@@ -86,13 +86,52 @@ void ZombieClasses_OnPluginStart()
 
 void CreateZombieClassMenu()
 {
-	g_ZombieClassMenu = new Menu(MenuHandler_ZombieClass);
-	g_ZombieClassMenu.SetTitle("Select Zombie Class:");
-	g_ZombieClassMenu.AddItem("0", "Random Class");
-	g_ZombieClassMenu.AddItem("1", "Gas Zombie (Toxic cloud on death)");
-	g_ZombieClassMenu.AddItem("2", "TNT Zombie (Explodes on death)");
-	g_ZombieClassMenu.AddItem("3", "Ghost Zombie (Nearly invisible)");
-	g_ZombieClassMenu.ExitButton = true;   /* 0. Exit — assigns random class same as timeout */
+	/* Menu is now built per-client at display time to show cooldown state.
+	 * This stub is kept so existing call sites compile. */
+}
+
+void ShowZombieClassMenuToClient(int client)
+{
+	Menu menu = new Menu(MenuHandler_ZombieClass);
+	menu.SetTitle("Select Zombie Class:");
+	menu.ExitButton = true;
+
+	/* Random and Normal are never on cooldown */
+	menu.AddItem("0", "Random Class");
+	menu.AddItem("4", "Normal Zombie");
+
+	/* Special classes — show cooldown remaining if applicable */
+	float cooldown = g_ConVarFloats[ConVar_Zombie_Class_Cooldown];
+	float now      = GetGameTime();
+
+	static const char classNames[][] = { "", "Gas Zombie", "TNT Zombie", "Ghost Zombie" };
+	static const char classDescs[][] = { "", "(Toxic cloud on death)", "(Explodes on death)", "(Nearly invisible)" };
+
+	for (int c = 1; c <= 3; c++)
+	{
+		char label[128];
+		char info[8];
+		IntToString(c, info, sizeof(info));
+
+		if (cooldown > 0.0 && !IsFakeClient(client))
+		{
+			float lastPicked = g_fClassLastPicked[client][c];
+			float elapsed    = now - lastPicked;
+
+			if (lastPicked > 0.0 && elapsed < cooldown)
+			{
+				int remaining = RoundToCeil(cooldown - elapsed);
+				Format(label, sizeof(label), "%s %s [%ds cooldown]", classNames[c], classDescs[c], remaining);
+				menu.AddItem(info, label, ITEMDRAW_DISABLED);
+				continue;
+			}
+		}
+
+		Format(label, sizeof(label), "%s %s", classNames[c], classDescs[c]);
+		menu.AddItem(info, label);
+	}
+
+	menu.Display(client, 30);
 }
 
 void ZombieClasses_OnMapStart()
@@ -110,9 +149,13 @@ void ZombieClasses_OnRoundStart()
 {
 	// Disable teleport at round start
 	g_bTeleportActive = false;
-	
-	// Note: TELEPORT_DELAY timer is now started when mod becomes active (Timer_RestartRound)
-	// This prevents teleports before the actual zombie mod game starts
+
+	// Reset class cooldowns for all clients
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		for (int c = 0; c < view_as<int>(ZombieClass_Size); c++)
+			g_fClassLastPicked[i][c] = 0.0;
+	}
 }
 
 void ZombieClasses_OnModActive()
@@ -144,6 +187,9 @@ void ZombieClasses_OnClientDisconnect(int client)
 	g_iZombieClass[client]              = view_as<int>(ZombieClass_Normal);
 	g_fGasAbilityNextUse[client]        = 0.0;  /* Clear stale cooldown for next occupant of this slot */
 	g_fGasCooldownMessageNext[client]   = 0.0;
+
+	for (int c = 0; c < view_as<int>(ZombieClass_Size); c++)
+		g_fClassLastPicked[client][c] = 0.0;
 	
 	// Clean up any active gas timer
 	if (g_hGasCloudTimers[client] != INVALID_HANDLE)
@@ -182,7 +228,7 @@ void ZombieClasses_OnSpawn(int client)
 	// Bots always get random class immediately
 	if (IsFakeClient(client))
 	{
-		AssignRandomZombieClass(client, chance);
+		AssignRandomZombieClass(client);
 		ApplyZombieClassEffects(client);
 		return;
 	}
@@ -200,43 +246,19 @@ void ZombieClasses_OnSpawn(int client)
 public Action Timer_ShowZombieClassMenu(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
-	
-	// Verify client is still valid and is a zombie
+
 	if (client && IsClientInGame(client) && GetClientTeam(client) == Team_Axis)
 	{
-		g_ZombieClassMenu.Display(client, 30);  // 30 second timeout
+		ShowZombieClassMenuToClient(client);
 	}
-	
+
 	return Plugin_Stop;
 }
 
-void AssignRandomZombieClass(int client, int chance)
+void AssignRandomZombieClass(int client)
 {
-	// Random chance for special class
-	int roll = GetRandomInt(1, 100);
-	
-	if (roll <= chance)
-	{
-		// Choose between special classes: Gas, TNT, Ghost
-		int specialClass = GetRandomInt(1, 3);  // 1=Gas, 2=TNT, 3=Ghost
-		
-		if (specialClass == 1)
-		{
-			g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
-		}
-		else if (specialClass == 2)
-		{
-			g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
-		}
-		else  // specialClass == 3
-		{
-			g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
-		}
-	}
-	else
-	{
-		g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
-	}
+	/* Pick uniformly from all four classes including Normal */
+	g_iZombieClass[client] = view_as<ZombieClass>(GetRandomInt(0, view_as<int>(ZombieClass_Size) - 1));
 }
 
 void ApplyZombieClassEffects(int client)
@@ -756,27 +778,34 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 		menu.GetItem(selection, info, sizeof(info));
 		int choice = StringToInt(info);
 		
-		// Get class chance for random calculation
-		int chance = g_ConVarInts[ConVar_Class_Chance];
-		
 		// Apply class based on selection
 		switch (choice)
 		{
 			case 0:  // Random
 			{
-				AssignRandomZombieClass(client, chance);
+				AssignRandomZombieClass(client);
 			}
 			case 1:  // Gas
 			{
 				g_iZombieClass[client] = view_as<int>(ZombieClass_Gas);
+				if (!IsFakeClient(client))
+					g_fClassLastPicked[client][ZombieClass_Gas] = GetGameTime();
 			}
 			case 2:  // TNT
 			{
 				g_iZombieClass[client] = view_as<int>(ZombieClass_TNT);
+				if (!IsFakeClient(client))
+					g_fClassLastPicked[client][ZombieClass_TNT] = GetGameTime();
 			}
 			case 3:  // Ghost
 			{
 				g_iZombieClass[client] = view_as<int>(ZombieClass_Ghost);
+				if (!IsFakeClient(client))
+					g_fClassLastPicked[client][ZombieClass_Ghost] = GetGameTime();
+			}
+			case 4:  // Normal (explicit pick — no cooldown)
+			{
+				g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
 			}
 		}
 		
@@ -792,8 +821,7 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 		/* Timeout or manual exit — assign random class */
 		if (IsClientInGame(client) && GetClientTeam(client) == Team_Axis)
 		{
-			int chance = g_ConVarInts[ConVar_Class_Chance];
-			AssignRandomZombieClass(client, chance);
+			AssignRandomZombieClass(client);
 			ApplyZombieClassEffects(client);
 			HUD_ShowZombieSpawnInfo(GetClientUserId(client));
 		}

@@ -19,6 +19,7 @@ enum
 	ConVar_Beacon_Interval,
 	ConVar_Spawn_NoClip_Time,
 	ConVar_Class_Chance,
+	ConVar_Zombie_Class_Cooldown,
 	ConVar_Gas_Cooldown,
 	ConVar_Pickup_Timeout,
 	ConVar_Ghost_Alpha_Max,
@@ -54,7 +55,8 @@ void ConVars_OnPluginStart()
 	AddConVar(ConVar_Zombie_CritReward,CreateConVar("dod_zombiemod_crit_reward",     "250",  "Health given to zombie that lands a crit kill", FCVAR_PLUGIN, true, 0.0, true, 100.0));
 	AddConVar(ConVar_Zombie_Speed,     CreateConVar("dod_zombiemod_zombie_speed",    "0.65", "Zombie movement speed on spawn", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Zombie_MaxSpeed,  CreateConVar("dod_zombiemod_zombie_maxspeed", "0.85", "Maximum zombie movement speed", FCVAR_PLUGIN, true, 0.0));
-	AddConVar(ConVar_Class_Chance,     CreateConVar("dod_zombiemod_class_chance",    "50",   "Chance (%) zombie spawns as special class (0=disabled)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
+	AddConVar(ConVar_Class_Chance,          CreateConVar("dod_zombiemod_class_chance",          "50",  "Chance (%) zombie spawns as special class (0=disabled)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
+	AddConVar(ConVar_Zombie_Class_Cooldown, CreateConVar("dod_zombiemod_zombie_class_cooldown", "120", "Seconds before a real player can pick the same zombie class again (0=disabled)", FCVAR_PLUGIN, true, 0.0));
 	AddConVar(ConVar_Gas_Cooldown,     CreateConVar("dod_zombiemod_gas_cooldown",    "15.0", "Seconds between Gas Zombie ability uses", FCVAR_PLUGIN, true, 5.0, true, 60.0));
 	AddConVar(ConVar_Ghost_Alpha_Max,  CreateConVar("dod_zombiemod_ghost_alpha_max", "50.0", "Ghost Zombie max alpha (0=invisible, 255=fully visible)", FCVAR_PLUGIN, true, 0.0, true, 255.0));
 	AddConVar(ConVar_Teleport_Chance,  CreateConVar("dod_zombiemod_teleport_chance", "25",   "Chance (%) zombie teleports to human spawn on respawn (0=disabled)", FCVAR_PLUGIN, true, 0.0, true, 100.0));
