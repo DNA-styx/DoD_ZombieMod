@@ -339,7 +339,7 @@ RoundEnd(winningTeam)
 				int client = GetArrayCell(topHumanKills, i);
 				
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i++, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsHuman]);
+				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i + 1, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsHuman]);
 				
 				DrawPanelText(topScorePanel, buffer);
 			}
@@ -367,7 +367,7 @@ RoundEnd(winningTeam)
 				int client = GetArrayCell(topZombieKills, i);
 				
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i + 1, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsZombie]);
+				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i + 1, buffer, g_ClientInfo_Int[client][ClientInfo_KillsAsZombie]);
 				
 				DrawPanelText(topScorePanel, buffer);
 			}
