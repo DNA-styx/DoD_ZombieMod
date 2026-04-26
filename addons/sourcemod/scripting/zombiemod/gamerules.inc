@@ -399,12 +399,12 @@ RoundEnd(winningTeam)
 
 public SortByKillsAsHuman(client, target, Handlearray, Handlehandle)
 {
-	return g_ClientInfo_Int[client][ClientInfo_KillsAsHuman] >= g_ClientInfo_Int[target][ClientInfo_KillsAsHuman];
+	return g_ClientInfo_Int[target][ClientInfo_KillsAsHuman] - g_ClientInfo_Int[client][ClientInfo_KillsAsHuman];
 }
 
 public SortByKillsAsZombie(client, target, Handlearray, Handlehandle)
 {
-	return g_ClientInfo_Int[client][ClientInfo_KillsAsZombie] >= g_ClientInfo_Int[target][ClientInfo_KillsAsZombie];
+	return g_ClientInfo_Int[target][ClientInfo_KillsAsZombie] - g_ClientInfo_Int[client][ClientInfo_KillsAsZombie];
 }
 
 public MenuHandler_Dummy(Handlepanel, MenuAction:menuAction, param1, param2)
