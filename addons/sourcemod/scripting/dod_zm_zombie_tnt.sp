@@ -10,6 +10,8 @@
  * attaches the death effect.
  *
  * Version 1.1.0: Added visual TNT chest indicator
+ * Version 1.1.1: Fixed TNT model not attaching to real players (repeating timer)
+ * Version 1.1.2: Hide TNT model from zombie wearing it (visible to others only)
  * =============================================================================
  */
 
@@ -21,7 +23,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_VERSION "1.1.2"
 
 public Plugin myinfo =
 {
@@ -128,7 +130,9 @@ public void ZM_OnClientSpawn(int client, ZMTeam team)
 	// Only attach to zombies (Axis team)
 	if (team == ZM_TEAM_AXIS)
 	{
-		CreateTimer(0.2, Timer_CheckAndAttachTNT, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		// Use repeating timer to handle delayed class selection for real players
+		CreateTimer(0.5, Timer_CheckAndAttachTNT, GetClientUserId(client), 
+			TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
@@ -160,15 +164,24 @@ public void ZM_OnZombieDeath(int client, ZMClassID classID)
 public Action Timer_CheckAndAttachTNT(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
-	if (client > 0 && IsClientInGame(client) && IsPlayerAlive(client))
+	
+	// Stop if client invalid/disconnected
+	if (!client || !IsClientInGame(client))
+		return Plugin_Stop;
+	
+	// Stop if dead
+	if (!IsPlayerAlive(client))
+		return Plugin_Stop;
+	
+	// Only attach if this is a TNT zombie
+	if (ZM_GetClientZombieClass(client) == g_ClassID)
 	{
-		// Only attach if this is a TNT zombie
-		if (ZM_GetClientZombieClass(client) == g_ClassID)
-		{
-			CreateTNT(client);
-		}
+		CreateTNT(client);
+		return Plugin_Stop;  // Found TNT class, stop checking
 	}
-	return Plugin_Stop;
+	
+	// Keep checking until class is selected or player dies
+	return Plugin_Continue;
 }
 
 void CreateTNT(int client)
@@ -197,6 +210,9 @@ void CreateTNT(int client)
 	
 	TeleportEntity(tnt, offsetPos, offsetAng, NULL_VECTOR);
 	
+	// Hook transmit to hide from owner (zombie wearing it)
+	SDKHook(tnt, SDKHook_SetTransmit, Hook_TNTTransmit);
+	
 	// Store as Entity Reference to prevent issues if entity is deleted externally
 	g_iPlayerTNT[client] = EntIndexToEntRef(tnt);
 }
@@ -211,10 +227,29 @@ void RemoveTNT(int client)
 		int tnt = EntRefToEntIndex(entRef);
 		if (tnt != INVALID_ENT_REFERENCE && IsValidEntity(tnt))
 		{
+			// Unhook before killing
+			SDKUnhook(tnt, SDKHook_SetTransmit, Hook_TNTTransmit);
 			AcceptEntityInput(tnt, "Kill");
 		}
 		g_iPlayerTNT[client] = INVALID_ENT_REFERENCE;
 	}
+}
+
+// ============================================================================
+// TNT TRANSMIT HOOK - Hide from owner, show to everyone else
+// ============================================================================
+
+public Action Hook_TNTTransmit(int tnt, int viewer)
+{
+	// Get the parent entity (the zombie wearing the TNT)
+	int owner = GetEntPropEnt(tnt, Prop_Data, "m_hMoveParent");
+	
+	// Hide from the zombie wearing it
+	if (owner == viewer)
+		return Plugin_Handled;
+	
+	// Show to everyone else
+	return Plugin_Continue;
 }
 
 // ============================================================================
