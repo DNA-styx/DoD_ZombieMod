@@ -10,6 +10,11 @@
  * DoD:S ZM - Flame Rockets
  *
  * Rocket launchers ignite players on hit and deal bonus damage.
+ * Includes fix for looping fire sound bug.
+ *
+ * Fire sound fix based on:
+ * IgniteEntity Sound Fix by Root_
+ * https://github.com/zadroot/IgniteEntityFix/
  * =============================================================================
  */
 
@@ -18,9 +23,15 @@ public Plugin myinfo =
     name        = "DoD:S ZM - Flame Rockets",
     author      = "donkey, modified for ZombieMod by Claude.ai guided by DNA.styx",
     description = "Rocket launchers ignite players on hit",
-    version     = "1.0.2",
+    version     = "1.0.3",
     url         = "https://github.com/DNA-styx/DoD_ZombieMod_Plugins"
 };
+
+/* ============================================================================
+ * Constants
+ * ============================================================================ */
+
+#define FIRE_LOOP_SOUND "ambient/fire/fire_small_loop2.wav"
 
 /* ============================================================================
  * Globals
@@ -99,6 +110,9 @@ public void OnPluginStart()
     for (int i = 1; i <= MaxClients; i++)
         if (IsClientInGame(i))
             SDKHook(i, SDKHook_OnTakeDamage, OnTakeDamage);
+
+    /* Hook fire sound to fix looping bug */
+    AddNormalSoundHook(FireLoopSound);
 
     AutoExecConfig(true, "dod_zm_flamerockets", "zombiemod");
 }
@@ -222,6 +236,62 @@ public Action Timer_SetAmmo(Handle timer, int userId)
                 return Plugin_Stop;
             }
         }
+    }
+
+    return Plugin_Stop;
+}
+
+/* ============================================================================
+ * FireLoopSound - Fix for looping fire sound bug
+ *
+ * Hooks fire sound emissions and blocks the default looping sound.
+ * Instead, manually emits sound only for players that are actually burning.
+ * This prevents the sound from getting stuck after player death or respawn.
+ * ============================================================================ */
+
+public Action FireLoopSound(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH],
+    int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
+    char soundEntry[PLATFORM_MAX_PATH], int &seed)
+{
+    /* Check if this is the fire loop sound */
+    if (!StrEqual(sample, FIRE_LOOP_SOUND, false))
+        return Plugin_Continue;
+
+    /* Block the default sound emission */
+    /* We'll manually emit it only for players who are actually burning */
+    for (int client = 1; client <= MaxClients; client++)
+    {
+        if (IsClientInGame(client) && IsPlayerAlive(client) &&
+            GetEntPropEnt(client, Prop_Send, "m_hEffectEntity") < 1)
+        {
+            /* Create timer to check and emit fire sound if player is burning */
+            CreateTimer(0.1, Timer_EmitFireSound, client, TIMER_FLAG_NO_MAPCHANGE);
+        }
+    }
+
+    return Plugin_Stop;
+}
+
+/* ============================================================================
+ * Timer_EmitFireSound - Emit fire sound only if client is actually burning
+ *
+ * Checks the m_hEffectEntity netprop to determine if the client is burning.
+ * If burning (value > 0), emits the ambient fire sound from the player's position.
+ * ============================================================================ */
+
+public Action Timer_EmitFireSound(Handle timer, any client)
+{
+    /* Check if client is actually ignited by checking m_hEffectEntity */
+    /* If value is > 0, the player is burning */
+    if (IsClientInGame(client) && IsPlayerAlive(client) &&
+        GetEntPropEnt(client, Prop_Send, "m_hEffectEntity") > 0)
+    {
+        /* Get player's position */
+        float origin[3];
+        GetClientAbsOrigin(client, origin);
+
+        /* Emit ambient sound from the player's position */
+        EmitAmbientSound(FIRE_LOOP_SOUND, origin, client);
     }
 
     return Plugin_Stop;
