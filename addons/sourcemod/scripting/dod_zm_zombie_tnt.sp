@@ -12,6 +12,7 @@
  * Version 1.1.0: Added visual TNT chest indicator
  * Version 1.1.1: Fixed TNT model not attaching to real players (repeating timer)
  * Version 1.1.2: Hide TNT model from zombie wearing it (visible to others only)
+ * Version 1.1.3: Fixed crash when attacker disconnects before explosion
  * =============================================================================
  */
 
@@ -23,7 +24,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.2"
+#define PLUGIN_VERSION "1.1.3"
 
 public Plugin myinfo =
 {
@@ -310,6 +311,10 @@ public Action Timer_RemoveShake(Handle timer, int ref)
 
 void DamageNearbyEntities(float origin[3], float radius, int damage, int attacker)
 {
+	// Validate the attacker (who may have disconnected)
+	bool validAttacker = (attacker > 0 && attacker <= MaxClients && IsClientInGame(attacker));
+	int safeAttacker = validAttacker ? attacker : 0;
+	
 	/* Damage players */
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -332,7 +337,7 @@ void DamageNearbyEntities(float origin[3], float radius, int damage, int attacke
 		int finalDamage = RoundFloat(float(damage) * damageScale);
 
 		if (finalDamage > 0)
-			SDKHooks_TakeDamage(i, attacker, attacker, float(finalDamage),
+			SDKHooks_TakeDamage(i, safeAttacker, safeAttacker, float(finalDamage),
 				DMG_BLAST, -1, NULL_VECTOR, origin);
 	}
 

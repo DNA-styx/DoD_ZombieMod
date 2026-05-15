@@ -389,7 +389,6 @@ void CreateGasCloudAtDeath(int client)
 }
 
 // ============================================================================
-// ============================================================================
 // GAS ZOMBIE - ACTIVE ABILITY (Right-Click)
 // ============================================================================
 
@@ -495,6 +494,8 @@ bool SpawnGasCloudAtAim(int client)
 
 	return true;
 }
+
+// ============================================================================
 // GAS DAMAGE TIMER
 // ============================================================================
 
@@ -519,6 +520,11 @@ public Action Timer_GasDamage(Handle timer, Handle pack)
 	if (elapsed >= GAS_DURATION)
 		return Plugin_Stop;
 	
+	// Validate the original attacker (zombie who created the gas)
+	// If they disconnected or are no longer valid, use 0 (world damage)
+	bool validAttacker = (client > 0 && client <= MaxClients && IsClientInGame(client));
+	int attacker = validAttacker ? client : 0;
+	
 	// Damage all humans in radius
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -538,7 +544,8 @@ public Action Timer_GasDamage(Handle timer, Handle pack)
 		if (distance <= GAS_RADIUS)
 		{
 			// Deal damage (DMG_NERVEGAS = poison damage type)
-			SDKHooks_TakeDamage(i, gascloud, client, float(GAS_DAMAGE), DMG_NERVEGAS);
+			// Use validated attacker (or 0 for world damage)
+			SDKHooks_TakeDamage(i, gascloud, attacker, float(GAS_DAMAGE), DMG_NERVEGAS);
 		}
 	}
 	
