@@ -170,7 +170,9 @@ void SelectZombie()
 	
 	if (arraySize)
 	{
-		g_iZombie = GetArrayCell(clientArray, arraySize >= 2 ? GetURandomInt() % (arraySize - 1) : 0);
+		/* Pick uniformly across the full range. Previous formula used
+		 * `% (arraySize - 1)` which excluded the last array entry. */
+		g_iZombie = GetArrayCell(clientArray, GetURandomInt() % arraySize);
 	}
 	else
 	{

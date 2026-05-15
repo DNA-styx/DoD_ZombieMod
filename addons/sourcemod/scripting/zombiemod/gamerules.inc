@@ -519,7 +519,12 @@ public Action Timer_RestartRound(Handle timer)
 			}
 		}
 		
-		if (GetClientTeam(g_iZombie) != Team_Axis)
+		/* Guard against SelectZombie failure (no eligible clients).
+		 * Without this check, GetClientTeam(-1) and subsequent calls
+		 * would error with an invalid client index. */
+		if (g_iZombie > 0 && g_iZombie <= MaxClients
+			&& IsClientInGame(g_iZombie)
+			&& GetClientTeam(g_iZombie) != Team_Axis)
 		{
 			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
 			ChangeClientTeam(g_iZombie, Team_Axis);

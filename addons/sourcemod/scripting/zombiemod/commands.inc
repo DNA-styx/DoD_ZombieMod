@@ -104,7 +104,11 @@ void RedisplayTeamSelection(int client, const char[] message)
 
 public Action CommandListener_JoinTeam(int client, const char[] command, int numArgs)
 {
-	if (client && 0 < numArgs < 2)
+	/* numArgs == 1: client supplied exactly one team index argument.
+	 * Previous `0 < numArgs < 2` was a chained comparison bug — SourcePawn
+	 * doesn't chain comparisons, so `(0 < numArgs) < 2` evaluated to true
+	 * for any numArgs and the gate was effectively absent. */
+	if (client && numArgs == 1)
 	{
 		char arg[8];
 		GetCmdArg(1, arg, sizeof(arg));

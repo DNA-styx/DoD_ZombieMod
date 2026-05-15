@@ -139,10 +139,15 @@ public void OnClientDisconnect_Post(int client)
 		{
 			SelectZombie();
 			
-			SetPlayerState(g_iZombie, PlayerState_ObserverMode);
-			ChangeClientTeam(g_iZombie, Team_Axis);
-			
-			ZM_PrintToChatAll("%t", "Player Became Zombie", g_iZombie);
+			/* Guard against SelectZombie failure (no eligible clients). */
+			if (g_iZombie > 0 && g_iZombie <= MaxClients
+				&& IsClientInGame(g_iZombie))
+			{
+				SetPlayerState(g_iZombie, PlayerState_ObserverMode);
+				ChangeClientTeam(g_iZombie, Team_Axis);
+				
+				ZM_PrintToChatAll("%t", "Player Became Zombie", g_iZombie);
+			}
 		}
 		else if (numAllies == 0)
 		{
