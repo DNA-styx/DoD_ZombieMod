@@ -60,10 +60,10 @@ enum ClientInfo_Float
 	ClientInfo_Health
 }
 
-int g_ClientInfo_Int[DOD_MAXPLAYERS + 1][ClientInfo_Int];
-bool g_ClientInfo_Bool[DOD_MAXPLAYERS + 1][ClientInfo_Bool];
-float g_flPlayerSpawnTime[DOD_MAXPLAYERS + 1];  /* Spawn time used by OnShouldCollide no-clip window */
-float g_ClientInfo_Float[DOD_MAXPLAYERS + 1][ClientInfo_Float];
+int g_ClientInfo_Int[MAXPLAYERS + 1][ClientInfo_Int];
+bool g_ClientInfo_Bool[MAXPLAYERS + 1][ClientInfo_Bool];
+float g_flPlayerSpawnTime[MAXPLAYERS + 1];  /* Spawn time used by OnShouldCollide no-clip window */
+float g_ClientInfo_Float[MAXPLAYERS + 1][ClientInfo_Float];
 
 // ============================================================================
 // ConVar Storage

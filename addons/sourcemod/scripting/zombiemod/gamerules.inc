@@ -195,6 +195,15 @@ public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast
 {
 	if (g_bModActive)
 	{
+		/* Timer_CreateRoundTimer leaves g_iRoundTimer at -1 if entity
+		 * creation failed. Guard so we don't call ResumeTimer(-1)
+		 * and don't spin up Timer_RoundTimerThink with a bad ref. */
+		if (g_iRoundTimer <= 0)
+		{
+			LogError("Event_RoundActive: dod_round_timer entity not available");
+			return;
+		}
+		
 		ResumeTimer(g_iRoundTimer);
 		
 		g_hRoundTimer = CreateTimer(1.0, Timer_RoundTimerThink, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);

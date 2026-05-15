@@ -640,13 +640,25 @@ public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &dam
 		
 		if (g_ClientInfo_Float[client][ClientInfo_DamageScale] != 1.0)
 		{
-			static damageAccumulatorOffset;
+			/* Cache the datamap offset across calls. Use a separate
+			 * "checked" flag so a failed lookup (-1) doesn't get retried
+			 * forever, and -1 doesn't accidentally get used as an offset
+			 * later in this function. */
+			static int damageAccumulatorOffset = -1;
+			static bool damageAccumulatorChecked = false;
 			
-			if (!damageAccumulatorOffset && (damageAccumulatorOffset = FindDataMapInfo(client, "m_flDamageAccumulator")) == -1)
+			if (!damageAccumulatorChecked)
 			{
-				LogError("Error: Failed to obtain offset: \"m_flDamageAccumulator\"!");
-				return Plugin_Continue;
+				damageAccumulatorChecked = true;
+				damageAccumulatorOffset = FindDataMapInfo(client, "m_flDamageAccumulator");
+				if (damageAccumulatorOffset == -1)
+				{
+					LogError("Error: Failed to obtain offset: \"m_flDamageAccumulator\"!");
+				}
 			}
+			
+			if (damageAccumulatorOffset == -1)
+				return Plugin_Continue;
 			
 			damage *= g_ClientInfo_Float[client][ClientInfo_DamageScale];
 			
