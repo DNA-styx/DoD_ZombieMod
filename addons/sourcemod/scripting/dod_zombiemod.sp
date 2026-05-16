@@ -128,8 +128,14 @@ public void OnConfigsExecuted()
 	}
 	#endif
 	
-	g_iRoundWins = g_iNumZombieSpawns = g_bModActive = g_bRoundEnded = false;
-	
+	/* Reset round state. Split out because the chained form mixed
+	 * int and bool assignments via `false == 0` coercion, which works
+	 * but reads as a bug. */
+	g_iRoundWins        = 0;
+	g_iNumZombieSpawns  = 0;
+	g_bModActive        = false;
+	g_bRoundEnded       = false;
+
 	g_hRoundTimer = null;
 	
 	g_iZombie = -1;

@@ -127,9 +127,11 @@ void PlaySoundFromPlayer(int client, const char[] sample)
 
 void AddPlayerKills(int client, int amount)
 {
-	static int fragOffset;
+	/* `static` was previously used here but the lookup re-runs every call,
+	 * so the modifier had no effect. Removed for clarity. */
+	int fragOffset = FindDataMapInfo(client, "m_iFrags");
 	
-	if ((fragOffset = FindDataMapInfo(client, "m_iFrags")) == -1)
+	if (fragOffset == -1)
 	{
 		LogError("Unable to find datamap offset: \"m_iFrags\" !");
 		
