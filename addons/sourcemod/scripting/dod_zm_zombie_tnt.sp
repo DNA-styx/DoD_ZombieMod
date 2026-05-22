@@ -13,6 +13,7 @@
  * Version 1.1.1: Fixed TNT model not attaching to real players (repeating timer)
  * Version 1.1.2: Hide TNT model from zombie wearing it (visible to others only)
  * Version 1.1.3: Fixed crash when attacker disconnects before explosion
+ * Version 1.1.4: Fixed TNT attaching to human players on team transition
  * =============================================================================
  */
 
@@ -24,7 +25,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.3"
+#define PLUGIN_VERSION "1.1.4"
 
 public Plugin myinfo =
 {
@@ -173,6 +174,10 @@ public Action Timer_CheckAndAttachTNT(Handle timer, any userid)
 	// Stop if dead
 	if (!IsPlayerAlive(client))
 		return Plugin_Stop;
+
+	// Stop if player is no longer on the zombie team
+	if (!ZM_IsClientZombie(client))
+		return Plugin_Stop;
 	
 	// Only attach if this is a TNT zombie
 	if (ZM_GetClientZombieClass(client) == g_ClassID)
@@ -314,31 +319,31 @@ void DamageNearbyEntities(float origin[3], float radius, int damage, int attacke
 	// Validate the attacker (who may have disconnected)
 	bool validAttacker = (attacker > 0 && attacker <= MaxClients && IsClientInGame(attacker));
 	int safeAttacker = validAttacker ? attacker : 0;
-	
-	/* Damage players */
+
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (!IsClientInGame(i) || !IsPlayerAlive(i))
 			continue;
 
-		/* Skip the TNT zombie that exploded */
-		if (i == attacker)
+		// Only damage humans (Allies)
+		if (!ZM_IsClientHuman(i))
 			continue;
 
 		float targetPos[3];
 		GetClientAbsOrigin(i, targetPos);
 
-		float distance = GetVectorDistance(origin, targetPos);
-		if (distance > radius)
+		float dist = GetVectorDistance(origin, targetPos);
+		if (dist > radius)
 			continue;
 
-		/* Linear falloff: full damage at center, zero at edge */
-		float damageScale = 1.0 - (distance / radius);
-		int finalDamage = RoundFloat(float(damage) * damageScale);
+		// Scale damage by distance
+		float scale = 1.0 - (dist / radius);
+		int scaledDamage = RoundFloat(float(damage) * scale);
 
-		if (finalDamage > 0)
-			SDKHooks_TakeDamage(i, safeAttacker, safeAttacker, float(finalDamage),
-				DMG_BLAST, -1, NULL_VECTOR, origin);
+		if (scaledDamage <= 0)
+			continue;
+
+		SDKHooks_TakeDamage(i, safeAttacker, safeAttacker, float(scaledDamage), DMG_BLAST);
 	}
 
 	/* Break props in radius */

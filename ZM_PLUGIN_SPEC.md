@@ -1,8 +1,12 @@
-# DoD:S Zombie Mod - Plugin Development Specification v1.3.1
+# DoD:S Zombie Mod - Plugin Development Specification v1.3.2
 
 ## Overview
 
 Complete guide for creating custom human skill plugins and zombie class plugins for the DoD:S Zombie Mod. This modular plugin system allows developers to create custom skills and zombie classes without modifying the main plugin.
+
+**Version 1.3.2 Changes:**
+- Added pitfall documentation for repeating class-poll timers (zombie class plugins)
+- Updated zombie class plugin template to include team validation in poll timers
 
 **Version 1.3.1 Changes (dod_zm.inc v1.3.1):**
 - Added `ZM_PREFIX_PERSONAL` and `ZM_PREFIX_BROADCAST` chat prefix constants
@@ -491,6 +495,67 @@ public void ZM_OnZombieDeath(int client, ZMClassID classID)
 
 ---
 
+### Pitfall: Repeating Class-Poll Timers Must Check Team
+
+Zombie class plugins that use a repeating timer to poll `ZM_GetClientZombieClass` (because
+real players choose their class from a menu after spawn) **must also verify the player is
+still on the zombie team** before attaching any visual or applying any effect.
+
+A player can transition from the zombie team to the human team between the timer being
+started and it resolving — for example during a round reset or team change. Without the
+team check, the timer will see a stale class ID and attach the visual to the now-human
+player.
+
+**Incorrect — missing team check:**
+```sourcepawn
+public Action Timer_CheckAndAttach(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+
+    if (!client || !IsClientInGame(client))
+        return Plugin_Stop;
+
+    if (!IsPlayerAlive(client))
+        return Plugin_Stop;
+
+    if (ZM_GetClientZombieClass(client) == g_ClassID)
+    {
+        AttachVisual(client);   // BUG: client may now be human
+        return Plugin_Stop;
+    }
+
+    return Plugin_Continue;
+}
+```
+
+**Correct — team check included:**
+```sourcepawn
+public Action Timer_CheckAndAttach(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+
+    if (!client || !IsClientInGame(client))
+        return Plugin_Stop;
+
+    if (!IsPlayerAlive(client))
+        return Plugin_Stop;
+
+    // Stop if player is no longer on the zombie team
+    if (!ZM_IsClientZombie(client))
+        return Plugin_Stop;
+
+    if (ZM_GetClientZombieClass(client) == g_ClassID)
+    {
+        AttachVisual(client);
+        return Plugin_Stop;
+    }
+
+    return Plugin_Continue;
+}
+```
+
+---
+
 ## Common Patterns
 
 ### Pattern 1: Button-Activated Ability
@@ -766,6 +831,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, /*...*/)
 5. Forgetting OnLibraryAdded - broken if ZM reloads
 6. Hardcoding skill ID - breaks when other skills load
 7. Calling PrintToChat directly instead of ZM_Chat — inconsistent prefix and colour
+8. Repeating class-poll timers missing `ZM_IsClientZombie` check — visual attaches to human on team transition
 
 ---
 
@@ -823,6 +889,7 @@ Before releasing your skill plugin:
 - [ ] Good player feedback (clear messages, sounds)
 - [ ] Works with other skills (no conflicts)
 - [ ] Handles main plugin reload gracefully
+- [ ] Repeating class-poll timers include `ZM_IsClientZombie` check (zombie class plugins)
 
 ---
 
@@ -953,6 +1020,6 @@ public void OnLibraryRemoved(const char[] name)
 
 ---
 
-**End of Specification v1.3.1**
+**End of Specification v1.3.2**
 
 *This document contains everything needed to create custom skill and zombie class plugins for DoD:S Zombie Mod.*
