@@ -30,7 +30,7 @@
  */
 
 #define PLUGIN_NAME "DoD:S Zombie Mod"
-#define PLUGIN_VERSION "0.9.57 BETA"
+#define PLUGIN_VERSION "0.9.60 BETA"
 #define SCOREBOARD_MAX_ELEMENTS 5
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS 33
@@ -160,6 +160,7 @@ enum
 	ExtraAmmoRiflegren_US = 3,  // is equal to 4 in inventory...
 	ExtraAmmoRiflegren_GER = 3
 }; 
+
 // ============================================================================
 // MODULAR SKILL SYSTEM CONSTANTS
 // ============================================================================

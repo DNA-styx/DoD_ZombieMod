@@ -86,7 +86,7 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			
 			entity = -1;
 			
-			// Hide all control point flags.
+			// Hide all control point flags
 			while ((entity = FindEntityByClassname(entity, "dod_control_point")) != -1)
 			{
 				AcceptEntityInput(entity, "HideModel");
@@ -242,6 +242,13 @@ bool CheckWinConditions()
 				if (!g_iLastHuman && GetClientTeam(i) == Team_Allies)
 				{
 					g_iLastHuman = GetClientUserId(i);
+					
+					// HLStatsX: award the last human standing (bot or real player)
+					char steamId[32];
+					GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
+					LogToGame("\"%N<%d><%s><Allies>\" triggered \"zm_last_human_standing\"",
+						i, GetClientUserId(i), steamId);
+					
 					break;  // Found them, exit loop
 				}
 			}
@@ -272,6 +279,19 @@ RoundEnd(winningTeam)
 	else if (winningTeam == Team_Allies)
 	{
 		EmitSoundToAll(g_szSounds[Sound_HumansWin]);
+		
+		// HLStatsX: award all surviving humans
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (IsClientInGame(i) && !IsClientSourceTV(i) && !IsFakeClient(i)
+				&& GetClientTeam(i) == Team_Allies && IsPlayerAlive(i))
+			{
+				char steamId[32];
+				GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
+				LogToGame("\"%N<%d><%s><Allies>\" triggered \"zm_human_survived\"",
+					i, GetClientUserId(i), steamId);
+			}
+		}
 	}
 	else if (winningTeam == Team_Axis)
 	{
@@ -571,4 +591,4 @@ public Action Timer_RestartRound(Handle timer)
 	
 	SetRoundState(DoDRoundState_Restart);
 	return Plugin_Continue;
-} 
+}

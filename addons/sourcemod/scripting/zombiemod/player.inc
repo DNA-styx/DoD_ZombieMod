@@ -207,7 +207,6 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 				HUD_ShowGameCommencing();
 				
 				CreateTimer(15.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
-				
 				SetRoundState(DoDRoundState_Restart);
 			}
 		}
@@ -346,7 +345,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 		
 		if (GetClientTeam(client) == Team_Allies)
 		{
-			SetEventString(event, "weapon", "crit");
+			SetEventString(event, "weapon", "zm_zombie_kill");
 			CreateTimer(0.1, Timer_SwitchToZombieTeam, clientUserId | (attackerUserId << 16), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
@@ -360,19 +359,6 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 			
 			if (critAttacker)
 			{
-				if (critAttacker != attacker)
-				{
-					AddPlayerKills(critAttacker, 1);
-					
-					SetEventInt(event, "attacker", g_ClientInfo_Int[client][ClientInfo_Critter]);
-					SetEventString(event, "weapon", "crit");
-					
-					if (attacker)
-					{
-						AddPlayerKills(attacker, -1);
-					}
-				}
-				
 				GiveHumanReward(critAttacker);
 				
 				g_ClientInfo_Int[client][ClientInfo_Critter] = 0;
@@ -406,7 +392,12 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 		ZM_PrintToChatAll("%t", "Player Became Zombie", client);
 	}
 	
-	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)
+	// Resolve attacker before win condition check to allow logging in both branches
+	attacker = GetClientOfUserId(attacker);
+	
+	bool wasEnded = g_bRoundEnded;
+	
+	if (!CheckWinConditions() && attacker && attacker != client)
 	{
 		g_ClientInfo_Int[attacker][ClientInfo_Critter] = 0;
 		g_ClientInfo_Int[attacker][ClientInfo_KillsAsZombie]++;
@@ -428,6 +419,18 @@ public Action Timer_SwitchToZombieTeam(Handle timer, int data)
 			GiveZombieReward(attacker);
 		}
 	}
+	
+	// HLStatsX: zombie killed the last human (the kill that ended the round)
+	if (g_bRoundEnded && !wasEnded && attacker && attacker != client && client && !IsFakeClient(attacker))
+	{
+		char attackerSteam[32], victimSteam[32];
+		GetClientAuthId(attacker, AuthId_Steam2, attackerSteam, sizeof(attackerSteam));
+		GetClientAuthId(client, AuthId_Steam2, victimSteam, sizeof(victimSteam));
+		LogToGame("\"%N<%d><%s><Axis>\" triggered \"zm_killed_last_human\" against \"%N<%d><%s><Allies>\"",
+			attacker, GetClientUserId(attacker), attackerSteam,
+			client, GetClientUserId(client), victimSteam);
+	}
+	
 	return Plugin_Continue;
 }
 
@@ -458,6 +461,27 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 // ============================================================================
 // Damage Handling
 // ============================================================================
+
+/**
+ * Maps a crit-eligible weapon ID to its HLStatsX log string.
+ * Used to write zm_crit_<weapon> kill lines when a crit shot lands.
+ */
+void GetCritWeaponName(int weaponId, char[] buffer, int maxlen)
+{
+	switch (weaponId)
+	{
+		case WeaponID_AmerKnife:         strcopy(buffer, maxlen, "zm_crit_amerknife");
+		case WeaponID_Colt:              strcopy(buffer, maxlen, "zm_crit_colt");
+		case WeaponID_P38:               strcopy(buffer, maxlen, "zm_crit_p38");
+		case WeaponID_Spring_Zoomed:     strcopy(buffer, maxlen, "zm_crit_spring");
+		case WeaponID_K98_Scoped_Zoomed: strcopy(buffer, maxlen, "zm_crit_k98_scoped");
+		case WeaponID_Bazooka:           strcopy(buffer, maxlen, "zm_crit_bazooka");
+		case WeaponID_Pschreck:          strcopy(buffer, maxlen, "zm_crit_pschreck");
+		case WeaponID_Thompson_Punch:    strcopy(buffer, maxlen, "zm_crit_thompson");
+		case WeaponID_MP40_Punch:        strcopy(buffer, maxlen, "zm_crit_mp40");
+		default:                         strcopy(buffer, maxlen, "zm_crit_unknown");
+	}
+}
 
 public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcast)
 {
@@ -509,6 +533,16 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					EmitSoundToClient(attacker, g_szSounds[Sound_FinishHim]);
 					
 					ZM_PrintToChat(client, "%t", "Fatal Shot Warning");
+					
+					// HLStatsX: log the weapon that triggered the crit
+					char attackerSteam[32], victimSteam[32], critWeapon[32];
+					GetClientAuthId(attacker, AuthId_Steam2, attackerSteam, sizeof(attackerSteam));
+					GetClientAuthId(client, AuthId_Steam2, victimSteam, sizeof(victimSteam));
+					GetCritWeaponName(GetEventInt(event, "weapon"), critWeapon, sizeof(critWeapon));
+					LogToGame("\"%N<%d><%s><Allies>\" killed \"%N<%d><%s><Axis>\" with \"%s\"",
+						attacker, GetClientUserId(attacker), attackerSteam,
+						client, GetClientUserId(client), victimSteam,
+						critWeapon);
 				}
 			}
 		}
@@ -518,114 +552,6 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 public ActionOnPopHelmet(client, floatvecVelocity[3], floatvecOrigin[3])
 {
 	return g_bModActive && !g_ClientInfo_Bool[client][ClientInfo_IsCritical] && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
-}
-
-public ActionOnJoinClass(client, &playerClass)
-{
-	if (g_bModActive)
-	{
-		if (GetClientTeam(client) == Team_Allies)
-		{
-			if (g_bBlockChangeClass)
-			{
-				ZM_PrintToChat(client, "%t", "Class Change Blocked");
-				
-				return Plugin_Handled;
-			}
-		}
-		else
-		{
-			return Plugin_Handled;
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
-public Action OnEnterPlayerState(int client, int &playerState)
-{
-	// Blocks the class menu from being displayed
-	if (g_bModActive && playerState == PlayerState_PickingClass)
-	{
-		// This prevents the class selection menu to pop up on all team changes.
-		// It is however displayed once for allied players, allowing them to decide witch class to.
-		if (GetClientTeam(client) == Team_Allies && !g_ClientInfo_Bool[client][ClientInfo_SelectedClass])
-		{
-			g_ClientInfo_Bool[client][ClientInfo_SelectedClass] = true;
-			return Plugin_Continue;
-		}
-		
-		if (GetDesiredPlayerClass(client) == PlayerClass_None)
-		{
-			SetDesiredPlayerClass(client, PlayerClass_Assault);
-		}
-		
-		playerState = PlayerState_ObserverMode;
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
-
-public Action OnVoiceCommand(int client, int &voiceCommand)
-{
-	// Block zombies from making voice commands.
-	return g_bModActive && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
-}
-
-public Action OnPlayerRespawn(int client)
-{
-	g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = false;
-}
-
-public Action OnNormalSoundPlayed(int clients[64], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags)
-{
-	if (g_bModActive && entity && entity <= MaxClients)
-	{
-		// Block all german pain and round start sounds.
-		if (GetClientTeam(entity) == Team_Axis
-			 && (StrContains(sample, "pain", false) != -1
-				 || StrContains(sample, "player/german/startround", false) != -1))
-		{
-			return Plugin_Stop;
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
-public Action OnWeaponCanUse(int client, int weapon)
-{
-	if (g_bModActive && g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse])
-	{
-		char className[MAX_WEAPON_LENGTH];
-		GetEdictClassname(weapon, className, sizeof(className));
-		
-		if (GetClientTeam(client) == Team_Axis)
-		{
-			// TODO: Revisit grenade mechanics for zombies in future
-			// Currently disabled because zombies get stuck with grenades and can't switch back to spade
-			static const char allowedZombieWeapons[][] = 
-			{
-				"spade"
-				// "frag_us_live",       // Commented out - causes weapon switching bug
-				// "frag_ger_live",      // Commented out - causes weapon switching bug
-				// "riflegren_us_live",  // Commented out - causes weapon switching bug
-				// "riflegren_ger_live"  // Commented out - causes weapon switching bug
-			};
-			
-			for (int i; i < sizeof(allowedZombieWeapons); i++)
-			{
-				if (StrEqual(className[7], allowedZombieWeapons[i])) // Skip the first 7 characters in className to avoid comparing the "weapon_" prefix.
-				{
-					return Plugin_Continue;
-				}
-			}
-			
-			return Plugin_Handled;
-		}
-	}
-	
-	return Plugin_Continue;
 }
 
 public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &damage, int &damageType)
@@ -755,6 +681,7 @@ public bool OnShouldCollide(int client, int collisionGroup, int contentsMask, bo
 	return true;
 }
 
+
 // ============================================================================
 // Utility
 // ============================================================================
@@ -772,3 +699,110 @@ void ResetPlayerVisuals(int client)
 	SetEntityRenderColor(client, 255, 255, 255, 255);
 }
 
+public Action OnWeaponCanUse(int client, int weapon)
+{
+	if (g_bModActive && g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse])
+	{
+		char className[MAX_WEAPON_LENGTH];
+		GetEdictClassname(weapon, className, sizeof(className));
+		
+		if (GetClientTeam(client) == Team_Axis)
+		{
+			// TODO: Revisit grenade mechanics for zombies in future
+			// Currently disabled because zombies get stuck with grenades and can't switch back to spade
+			static const char allowedZombieWeapons[][] = 
+			{
+				"spade"
+				// "frag_us_live",       // Commented out - causes weapon switching bug
+				// "frag_ger_live",      // Commented out - causes weapon switching bug
+				// "riflegren_us_live",  // Commented out - causes weapon switching bug
+				// "riflegren_ger_live"  // Commented out - causes weapon switching bug
+			};
+			
+			for (int i; i < sizeof(allowedZombieWeapons); i++)
+			{
+				if (StrEqual(className[7], allowedZombieWeapons[i])) // Skip the first 7 characters in className to avoid comparing the "weapon_" prefix.
+				{
+					return Plugin_Continue;
+				}
+			}
+			
+			return Plugin_Handled;
+		}
+	}
+	
+	return Plugin_Continue;
+}
+
+public Action OnNormalSoundPlayed(int clients[64], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags)
+{
+	if (g_bModActive && entity && entity <= MaxClients)
+	{
+		// Block all german pain and round start sounds.
+		if (GetClientTeam(entity) == Team_Axis
+			 && (StrContains(sample, "pain", false) != -1
+				 || StrContains(sample, "player/german/startround", false) != -1))
+		{
+			return Plugin_Stop;
+		}
+	}
+	
+	return Plugin_Continue;
+}
+
+public ActionOnJoinClass(client, &playerClass)
+{
+	if (g_bModActive)
+	{
+		if (GetClientTeam(client) == Team_Allies)
+		{
+			if (g_bBlockChangeClass)
+			{
+				ZM_PrintToChat(client, "%t", "Class Change Blocked");
+				
+				return Plugin_Handled;
+			}
+		}
+		else
+		{
+			return Plugin_Handled;
+		}
+	}
+	
+	return Plugin_Continue;
+}
+
+public Action OnEnterPlayerState(int client, int &playerState)
+{
+	// Blocks the class menu from being displayed
+	if (g_bModActive && playerState == PlayerState_PickingClass)
+	{
+		// This prevents the class selection menu to pop up on all team changes.
+		// It is however displayed once for allied players, allowing them to decide witch class to.
+		if (GetClientTeam(client) == Team_Allies && !g_ClientInfo_Bool[client][ClientInfo_SelectedClass])
+		{
+			g_ClientInfo_Bool[client][ClientInfo_SelectedClass] = true;
+			return Plugin_Continue;
+		}
+		
+		if (GetDesiredPlayerClass(client) == PlayerClass_None)
+		{
+			SetDesiredPlayerClass(client, PlayerClass_Assault);
+		}
+		
+		playerState = PlayerState_ObserverMode;
+		return Plugin_Changed;
+	}
+	return Plugin_Continue;
+}
+
+public Action OnVoiceCommand(int client, int &voiceCommand)
+{
+	// Block zombies from making voice commands.
+	return g_bModActive && GetClientTeam(client) == Team_Axis ? Plugin_Handled : Plugin_Continue;
+}
+
+public Action OnPlayerRespawn(int client)
+{
+	g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = false;
+}
