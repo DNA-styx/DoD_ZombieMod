@@ -60,6 +60,21 @@ void Sounds_OnRoundEnd()
 	Sounds_StopAmbience();
 }
 
+void Sounds_OnClientConnect(int client)
+{
+	if (IsFakeClient(client))
+		return;
+
+	/* Only emit if ambience is actively looping */
+	if (!g_bModActive || g_bRoundEnded || g_hAmbienceTimer == null)
+		return;
+
+	if (g_szSounds[Sound_Ambience][0] == '\0')
+		return;
+
+	EmitSoundToClient(client, g_szSounds[Sound_Ambience]);
+}
+
 // ============================================================================
 // INTERNAL
 // ============================================================================

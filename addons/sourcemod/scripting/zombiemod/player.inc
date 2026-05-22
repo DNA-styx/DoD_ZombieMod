@@ -73,6 +73,7 @@ public void OnClientPutInServer(int client)
 	g_ClientInfo_Bool[client][ClientInfo_ShouldAutoEquip] = false;
 	
 	EmitSoundToClient(client, g_szSounds[Sound_JoinServer]);
+	Sounds_OnClientConnect(client);   // play ambience to late-joiners during active rounds
 }
 
 public void OnClientPostAdminCheck(int client)
