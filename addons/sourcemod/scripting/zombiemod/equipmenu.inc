@@ -99,15 +99,21 @@ bool IsPlayerValid(int iClient)
 
 void EquipMenu_OnPluginStart()
 {
+	char item[128];
+	
 	g_EquipMenu[Menu_Main] = CreateMenu(Handler_Main, MenuAction_DrawItem | MenuAction_Display);
 	
 	SetMenuTitle(g_EquipMenu[Menu_Main], "%T\n \n", "Equip Menu Title", LANG_SERVER);
 	
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Keep Current Weapons\n \n");
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Create Custom Class");
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Change Category Item");
-	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Select Skill");
-		
+	Format(item, sizeof(item), "%T\n \n", "Equip Main Keep Weapons", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Main Create Class", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Main Change Category", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Main Select Skill", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, item);
+	
 	SetMenuExitButton(g_EquipMenu[Menu_Main], true);
 	
 	g_EquipMenu[Menu_Primary] = CreateMenu(Handler_Primary, MenuAction_DrawItem | MenuAction_Display);
@@ -144,8 +150,10 @@ void EquipMenu_OnPluginStart()
 	
 	SetMenuTitle(g_EquipMenu[Menu_Equipment], "%T", "Equip Menu Equipment", LANG_SERVER);
 	
-	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, "Extra Pistol Ammo (200%)");
-	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, "Extra Primary Ammo (200%)");
+	Format(item, sizeof(item), "%T", "Equip Item Pistol Ammo", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Item Primary Ammo", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_Equipment], NULL_STRING, item);
 	
 	SetMenuExitButton(g_EquipMenu[Menu_Equipment], false);
 	SetMenuExitBackButton(g_EquipMenu[Menu_Equipment], true);
@@ -154,9 +162,12 @@ void EquipMenu_OnPluginStart()
 	
 	SetMenuTitle(g_EquipMenu[Menu_ChangeCategory], "%T", "Equip Menu Change Category", LANG_SERVER);
 	
-	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, "Primary");
-	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, "Pistol");
-	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, "Equipment");
+	Format(item, sizeof(item), "%T", "Equip Category Primary", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Category Pistol", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Category Equipment", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_ChangeCategory], NULL_STRING, item);
 	
 	SetMenuExitButton(g_EquipMenu[Menu_ChangeCategory], false);
 	SetMenuExitBackButton(g_EquipMenu[Menu_ChangeCategory], true);
@@ -165,8 +176,10 @@ void EquipMenu_OnPluginStart()
 	
 	SetMenuTitle(g_EquipMenu[Menu_KeepCustomClass], "%T", "Equip Menu Remember Choice", LANG_SERVER);
 	
-	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, "Yes");
-	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, "No");
+	Format(item, sizeof(item), "%T", "Equip Remember Yes", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, item);
+	Format(item, sizeof(item), "%T", "Equip Remember No", LANG_SERVER);
+	AddMenuItem(g_EquipMenu[Menu_KeepCustomClass], NULL_STRING, item);
 	
 	SetMenuExitButton(g_EquipMenu[Menu_KeepCustomClass], false);
 	SetMenuExitBackButton(g_EquipMenu[Menu_KeepCustomClass], true);
@@ -619,4 +632,4 @@ Menu_Equip_PistolAmmo(client)
 			SetWeaponAmmo(client, Ammo_P38, maxAmmo);
 		}
 	}
-} 
+}
