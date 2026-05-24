@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"ko"		"게임이 15초 후에 시작됩니다!"
+	}
+
+	"First Real Player Restart"
+	{
+		"ko"		"플레이어 {1} 이(가) 참가했습니다! 라운드를 다시 시작합니다..."
+	}
+
+	"Win Limit Reached"
+	{
+		"ko"		"승리 한도에 도달했습니다! 맵을 변경합니다..."
+	}
+
+	"Rounds Played"
+	{
+		"ko"		"플레이된 라운드: {1} / {2} (맵 변경 전)"
+	}
+
+	"Last Human Beaconed"
+	{
+		"ko"		"마지막 생존자가 발견되었습니다!"
+	}
+
+	"Equip Menu Title"
+	{
+		"ko"		"장비 메뉴"
+	}
+
+	"Equip Menu Primary"
+	{
+		"ko"		"장비 - 주 무기 선택"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"ko"		"장비 - 권총 선택"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"ko"		"장비 - 추가 장비 선택"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"ko"		"장비 - 카테고리 변경"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"ko"		"장비 - 선택 기억?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"ko"		"현재 무기 유지"
+	}
+
+	"Equip Main Create Class"
+	{
+		"ko"		"커스텀 클래스 만들기"
+	}
+
+	"Equip Main Change Category"
+	{
+		"ko"		"카테고리 변경"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"ko"		"스킬 선택"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"ko"		"권총 추가 탄약 (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"ko"		"주 무기 추가 탄약 (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"ko"		"주 무기"
+	}
+
+	"Equip Category Pistol"
+	{
+		"ko"		"권총"
+	}
+
+	"Equip Category Equipment"
+	{
+		"ko"		"장비"
+	}
+
+	"Equip Remember Yes"
+	{
+		"ko"		"예"
+	}
+
+	"Equip Remember No"
+	{
+		"ko"		"아니오"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"ko"		"장비 메뉴는 스폰당 한 번만 사용할 수 있습니다!"
+	}
+
+	"Equip Time Expired"
+	{
+		"ko"		"90초가 지났습니다. 더 이상 장비할 수 없습니다!"
+	}
+
+	"Class Change Blocked"
+	{
+		"ko"		"라운드의 90초가 지났습니다. 더 이상 클래스를 변경할 수 없습니다!"
+	}
+
+	"Skill Menu Title"
+	{
+		"ko"		"스킬 선택:"
+	}
+
+	"Skill No Skill"
+	{
+		"ko"		"스킬 없음"
+	}
+
+	"Skill ESP"
+	{
+		"ko"		"ESP (좀비 클래스 보기)"
+	}
+
+	"No Skill Selected"
+	{
+		"ko"		"선택된 스킬 없음"
+	}
+
+	"ESP Skill Selected"
+	{
+		"ko"		"ESP 선택됨! 권총으로 우클릭하여 좀비 식별"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"ko"		"ESP 쿨다운: {1}초"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"ko"		"좀비를 처치하여 추가 주 무기 탄약을 받았습니다."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"ko"		"좀비를 처치하여 추가 권총 탄약을 받았습니다."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"ko"		"좀비를 처치하여 10%% 피해 저항을 받았습니다."
+	}
+
+	"Reward Health"
+	{
+		"ko"		"좀비를 처치하여 10%% 체력을 받았습니다."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"ko"		"처치로 {1}HP 보너스를 받았습니다!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"ko"		"치명적인 총격을 받았습니다, 엄폐하세요!"
+	}
+
+	"Pickup Health"
+	{
+		"ko"		"+50 체력!"
+	}
+
+	"Pickup Ammo"
+	{
+		"ko"		"추가 탄약!"
+	}
+
+	"Pickup Speed"
+	{
+		"ko"		"속도 부스트! (10초)"
+	}
+
+	"Pickup Damage"
+	{
+		"ko"		"피해 부스트! (10초)"
+	}
+
+	"Pickup Already Active"
+	{
+		"ko"		"이 부스트는 이미 활성화되어 있습니다!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"ko"		"속도 부스트 만료"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"ko"		"피해 부스트 만료"
+	}
+
+	"Human Info Display"
+	{
+		"ko"		"인간: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"ko"		"플레이어 {1} 이(가) 이제 좀비입니다."
+	}
+
+	"Became Zombie"
+	{
+		"ko"		"당신은 이제 {1}입니다!"
+	}
+
+	"Zombie Self Info"
+	{
+		"ko"		"체력: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"ko"		"{1} 이(가) 인간 스폰으로 텔레포트했습니다!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"ko"		"인간을 처치하여 10%% 속도 부스트를 받았습니다."
+	}
+
+	"Max Speed Reached"
+	{
+		"ko"		"이미 최대 속도에 도달했습니다!"
+	}
+
+	"Zombie Info Display"
+	{
+		"ko"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"ko"		"{1} (체력 위기!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"ko"		"가스 좀비: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"ko"		"가스 좀비: {1} (체력 위기!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"ko"		"TNT 좀비: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"ko"		"TNT 좀비: {1} (체력 위기!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"ko"		"바리케이드 체력: {1}"
+	}
+
+}

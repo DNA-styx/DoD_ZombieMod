@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"hu"		"A játék 15 másodpercen belül kezdődik!"
+	}
+
+	"First Real Player Restart"
+	{
+		"hu"		"{1} játékos csatlakozott! Kör újraindítása..."
+	}
+
+	"Win Limit Reached"
+	{
+		"hu"		"Győzelmi limit elérve! Pálya váltása..."
+	}
+
+	"Rounds Played"
+	{
+		"hu"		"Játszott körök: {1} / {2} a pályaváltás előtt."
+	}
+
+	"Last Human Beaconed"
+	{
+		"hu"		"Az utolsó túlélő be lett azonosítva!"
+	}
+
+	"Equip Menu Title"
+	{
+		"hu"		"Felszerelés menü"
+	}
+
+	"Equip Menu Primary"
+	{
+		"hu"		"Felszerelés - Elsődleges fegyver kiválasztása"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"hu"		"Felszerelés - Pisztoly kiválasztása"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"hu"		"Felszerelés - Extra felszerelés kiválasztása"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"hu"		"Felszerelés - Kategória váltása"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"hu"		"Felszerelés - Megjegyzi a választást?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"hu"		"Jelenlegi fegyverek megtartása"
+	}
+
+	"Equip Main Create Class"
+	{
+		"hu"		"Egyéni osztály létrehozása"
+	}
+
+	"Equip Main Change Category"
+	{
+		"hu"		"Kategória váltása"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"hu"		"Képesség kiválasztása"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"hu"		"Extra pisztoly lőszer (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"hu"		"Extra elsődleges lőszer (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"hu"		"Elsődleges"
+	}
+
+	"Equip Category Pistol"
+	{
+		"hu"		"Pisztoly"
+	}
+
+	"Equip Category Equipment"
+	{
+		"hu"		"Felszerelés"
+	}
+
+	"Equip Remember Yes"
+	{
+		"hu"		"Igen"
+	}
+
+	"Equip Remember No"
+	{
+		"hu"		"Nem"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"hu"		"A felszerelés menüt spawnolásanként csak egyszer használhatod!"
+	}
+
+	"Equip Time Expired"
+	{
+		"hu"		"Eltelt 90 másodperc, már nem tudsz felszerelkezni!"
+	}
+
+	"Class Change Blocked"
+	{
+		"hu"		"A kör 90 másodperce eltelt, már nem tudod változtatni az osztályt!"
+	}
+
+	"Skill Menu Title"
+	{
+		"hu"		"Képesség kiválasztása:"
+	}
+
+	"Skill No Skill"
+	{
+		"hu"		"Nincs képesség"
+	}
+
+	"Skill ESP"
+	{
+		"hu"		"ESP (Zombi osztály megtekintése)"
+	}
+
+	"No Skill Selected"
+	{
+		"hu"		"Nincs kiválasztott képesség"
+	}
+
+	"ESP Skill Selected"
+	{
+		"hu"		"ESP kiválasztva! Jobb klik pisztollyal a zombik azonosításához"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"hu"		"ESP visszatöltés: {1} másodperc"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"hu"		"Extra elsődleges lőszert kaptál egy zombi megöléséért."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"hu"		"Extra pisztoly lőszert kaptál egy zombi megöléséért."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"hu"		"10%% sebzés ellenállást kaptál egy zombi megöléséért."
+	}
+
+	"Reward Health"
+	{
+		"hu"		"10%% életet kaptál egy zombi megöléséért."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"hu"		"{1}HP bónuszt kaptál az ölésedért!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"hu"		"Halálos lövés ért, keress fedezéket!"
+	}
+
+	"Pickup Health"
+	{
+		"hu"		"+50 Élet!"
+	}
+
+	"Pickup Ammo"
+	{
+		"hu"		"Extra lőszer!"
+	}
+
+	"Pickup Speed"
+	{
+		"hu"		"Sebesség növelés! (10 másodperc)"
+	}
+
+	"Pickup Damage"
+	{
+		"hu"		"Sebzés növelés! (10 másodperc)"
+	}
+
+	"Pickup Already Active"
+	{
+		"hu"		"Ez a bónusz már aktív!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"hu"		"Sebesség növelés lejárt"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"hu"		"Sebzés növelés lejárt"
+	}
+
+	"Human Info Display"
+	{
+		"hu"		"Ember: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"hu"		"{1} játékos most már Zombi."
+	}
+
+	"Became Zombie"
+	{
+		"hu"		"Most már {1} vagy!"
+	}
+
+	"Zombie Self Info"
+	{
+		"hu"		"Élet: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"hu"		"{1} teleportált az emberi spawnhoz!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"hu"		"10%% sebesség növelést kaptál egy ember megöléséért."
+	}
+
+	"Max Speed Reached"
+	{
+		"hu"		"Már elérted a maximális sebességet!"
+	}
+
+	"Zombie Info Display"
+	{
+		"hu"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"hu"		"{1} (KRITIKUS ÉLET!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"hu"		"Gáz zombi: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"hu"		"Gáz zombi: {1} (KRITIKUS ÉLET!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"hu"		"TNT zombi: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"hu"		"TNT zombi: {1} (KRITIKUS ÉLET!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"hu"		"Barikád életereje: {1}"
+	}
+
+}

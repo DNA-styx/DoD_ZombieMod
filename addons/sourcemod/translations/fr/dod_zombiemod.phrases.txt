@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"fr"		"La partie commence dans 15 secondes !"
+	}
+
+	"First Real Player Restart"
+	{
+		"fr"		"Le joueur {1} a rejoint ! Redémarrage du round..."
+	}
+
+	"Win Limit Reached"
+	{
+		"fr"		"Limite de victoires atteinte ! Changement de carte..."
+	}
+
+	"Rounds Played"
+	{
+		"fr"		"Rounds joués : {1} sur {2} avant le changement de carte."
+	}
+
+	"Last Human Beaconed"
+	{
+		"fr"		"Le dernier survivant a été localisé !"
+	}
+
+	"Equip Menu Title"
+	{
+		"fr"		"Menu d'équipement"
+	}
+
+	"Equip Menu Primary"
+	{
+		"fr"		"Équipement - Choisir une arme principale"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"fr"		"Équipement - Choisir un pistolet"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"fr"		"Équipement - Choisir un équipement supplémentaire"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"fr"		"Équipement - Changer de catégorie"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"fr"		"Équipement - Mémoriser le choix ?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"fr"		"Garder les armes actuelles"
+	}
+
+	"Equip Main Create Class"
+	{
+		"fr"		"Créer une classe personnalisée"
+	}
+
+	"Equip Main Change Category"
+	{
+		"fr"		"Changer de catégorie"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"fr"		"Choisir une compétence"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"fr"		"Munitions de pistolet supplémentaires (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"fr"		"Munitions principales supplémentaires (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"fr"		"Principal"
+	}
+
+	"Equip Category Pistol"
+	{
+		"fr"		"Pistolet"
+	}
+
+	"Equip Category Equipment"
+	{
+		"fr"		"Équipement"
+	}
+
+	"Equip Remember Yes"
+	{
+		"fr"		"Oui"
+	}
+
+	"Equip Remember No"
+	{
+		"fr"		"Non"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"fr"		"Vous ne pouvez utiliser le menu d'équipement qu'une seule fois par apparition !"
+	}
+
+	"Equip Time Expired"
+	{
+		"fr"		"90 secondes se sont écoulées, vous ne pouvez plus vous équiper !"
+	}
+
+	"Class Change Blocked"
+	{
+		"fr"		"90 secondes du round se sont écoulées, vous ne pouvez plus changer de classe !"
+	}
+
+	"Skill Menu Title"
+	{
+		"fr"		"Choisir une compétence :"
+	}
+
+	"Skill No Skill"
+	{
+		"fr"		"Aucune compétence"
+	}
+
+	"Skill ESP"
+	{
+		"fr"		"ESP (Voir la classe zombie)"
+	}
+
+	"No Skill Selected"
+	{
+		"fr"		"Aucune compétence sélectionnée"
+	}
+
+	"ESP Skill Selected"
+	{
+		"fr"		"ESP sélectionné ! Clic droit avec le pistolet pour identifier les zombies"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"fr"		"ESP en recharge : {1} secondes"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"fr"		"Vous avez reçu des munitions principales supplémentaires pour avoir tué un zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"fr"		"Vous avez reçu des munitions de pistolet supplémentaires pour avoir tué un zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"fr"		"Vous avez reçu 10%% de résistance aux dégâts pour avoir tué un zombie."
+	}
+
+	"Reward Health"
+	{
+		"fr"		"Vous avez reçu 10%% de santé pour avoir tué un zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"fr"		"Vous avez reçu un bonus de {1}HP pour votre kill !"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"fr"		"Vous avez été touché par un tir fatal, mettez-vous à couvert !"
+	}
+
+	"Pickup Health"
+	{
+		"fr"		"+50 Santé !"
+	}
+
+	"Pickup Ammo"
+	{
+		"fr"		"Munitions supplémentaires !"
+	}
+
+	"Pickup Speed"
+	{
+		"fr"		"Boost de vitesse ! (10 secondes)"
+	}
+
+	"Pickup Damage"
+	{
+		"fr"		"Boost de dégâts ! (10 secondes)"
+	}
+
+	"Pickup Already Active"
+	{
+		"fr"		"Ce boost est déjà actif !"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"fr"		"Boost de vitesse expiré"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"fr"		"Boost de dégâts expiré"
+	}
+
+	"Human Info Display"
+	{
+		"fr"		"Humain : {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"fr"		"Le joueur {1} est maintenant un Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"fr"		"Vous êtes maintenant un {1} !"
+	}
+
+	"Zombie Self Info"
+	{
+		"fr"		"Santé : {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"fr"		"{1} s'est téléporté au spawn humain !"
+	}
+
+	"Reward Speed Boost"
+	{
+		"fr"		"Vous avez reçu un boost de vitesse de 10%% pour avoir tué un humain."
+	}
+
+	"Max Speed Reached"
+	{
+		"fr"		"Vous avez déjà atteint la vitesse maximale !"
+	}
+
+	"Zombie Info Display"
+	{
+		"fr"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"fr"		"{1} (SANTÉ CRITIQUE !)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"fr"		"Zombie Gaz : {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"fr"		"Zombie Gaz : {1} (SANTÉ CRITIQUE !)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"fr"		"Zombie TNT : {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"fr"		"Zombie TNT : {1} (SANTÉ CRITIQUE !)"
+	}
+
+	"Barrier Health Display"
+	{
+		"fr"		"Santé de la barricade : {1}"
+	}
+
+}

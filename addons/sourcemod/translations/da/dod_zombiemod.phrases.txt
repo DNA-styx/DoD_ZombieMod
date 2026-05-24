@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"da"		"Spillet starter om 15 sekunder!"
+	}
+
+	"First Real Player Restart"
+	{
+		"da"		"Spiller {1} tilsluttede sig! Genstarter runden..."
+	}
+
+	"Win Limit Reached"
+	{
+		"da"		"Sejrgrænse nået! Skifter kort..."
+	}
+
+	"Rounds Played"
+	{
+		"da"		"Spillede runder: {1} af {2} før kortskift."
+	}
+
+	"Last Human Beaconed"
+	{
+		"da"		"Den sidste overlevende er blevet lokaliseret!"
+	}
+
+	"Equip Menu Title"
+	{
+		"da"		"Udstyrsmenuen"
+	}
+
+	"Equip Menu Primary"
+	{
+		"da"		"Udstyr - Vælg primært våben"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"da"		"Udstyr - Vælg pistol"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"da"		"Udstyr - Vælg ekstra udstyr"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"da"		"Udstyr - Skift kategori"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"da"		"Udstyr - Husk valg?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"da"		"Behold nuværende våben"
+	}
+
+	"Equip Main Create Class"
+	{
+		"da"		"Opret tilpasset klasse"
+	}
+
+	"Equip Main Change Category"
+	{
+		"da"		"Skift kategori"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"da"		"Vælg færdighed"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"da"		"Ekstra pistolammunition (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"da"		"Ekstra primær ammunition (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"da"		"Primær"
+	}
+
+	"Equip Category Pistol"
+	{
+		"da"		"Pistol"
+	}
+
+	"Equip Category Equipment"
+	{
+		"da"		"Udstyr"
+	}
+
+	"Equip Remember Yes"
+	{
+		"da"		"Ja"
+	}
+
+	"Equip Remember No"
+	{
+		"da"		"Nej"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"da"		"Du kan kun bruge udstyrsmenuen én gang pr. spawn!"
+	}
+
+	"Equip Time Expired"
+	{
+		"da"		"90 sekunder er gået, du kan ikke udruste dig mere!"
+	}
+
+	"Class Change Blocked"
+	{
+		"da"		"90 sekunder af runden er gået, du kan ikke skifte klasse mere!"
+	}
+
+	"Skill Menu Title"
+	{
+		"da"		"Vælg færdighed:"
+	}
+
+	"Skill No Skill"
+	{
+		"da"		"Ingen færdighed"
+	}
+
+	"Skill ESP"
+	{
+		"da"		"ESP (Se zombieklasse)"
+	}
+
+	"No Skill Selected"
+	{
+		"da"		"Ingen færdighed valgt"
+	}
+
+	"ESP Skill Selected"
+	{
+		"da"		"ESP valgt! Højreklik med pistol for at identificere zombier"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"da"		"ESP afkøling: {1} sekunder"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"da"		"Du modtog ekstra primær ammunition for at dræbe en zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"da"		"Du modtog ekstra pistolammunition for at dræbe en zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"da"		"Du modtog 10%% skademodstand for at dræbe en zombie."
+	}
+
+	"Reward Health"
+	{
+		"da"		"Du modtog 10%% helse for at dræbe en zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"da"		"Du modtog en {1}HP-bonus for dit drab!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"da"		"Du blev ramt af et fatalt skud, søg dækning!"
+	}
+
+	"Pickup Health"
+	{
+		"da"		"+50 Helse!"
+	}
+
+	"Pickup Ammo"
+	{
+		"da"		"Ekstra ammunition!"
+	}
+
+	"Pickup Speed"
+	{
+		"da"		"Hastighedsboost! (10 sekunder)"
+	}
+
+	"Pickup Damage"
+	{
+		"da"		"Skadeboost! (10 sekunder)"
+	}
+
+	"Pickup Already Active"
+	{
+		"da"		"Dette boost er allerede aktivt!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"da"		"Hastighedsboost udløbet"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"da"		"Skadeboost udløbet"
+	}
+
+	"Human Info Display"
+	{
+		"da"		"Menneske: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"da"		"Spiller {1} er nu en Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"da"		"Du er nu en {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"da"		"Helse: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"da"		"{1} er teleporteret til menneskenes spawn!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"da"		"Du modtog 10%% hastighedsboost for at dræbe et menneske."
+	}
+
+	"Max Speed Reached"
+	{
+		"da"		"Du har allerede maksimal hastighed!"
+	}
+
+	"Zombie Info Display"
+	{
+		"da"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"da"		"{1} (KRITISK HELSE!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"da"		"Gas-zombie: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"da"		"Gas-zombie: {1} (KRITISK HELSE!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"da"		"TNT-zombie: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"da"		"TNT-zombie: {1} (KRITISK HELSE!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"da"		"Barrikadehelse: {1}"
+	}
+
+}

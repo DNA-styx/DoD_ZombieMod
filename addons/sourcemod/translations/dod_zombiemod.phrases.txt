@@ -1,15 +1,6 @@
 "Phrases"
 {
 	// ============================================================================
-	// PREFIX
-	// ============================================================================
-
-	"Zombie Mod Prefix"
-	{
-		"en"		"9D0F0F[Zombie Mod] "
-	}
-
-	// ============================================================================
 	// GENERAL — Game Status
 	// ============================================================================
 
@@ -41,7 +32,7 @@
 	}
 
 	// ============================================================================
-	// HUMAN — Equipment Menu
+	// HUMAN — Equipment Menu (Titles)
 	// ============================================================================
 
 	"Equip Menu Title"
@@ -73,6 +64,69 @@
 	{
 		"en"		"Equip Menu - Remember choice?"
 	}
+
+	// ============================================================================
+	// HUMAN — Equipment Menu (Items)
+	// ============================================================================
+
+	"Equip Main Keep Weapons"
+	{
+		"en"		"Keep Current Weapons"
+	}
+
+	"Equip Main Create Class"
+	{
+		"en"		"Create Custom Class"
+	}
+
+	"Equip Main Change Category"
+	{
+		"en"		"Change Category Item"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"en"		"Select Skill"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"en"		"Extra Pistol Ammo (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"en"		"Extra Primary Ammo (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"en"		"Primary"
+	}
+
+	"Equip Category Pistol"
+	{
+		"en"		"Pistol"
+	}
+
+	"Equip Category Equipment"
+	{
+		"en"		"Equipment"
+	}
+
+	"Equip Remember Yes"
+	{
+		"en"		"Yes"
+	}
+
+	"Equip Remember No"
+	{
+		"en"		"No"
+	}
+
+	// ============================================================================
+	// HUMAN — Equipment Menu (Notifications)
+	// ============================================================================
 
 	"Equip Once Per Spawn"
 	{

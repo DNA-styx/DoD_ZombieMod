@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"zho"		"遊戲將在15秒後開始！"
+	}
+
+	"First Real Player Restart"
+	{
+		"zho"		"玩家 {1} 已加入！正在重新開始回合..."
+	}
+
+	"Win Limit Reached"
+	{
+		"zho"		"已達到勝利上限！正在切換地圖..."
+	}
+
+	"Rounds Played"
+	{
+		"zho"		"已遊戲回合數：{1} / {2}，之後切換地圖。"
+	}
+
+	"Last Human Beaconed"
+	{
+		"zho"		"最後一名倖存者已被標記！"
+	}
+
+	"Equip Menu Title"
+	{
+		"zho"		"裝備選單"
+	}
+
+	"Equip Menu Primary"
+	{
+		"zho"		"裝備 - 選擇主武器"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"zho"		"裝備 - 選擇手槍"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"zho"		"裝備 - 選擇額外裝備"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"zho"		"裝備 - 更改分類"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"zho"		"裝備 - 記住選擇？"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"zho"		"保留目前武器"
+	}
+
+	"Equip Main Create Class"
+	{
+		"zho"		"建立自訂兵種"
+	}
+
+	"Equip Main Change Category"
+	{
+		"zho"		"更改分類"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"zho"		"選擇技能"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"zho"		"額外手槍彈藥 (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"zho"		"額外主武器彈藥 (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"zho"		"主武器"
+	}
+
+	"Equip Category Pistol"
+	{
+		"zho"		"手槍"
+	}
+
+	"Equip Category Equipment"
+	{
+		"zho"		"裝備"
+	}
+
+	"Equip Remember Yes"
+	{
+		"zho"		"是"
+	}
+
+	"Equip Remember No"
+	{
+		"zho"		"否"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"zho"		"每次出生只能使用一次裝備選單！"
+	}
+
+	"Equip Time Expired"
+	{
+		"zho"		"已過90秒，您無法再裝備了！"
+	}
+
+	"Class Change Blocked"
+	{
+		"zho"		"本回合已過90秒，您無法再更改兵種了！"
+	}
+
+	"Skill Menu Title"
+	{
+		"zho"		"選擇技能："
+	}
+
+	"Skill No Skill"
+	{
+		"zho"		"無技能"
+	}
+
+	"Skill ESP"
+	{
+		"zho"		"ESP（查看殭屍兵種）"
+	}
+
+	"No Skill Selected"
+	{
+		"zho"		"未選擇技能"
+	}
+
+	"ESP Skill Selected"
+	{
+		"zho"		"已選擇ESP！用手槍右鍵單擊以識別殭屍"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"zho"		"ESP識別冷卻中：{1}秒"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"zho"		"您因擊殺殭屍獲得了額外主武器彈藥。"
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"zho"		"您因擊殺殭屍獲得了額外手槍彈藥。"
+	}
+
+	"Reward Damage Resistance"
+	{
+		"zho"		"您因擊殺殭屍獲得了10%%傷害減免。"
+	}
+
+	"Reward Health"
+	{
+		"zho"		"您因擊殺殭屍獲得了10%%生命值。"
+	}
+
+	"Crit Kill Bonus"
+	{
+		"zho"		"您因擊殺獲得了{1}HP獎勵！"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"zho"		"您被致命一擊，快找掩護！"
+	}
+
+	"Pickup Health"
+	{
+		"zho"		"+50 生命值！"
+	}
+
+	"Pickup Ammo"
+	{
+		"zho"		"額外彈藥！"
+	}
+
+	"Pickup Speed"
+	{
+		"zho"		"速度提升！（10秒）"
+	}
+
+	"Pickup Damage"
+	{
+		"zho"		"傷害提升！（10秒）"
+	}
+
+	"Pickup Already Active"
+	{
+		"zho"		"此增益已經激活！"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"zho"		"速度提升已結束"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"zho"		"傷害提升已結束"
+	}
+
+	"Human Info Display"
+	{
+		"zho"		"人類：{1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"zho"		"玩家 {1} 現在是殭屍。"
+	}
+
+	"Became Zombie"
+	{
+		"zho"		"您現在是 {1}！"
+	}
+
+	"Zombie Self Info"
+	{
+		"zho"		"生命值：{1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"zho"		"{1} 已傳送至人類出生點！"
+	}
+
+	"Reward Speed Boost"
+	{
+		"zho"		"您因擊殺人類獲得了10%%速度提升。"
+	}
+
+	"Max Speed Reached"
+	{
+		"zho"		"您已達到最大速度！"
+	}
+
+	"Zombie Info Display"
+	{
+		"zho"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"zho"		"{1} (生命值危急！)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"zho"		"毒氣殭屍：{1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"zho"		"毒氣殭屍：{1} (生命值危急！)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"zho"		"TNT殭屍：{1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"zho"		"TNT殭屍：{1} (生命值危急！)"
+	}
+
+	"Barrier Health Display"
+	{
+		"zho"		"路障生命值：{1}"
+	}
+
+}

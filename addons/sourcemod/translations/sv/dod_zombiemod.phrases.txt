@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"sv"		"Spelet börjar om 15 sekunder!"
+	}
+
+	"First Real Player Restart"
+	{
+		"sv"		"Spelaren {1} anslöt! Startar om rundan..."
+	}
+
+	"Win Limit Reached"
+	{
+		"sv"		"Vinstrestriktionen uppnådd! Byter karta..."
+	}
+
+	"Rounds Played"
+	{
+		"sv"		"Spelade rundor: {1} av {2} innan kartbyte."
+	}
+
+	"Last Human Beaconed"
+	{
+		"sv"		"Den sista överlevande har lokaliserats!"
+	}
+
+	"Equip Menu Title"
+	{
+		"sv"		"Utrustningsmenyn"
+	}
+
+	"Equip Menu Primary"
+	{
+		"sv"		"Utrustning - Välj primärvapen"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"sv"		"Utrustning - Välj pistol"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"sv"		"Utrustning - Välj extra utrustning"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"sv"		"Utrustning - Byt kategori"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"sv"		"Utrustning - Kom ihåg val?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"sv"		"Behåll nuvarande vapen"
+	}
+
+	"Equip Main Create Class"
+	{
+		"sv"		"Skapa anpassad klass"
+	}
+
+	"Equip Main Change Category"
+	{
+		"sv"		"Byt kategori"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"sv"		"Välj förmåga"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"sv"		"Extra pistolammunition (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"sv"		"Extra primärammunition (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"sv"		"Primär"
+	}
+
+	"Equip Category Pistol"
+	{
+		"sv"		"Pistol"
+	}
+
+	"Equip Category Equipment"
+	{
+		"sv"		"Utrustning"
+	}
+
+	"Equip Remember Yes"
+	{
+		"sv"		"Ja"
+	}
+
+	"Equip Remember No"
+	{
+		"sv"		"Nej"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"sv"		"Du kan bara använda utrustningsmenyn en gång per spawn!"
+	}
+
+	"Equip Time Expired"
+	{
+		"sv"		"90 sekunder har gått, du kan inte utrusta dig mer!"
+	}
+
+	"Class Change Blocked"
+	{
+		"sv"		"90 sekunder av rundan har gått, du kan inte byta klass mer!"
+	}
+
+	"Skill Menu Title"
+	{
+		"sv"		"Välj förmåga:"
+	}
+
+	"Skill No Skill"
+	{
+		"sv"		"Ingen förmåga"
+	}
+
+	"Skill ESP"
+	{
+		"sv"		"ESP (Se zombieklass)"
+	}
+
+	"No Skill Selected"
+	{
+		"sv"		"Ingen förmåga vald"
+	}
+
+	"ESP Skill Selected"
+	{
+		"sv"		"ESP valt! Högerklicka med pistol för att identifiera zombies"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"sv"		"ESP nedkylning: {1} sekunder"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"sv"		"Du fick extra primärammunition för att döda en zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"sv"		"Du fick extra pistolammunition för att döda en zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"sv"		"Du fick 10%% skademotstånd för att döda en zombie."
+	}
+
+	"Reward Health"
+	{
+		"sv"		"Du fick 10%% hälsa för att döda en zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"sv"		"Du fick en {1}HP-bonus för din kill!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"sv"		"Du träffades av ett dödligt skott, sök skydd!"
+	}
+
+	"Pickup Health"
+	{
+		"sv"		"+50 Hälsa!"
+	}
+
+	"Pickup Ammo"
+	{
+		"sv"		"Extra ammunition!"
+	}
+
+	"Pickup Speed"
+	{
+		"sv"		"Hastighetsboost! (10 sekunder)"
+	}
+
+	"Pickup Damage"
+	{
+		"sv"		"Skadeboost! (10 sekunder)"
+	}
+
+	"Pickup Already Active"
+	{
+		"sv"		"Denna boost är redan aktiv!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"sv"		"Hastighetsboost har gått ut"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"sv"		"Skadeboost har gått ut"
+	}
+
+	"Human Info Display"
+	{
+		"sv"		"Människa: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"sv"		"Spelaren {1} är nu en Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"sv"		"Du är nu en {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"sv"		"Hälsa: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"sv"		"{1} har teleporterat till mänskligt spawn!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"sv"		"Du fick 10%% hastighetsboost för att döda en människa."
+	}
+
+	"Max Speed Reached"
+	{
+		"sv"		"Du har redan maximal hastighet!"
+	}
+
+	"Zombie Info Display"
+	{
+		"sv"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"sv"		"{1} (KRITISK HÄLSA!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"sv"		"Gaszombie: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"sv"		"Gaszombie: {1} (KRITISK HÄLSA!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"sv"		"TNT-zombie: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"sv"		"TNT-zombie: {1} (KRITISK HÄLSA!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"sv"		"Barrikadhälsa: {1}"
+	}
+
+}

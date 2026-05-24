@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"bg"		"Играта започва след 15 секунди!"
+	}
+
+	"First Real Player Restart"
+	{
+		"bg"		"Играч {1} се присъедини! Рестартиране на рунда..."
+	}
+
+	"Win Limit Reached"
+	{
+		"bg"		"Достигнат е лимитът на победите! Смяна на картата..."
+	}
+
+	"Rounds Played"
+	{
+		"bg"		"Изиграни рундове: {1} от {2} преди смяна на картата."
+	}
+
+	"Last Human Beaconed"
+	{
+		"bg"		"Последният оцелял беше засечен!"
+	}
+
+	"Equip Menu Title"
+	{
+		"bg"		"Меню за екипировка"
+	}
+
+	"Equip Menu Primary"
+	{
+		"bg"		"Екипировка - Изберете основно оръжие"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"bg"		"Екипировка - Изберете пистолет"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"bg"		"Екипировка - Изберете допълнително оборудване"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"bg"		"Екипировка - Смяна на категорията"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"bg"		"Екипировка - Запомни избора?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"bg"		"Запази текущите оръжия"
+	}
+
+	"Equip Main Create Class"
+	{
+		"bg"		"Създай персонален клас"
+	}
+
+	"Equip Main Change Category"
+	{
+		"bg"		"Смяна на категорията"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"bg"		"Избери умение"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"bg"		"Допълнителни патрони за пистолет (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"bg"		"Допълнителни патрони за основно оръжие (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"bg"		"Основно"
+	}
+
+	"Equip Category Pistol"
+	{
+		"bg"		"Пистолет"
+	}
+
+	"Equip Category Equipment"
+	{
+		"bg"		"Екипировка"
+	}
+
+	"Equip Remember Yes"
+	{
+		"bg"		"Да"
+	}
+
+	"Equip Remember No"
+	{
+		"bg"		"Не"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"bg"		"Можете да използвате менюто за екипировка само веднъж на спаун!"
+	}
+
+	"Equip Time Expired"
+	{
+		"bg"		"Изминаха 90 секунди, вече не можете да се екипирате!"
+	}
+
+	"Class Change Blocked"
+	{
+		"bg"		"Изминаха 90 секунди от рунда, вече не можете да сменяте класа!"
+	}
+
+	"Skill Menu Title"
+	{
+		"bg"		"Избери умение:"
+	}
+
+	"Skill No Skill"
+	{
+		"bg"		"Без умение"
+	}
+
+	"Skill ESP"
+	{
+		"bg"		"ESP (Виж класа на зомбито)"
+	}
+
+	"No Skill Selected"
+	{
+		"bg"		"Не е избрано умение"
+	}
+
+	"ESP Skill Selected"
+	{
+		"bg"		"ESP избрано! Десен бутон с пистолет за идентифициране на зомбита"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"bg"		"ESP в изчакване: {1} секунди"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"bg"		"Получихте допълнителни патрони за убиване на зомби."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"bg"		"Получихте допълнителни патрони за пистолет за убиване на зомби."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"bg"		"Получихте 10%% устойчивост на щети за убиване на зомби."
+	}
+
+	"Reward Health"
+	{
+		"bg"		"Получихте 10%% здраве за убиване на зомби."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"bg"		"Получихте бонус от {1}HP за убийството!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"bg"		"Бяхте улучени от смъртоносен изстрел, намерете прикритие!"
+	}
+
+	"Pickup Health"
+	{
+		"bg"		"+50 Здраве!"
+	}
+
+	"Pickup Ammo"
+	{
+		"bg"		"Допълнителни патрони!"
+	}
+
+	"Pickup Speed"
+	{
+		"bg"		"Ускорение! (10 секунди)"
+	}
+
+	"Pickup Damage"
+	{
+		"bg"		"Усилване на щетите! (10 секунди)"
+	}
+
+	"Pickup Already Active"
+	{
+		"bg"		"Това усилване вече е активно!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"bg"		"Ускорението изтече"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"bg"		"Усилването на щетите изтече"
+	}
+
+	"Human Info Display"
+	{
+		"bg"		"Човек: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"bg"		"Играч {1} вече е Зомби."
+	}
+
+	"Became Zombie"
+	{
+		"bg"		"Вече сте {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"bg"		"Здраве: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"bg"		"{1} се телепортира до спауна на хората!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"bg"		"Получихте 10%% ускорение за убиване на човек."
+	}
+
+	"Max Speed Reached"
+	{
+		"bg"		"Вече имате максимална скорост!"
+	}
+
+	"Zombie Info Display"
+	{
+		"bg"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"bg"		"{1} (КРИТИЧНО ЗДРАВЕ!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"bg"		"Газово зомби: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"bg"		"Газово зомби: {1} (КРИТИЧНО ЗДРАВЕ!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"bg"		"TNT зомби: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"bg"		"TNT зомби: {1} (КРИТИЧНО ЗДРАВЕ!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"bg"		"Здраве на барикадата: {1}"
+	}
+
+}

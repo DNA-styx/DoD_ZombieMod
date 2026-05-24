@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"ua"		"Гра починається через 15 секунд!"
+	}
+
+	"First Real Player Restart"
+	{
+		"ua"		"Гравець {1} приєднався! Перезапуск раунду..."
+	}
+
+	"Win Limit Reached"
+	{
+		"ua"		"Досягнуто ліміт перемог! Зміна карти..."
+	}
+
+	"Rounds Played"
+	{
+		"ua"		"Зіграно раундів: {1} з {2} до зміни карти."
+	}
+
+	"Last Human Beaconed"
+	{
+		"ua"		"Останнього вцілілого виявлено!"
+	}
+
+	"Equip Menu Title"
+	{
+		"ua"		"Меню спорядження"
+	}
+
+	"Equip Menu Primary"
+	{
+		"ua"		"Спорядження - Вибір основної зброї"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"ua"		"Спорядження - Вибір пістолета"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"ua"		"Спорядження - Вибір додаткового спорядження"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"ua"		"Спорядження - Змінити категорію"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"ua"		"Спорядження - Запам'ятати вибір?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"ua"		"Залишити поточну зброю"
+	}
+
+	"Equip Main Create Class"
+	{
+		"ua"		"Створити клас"
+	}
+
+	"Equip Main Change Category"
+	{
+		"ua"		"Змінити категорію"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"ua"		"Вибрати навичку"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"ua"		"Додаткові патрони для пістолета (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"ua"		"Додаткові патрони для основної зброї (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"ua"		"Основне"
+	}
+
+	"Equip Category Pistol"
+	{
+		"ua"		"Пістолет"
+	}
+
+	"Equip Category Equipment"
+	{
+		"ua"		"Спорядження"
+	}
+
+	"Equip Remember Yes"
+	{
+		"ua"		"Так"
+	}
+
+	"Equip Remember No"
+	{
+		"ua"		"Ні"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"ua"		"Меню спорядження можна використовувати лише один раз за спавн!"
+	}
+
+	"Equip Time Expired"
+	{
+		"ua"		"Минуло 90 секунд, ви більше не можете спорядитися!"
+	}
+
+	"Class Change Blocked"
+	{
+		"ua"		"Минуло 90 секунд раунду, ви більше не можете змінювати клас!"
+	}
+
+	"Skill Menu Title"
+	{
+		"ua"		"Вибрати навичку:"
+	}
+
+	"Skill No Skill"
+	{
+		"ua"		"Без навички"
+	}
+
+	"Skill ESP"
+	{
+		"ua"		"ESP (Бачити клас зомбі)"
+	}
+
+	"No Skill Selected"
+	{
+		"ua"		"Навичку не вибрано"
+	}
+
+	"ESP Skill Selected"
+	{
+		"ua"		"ESP вибрано! Правий клік пістолетом для визначення зомбі"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"ua"		"ESP на перезарядці: {1} секунд"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"ua"		"Ви отримали додаткові патрони за вбивство зомбі."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"ua"		"Ви отримали додаткові патрони для пістолета за вбивство зомбі."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"ua"		"Ви отримали 10%% стійкості до урону за вбивство зомбі."
+	}
+
+	"Reward Health"
+	{
+		"ua"		"Ви отримали 10%% здоров'я за вбивство зомбі."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"ua"		"Ви отримали бонус {1}HP за вбивство!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"ua"		"Вас зачепив смертельний постріл, в укриття!"
+	}
+
+	"Pickup Health"
+	{
+		"ua"		"+50 Здоров'я!"
+	}
+
+	"Pickup Ammo"
+	{
+		"ua"		"Додаткові патрони!"
+	}
+
+	"Pickup Speed"
+	{
+		"ua"		"Прискорення! (10 секунд)"
+	}
+
+	"Pickup Damage"
+	{
+		"ua"		"Підсилення урону! (10 секунд)"
+	}
+
+	"Pickup Already Active"
+	{
+		"ua"		"Цей бонус вже активний!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"ua"		"Прискорення закінчилось"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"ua"		"Підсилення урону закінчилось"
+	}
+
+	"Human Info Display"
+	{
+		"ua"		"Людина: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"ua"		"Гравець {1} тепер Зомбі."
+	}
+
+	"Became Zombie"
+	{
+		"ua"		"Тепер ви {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"ua"		"Здоров'я: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"ua"		"{1} телепортувався на спавн людей!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"ua"		"Ви отримали 10%% прискорення за вбивство людини."
+	}
+
+	"Max Speed Reached"
+	{
+		"ua"		"У вас вже максимальна швидкість!"
+	}
+
+	"Zombie Info Display"
+	{
+		"ua"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"ua"		"{1} (КРИТИЧНЕ ЗДОРОВ'Я!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"ua"		"Газовий зомбі: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"ua"		"Газовий зомбі: {1} (КРИТИЧНЕ ЗДОРОВ'Я!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"ua"		"TNT-зомбі: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"ua"		"TNT-зомбі: {1} (КРИТИЧНЕ ЗДОРОВ'Я!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"ua"		"Здоров'я барикади: {1}"
+	}
+
+}

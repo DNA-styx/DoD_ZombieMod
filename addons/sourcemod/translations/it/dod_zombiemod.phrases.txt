@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"it"		"La partita inizierà tra 15 secondi!"
+	}
+
+	"First Real Player Restart"
+	{
+		"it"		"Il giocatore {1} si è unito! Riavvio del round..."
+	}
+
+	"Win Limit Reached"
+	{
+		"it"		"Limite di vittorie raggiunto! Cambio mappa..."
+	}
+
+	"Rounds Played"
+	{
+		"it"		"Round giocati: {1} su {2} prima del cambio mappa."
+	}
+
+	"Last Human Beaconed"
+	{
+		"it"		"L'ultimo sopravvissuto è stato localizzato!"
+	}
+
+	"Equip Menu Title"
+	{
+		"it"		"Menu equipaggiamento"
+	}
+
+	"Equip Menu Primary"
+	{
+		"it"		"Equipaggiamento - Seleziona arma primaria"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"it"		"Equipaggiamento - Seleziona pistola"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"it"		"Equipaggiamento - Seleziona equipaggiamento extra"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"it"		"Equipaggiamento - Cambia categoria"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"it"		"Equipaggiamento - Ricordare la scelta?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"it"		"Mantieni armi attuali"
+	}
+
+	"Equip Main Create Class"
+	{
+		"it"		"Crea classe personalizzata"
+	}
+
+	"Equip Main Change Category"
+	{
+		"it"		"Cambia categoria"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"it"		"Seleziona abilità"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"it"		"Munizioni extra per pistola (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"it"		"Munizioni extra per arma primaria (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"it"		"Primario"
+	}
+
+	"Equip Category Pistol"
+	{
+		"it"		"Pistola"
+	}
+
+	"Equip Category Equipment"
+	{
+		"it"		"Equipaggiamento"
+	}
+
+	"Equip Remember Yes"
+	{
+		"it"		"Sì"
+	}
+
+	"Equip Remember No"
+	{
+		"it"		"No"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"it"		"Puoi usare il menu equipaggiamento solo una volta per spawn!"
+	}
+
+	"Equip Time Expired"
+	{
+		"it"		"Sono passati 90 secondi, non puoi più equipaggiarti!"
+	}
+
+	"Class Change Blocked"
+	{
+		"it"		"Sono passati 90 secondi del round, non puoi più cambiare classe!"
+	}
+
+	"Skill Menu Title"
+	{
+		"it"		"Seleziona abilità:"
+	}
+
+	"Skill No Skill"
+	{
+		"it"		"Nessuna abilità"
+	}
+
+	"Skill ESP"
+	{
+		"it"		"ESP (Vedi classe zombie)"
+	}
+
+	"No Skill Selected"
+	{
+		"it"		"Nessuna abilità selezionata"
+	}
+
+	"ESP Skill Selected"
+	{
+		"it"		"ESP selezionato! Tasto destro con la pistola per identificare i zombie"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"it"		"ESP in ricarica: {1} secondi"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"it"		"Hai ricevuto munizioni extra per aver ucciso uno zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"it"		"Hai ricevuto munizioni per pistola extra per aver ucciso uno zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"it"		"Hai ricevuto il 10%% di resistenza ai danni per aver ucciso uno zombie."
+	}
+
+	"Reward Health"
+	{
+		"it"		"Hai ricevuto il 10%% di salute per aver ucciso uno zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"it"		"Hai ricevuto un bonus di {1}HP per la tua uccisione!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"it"		"Sei stato colpito da un colpo fatale, mettiti al riparo!"
+	}
+
+	"Pickup Health"
+	{
+		"it"		"+50 Salute!"
+	}
+
+	"Pickup Ammo"
+	{
+		"it"		"Munizioni extra!"
+	}
+
+	"Pickup Speed"
+	{
+		"it"		"Boost velocità! (10 secondi)"
+	}
+
+	"Pickup Damage"
+	{
+		"it"		"Boost danno! (10 secondi)"
+	}
+
+	"Pickup Already Active"
+	{
+		"it"		"Questo boost è già attivo!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"it"		"Boost velocità scaduto"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"it"		"Boost danno scaduto"
+	}
+
+	"Human Info Display"
+	{
+		"it"		"Umano: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"it"		"Il giocatore {1} è ora uno Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"it"		"Sei ora un {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"it"		"Salute: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"it"		"{1} si è teletrasportato allo spawn umano!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"it"		"Hai ricevuto un boost velocità del 10%% per aver ucciso un umano."
+	}
+
+	"Max Speed Reached"
+	{
+		"it"		"Hai già la velocità massima!"
+	}
+
+	"Zombie Info Display"
+	{
+		"it"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"it"		"{1} (SALUTE CRITICA!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"it"		"Zombie Gas: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"it"		"Zombie Gas: {1} (SALUTE CRITICA!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"it"		"Zombie TNT: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"it"		"Zombie TNT: {1} (SALUTE CRITICA!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"it"		"Salute barricata: {1}"
+	}
+
+}

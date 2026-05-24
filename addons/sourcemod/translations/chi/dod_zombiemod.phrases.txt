@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"chi"		"游戏将在15秒后开始！"
+	}
+
+	"First Real Player Restart"
+	{
+		"chi"		"玩家 {1} 已加入！正在重新开始回合..."
+	}
+
+	"Win Limit Reached"
+	{
+		"chi"		"已达到胜利上限！正在切换地图..."
+	}
+
+	"Rounds Played"
+	{
+		"chi"		"已游戏回合数：{1} / {2}，之后切换地图。"
+	}
+
+	"Last Human Beaconed"
+	{
+		"chi"		"最后一名幸存者已被标记！"
+	}
+
+	"Equip Menu Title"
+	{
+		"chi"		"装备菜单"
+	}
+
+	"Equip Menu Primary"
+	{
+		"chi"		"装备 - 选择主武器"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"chi"		"装备 - 选择手枪"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"chi"		"装备 - 选择额外装备"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"chi"		"装备 - 更改分类"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"chi"		"装备 - 记住选择？"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"chi"		"保留当前武器"
+	}
+
+	"Equip Main Create Class"
+	{
+		"chi"		"创建自定义兵种"
+	}
+
+	"Equip Main Change Category"
+	{
+		"chi"		"更改分类"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"chi"		"选择技能"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"chi"		"额外手枪弹药 (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"chi"		"额外主武器弹药 (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"chi"		"主武器"
+	}
+
+	"Equip Category Pistol"
+	{
+		"chi"		"手枪"
+	}
+
+	"Equip Category Equipment"
+	{
+		"chi"		"装备"
+	}
+
+	"Equip Remember Yes"
+	{
+		"chi"		"是"
+	}
+
+	"Equip Remember No"
+	{
+		"chi"		"否"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"chi"		"每次出生只能使用一次装备菜单！"
+	}
+
+	"Equip Time Expired"
+	{
+		"chi"		"已过90秒，您无法再装备了！"
+	}
+
+	"Class Change Blocked"
+	{
+		"chi"		"本回合已过90秒，您无法再更改兵种了！"
+	}
+
+	"Skill Menu Title"
+	{
+		"chi"		"选择技能："
+	}
+
+	"Skill No Skill"
+	{
+		"chi"		"无技能"
+	}
+
+	"Skill ESP"
+	{
+		"chi"		"ESP（查看僵尸兵种）"
+	}
+
+	"No Skill Selected"
+	{
+		"chi"		"未选择技能"
+	}
+
+	"ESP Skill Selected"
+	{
+		"chi"		"已选择ESP！用手枪右键单击以识别僵尸"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"chi"		"ESP识别冷却中：{1}秒"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"chi"		"您因击杀僵尸获得了额外主武器弹药。"
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"chi"		"您因击杀僵尸获得了额外手枪弹药。"
+	}
+
+	"Reward Damage Resistance"
+	{
+		"chi"		"您因击杀僵尸获得了10%%伤害减免。"
+	}
+
+	"Reward Health"
+	{
+		"chi"		"您因击杀僵尸获得了10%%生命值。"
+	}
+
+	"Crit Kill Bonus"
+	{
+		"chi"		"您因击杀获得了{1}HP奖励！"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"chi"		"您被致命一击，快找掩护！"
+	}
+
+	"Pickup Health"
+	{
+		"chi"		"+50 生命值！"
+	}
+
+	"Pickup Ammo"
+	{
+		"chi"		"额外弹药！"
+	}
+
+	"Pickup Speed"
+	{
+		"chi"		"速度提升！（10秒）"
+	}
+
+	"Pickup Damage"
+	{
+		"chi"		"伤害提升！（10秒）"
+	}
+
+	"Pickup Already Active"
+	{
+		"chi"		"此增益已经激活！"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"chi"		"速度提升已结束"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"chi"		"伤害提升已结束"
+	}
+
+	"Human Info Display"
+	{
+		"chi"		"人类：{1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"chi"		"玩家 {1} 现在是僵尸。"
+	}
+
+	"Became Zombie"
+	{
+		"chi"		"您现在是 {1}！"
+	}
+
+	"Zombie Self Info"
+	{
+		"chi"		"生命值：{1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"chi"		"{1} 已传送至人类出生点！"
+	}
+
+	"Reward Speed Boost"
+	{
+		"chi"		"您因击杀人类获得了10%%速度提升。"
+	}
+
+	"Max Speed Reached"
+	{
+		"chi"		"您已达到最大速度！"
+	}
+
+	"Zombie Info Display"
+	{
+		"chi"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"chi"		"{1} (生命值危急！)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"chi"		"毒气僵尸：{1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"chi"		"毒气僵尸：{1} (生命值危急！)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"chi"		"TNT僵尸：{1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"chi"		"TNT僵尸：{1} (生命值危急！)"
+	}
+
+	"Barrier Health Display"
+	{
+		"chi"		"路障生命值：{1}"
+	}
+
+}

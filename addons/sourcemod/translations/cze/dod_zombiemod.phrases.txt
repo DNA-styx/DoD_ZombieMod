@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"cze"		"Hra začne za 15 sekund!"
+	}
+
+	"First Real Player Restart"
+	{
+		"cze"		"Hráč {1} se připojil! Restartuji kolo..."
+	}
+
+	"Win Limit Reached"
+	{
+		"cze"		"Dosažen limit výher! Mění se mapa..."
+	}
+
+	"Rounds Played"
+	{
+		"cze"		"Odehrané kola: {1} z {2} před změnou mapy."
+	}
+
+	"Last Human Beaconed"
+	{
+		"cze"		"Poslední přeživší byl lokalizován!"
+	}
+
+	"Equip Menu Title"
+	{
+		"cze"		"Menu vybavení"
+	}
+
+	"Equip Menu Primary"
+	{
+		"cze"		"Vybavení - Vybrat primární zbraň"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"cze"		"Vybavení - Vybrat pistoli"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"cze"		"Vybavení - Vybrat extra vybavení"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"cze"		"Vybavení - Změnit kategorii"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"cze"		"Vybavení - Zapamatovat volbu?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"cze"		"Ponechat aktuální zbraně"
+	}
+
+	"Equip Main Create Class"
+	{
+		"cze"		"Vytvořit vlastní třídu"
+	}
+
+	"Equip Main Change Category"
+	{
+		"cze"		"Změnit kategorii"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"cze"		"Vybrat dovednost"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"cze"		"Extra munice pro pistoli (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"cze"		"Extra primární munice (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"cze"		"Primární"
+	}
+
+	"Equip Category Pistol"
+	{
+		"cze"		"Pistole"
+	}
+
+	"Equip Category Equipment"
+	{
+		"cze"		"Vybavení"
+	}
+
+	"Equip Remember Yes"
+	{
+		"cze"		"Ano"
+	}
+
+	"Equip Remember No"
+	{
+		"cze"		"Ne"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"cze"		"Menu vybavení můžeš použít jen jednou za spawn!"
+	}
+
+	"Equip Time Expired"
+	{
+		"cze"		"Uběhlo 90 sekund, nemůžeš se již vybavit!"
+	}
+
+	"Class Change Blocked"
+	{
+		"cze"		"Uběhlo 90 sekund kola, nemůžeš již měnit třídu!"
+	}
+
+	"Skill Menu Title"
+	{
+		"cze"		"Vybrat dovednost:"
+	}
+
+	"Skill No Skill"
+	{
+		"cze"		"Žádná dovednost"
+	}
+
+	"Skill ESP"
+	{
+		"cze"		"ESP (Zobrazit třídu zombie)"
+	}
+
+	"No Skill Selected"
+	{
+		"cze"		"Žádná dovednost nevybrána"
+	}
+
+	"ESP Skill Selected"
+	{
+		"cze"		"ESP vybráno! Pravý klik s pistolí pro identifikaci zombií"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"cze"		"ESP nabíjení: {1} sekund"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"cze"		"Získal jsi extra primární munici za zabití zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"cze"		"Získal jsi extra munici pro pistoli za zabití zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"cze"		"Získal jsi 10%% odolnost vůči poškození za zabití zombie."
+	}
+
+	"Reward Health"
+	{
+		"cze"		"Získal jsi 10%% zdraví za zabití zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"cze"		"Získal jsi bonus {1}HP za zabití!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"cze"		"Zasáhl tě smrtelný výstřel, ukryj se!"
+	}
+
+	"Pickup Health"
+	{
+		"cze"		"+50 Zdraví!"
+	}
+
+	"Pickup Ammo"
+	{
+		"cze"		"Extra munice!"
+	}
+
+	"Pickup Speed"
+	{
+		"cze"		"Boost rychlosti! (10 sekund)"
+	}
+
+	"Pickup Damage"
+	{
+		"cze"		"Boost poškození! (10 sekund)"
+	}
+
+	"Pickup Already Active"
+	{
+		"cze"		"Tento boost je již aktivní!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"cze"		"Boost rychlosti vypršel"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"cze"		"Boost poškození vypršel"
+	}
+
+	"Human Info Display"
+	{
+		"cze"		"Člověk: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"cze"		"Hráč {1} je nyní Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"cze"		"Nyní jsi {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"cze"		"Zdraví: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"cze"		"{1} se teleportoval na spawn lidí!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"cze"		"Získal jsi 10%% boost rychlosti za zabití člověka."
+	}
+
+	"Max Speed Reached"
+	{
+		"cze"		"Již máš maximální rychlost!"
+	}
+
+	"Zombie Info Display"
+	{
+		"cze"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"cze"		"{1} (KRITICKÉ ZDRAVÍ!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"cze"		"Plynový zombie: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"cze"		"Plynový zombie: {1} (KRITICKÉ ZDRAVÍ!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"cze"		"TNT zombie: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"cze"		"TNT zombie: {1} (KRITICKÉ ZDRAVÍ!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"cze"		"Zdraví barikády: {1}"
+	}
+
+}

@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"nl"		"Het spel begint over 15 seconden!"
+	}
+
+	"First Real Player Restart"
+	{
+		"nl"		"Speler {1} is toegetreden! Ronde wordt herstart..."
+	}
+
+	"Win Limit Reached"
+	{
+		"nl"		"Winstlimiet bereikt! Kaart wordt gewisseld..."
+	}
+
+	"Rounds Played"
+	{
+		"nl"		"Gespeelde ronden: {1} van {2} voor kaartwissel."
+	}
+
+	"Last Human Beaconed"
+	{
+		"nl"		"De laatste overlevende is gelokaliseerd!"
+	}
+
+	"Equip Menu Title"
+	{
+		"nl"		"Uitrustingsmenu"
+	}
+
+	"Equip Menu Primary"
+	{
+		"nl"		"Uitrusting - Primair wapen kiezen"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"nl"		"Uitrusting - Pistool kiezen"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"nl"		"Uitrusting - Extra uitrusting kiezen"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"nl"		"Uitrusting - Categorie wijzigen"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"nl"		"Uitrusting - Keuze onthouden?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"nl"		"Huidige wapens behouden"
+	}
+
+	"Equip Main Create Class"
+	{
+		"nl"		"Aangepaste klasse maken"
+	}
+
+	"Equip Main Change Category"
+	{
+		"nl"		"Categorie wijzigen"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"nl"		"Vaardigheid kiezen"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"nl"		"Extra pistoolmunitie (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"nl"		"Extra primaire munitie (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"nl"		"Primair"
+	}
+
+	"Equip Category Pistol"
+	{
+		"nl"		"Pistool"
+	}
+
+	"Equip Category Equipment"
+	{
+		"nl"		"Uitrusting"
+	}
+
+	"Equip Remember Yes"
+	{
+		"nl"		"Ja"
+	}
+
+	"Equip Remember No"
+	{
+		"nl"		"Nee"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"nl"		"Je kunt het uitrustingsmenu maar één keer per spawn gebruiken!"
+	}
+
+	"Equip Time Expired"
+	{
+		"nl"		"90 seconden zijn verstreken, je kunt je niet meer uitrusten!"
+	}
+
+	"Class Change Blocked"
+	{
+		"nl"		"90 seconden van de ronde zijn verstreken, je kunt niet meer van klasse wisselen!"
+	}
+
+	"Skill Menu Title"
+	{
+		"nl"		"Vaardigheid kiezen:"
+	}
+
+	"Skill No Skill"
+	{
+		"nl"		"Geen vaardigheid"
+	}
+
+	"Skill ESP"
+	{
+		"nl"		"ESP (Zombieklasse zien)"
+	}
+
+	"No Skill Selected"
+	{
+		"nl"		"Geen vaardigheid geselecteerd"
+	}
+
+	"ESP Skill Selected"
+	{
+		"nl"		"ESP geselecteerd! Rechtsklik met pistool om zombies te identificeren"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"nl"		"ESP hersteltijd: {1} seconden"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"nl"		"Je hebt extra primaire munitie ontvangen voor het doden van een zombie."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"nl"		"Je hebt extra pistoolmunitie ontvangen voor het doden van een zombie."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"nl"		"Je hebt 10%% schadeweerstand ontvangen voor het doden van een zombie."
+	}
+
+	"Reward Health"
+	{
+		"nl"		"Je hebt 10%% gezondheid ontvangen voor het doden van een zombie."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"nl"		"Je hebt een {1}HP-bonus ontvangen voor je kill!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"nl"		"Je bent geraakt door een dodelijk schot, zoek dekking!"
+	}
+
+	"Pickup Health"
+	{
+		"nl"		"+50 Gezondheid!"
+	}
+
+	"Pickup Ammo"
+	{
+		"nl"		"Extra munitie!"
+	}
+
+	"Pickup Speed"
+	{
+		"nl"		"Snelheidsboost! (10 seconden)"
+	}
+
+	"Pickup Damage"
+	{
+		"nl"		"Schadeboost! (10 seconden)"
+	}
+
+	"Pickup Already Active"
+	{
+		"nl"		"Deze boost is al actief!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"nl"		"Snelheidsboost verlopen"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"nl"		"Schadeboost verlopen"
+	}
+
+	"Human Info Display"
+	{
+		"nl"		"Mens: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"nl"		"Speler {1} is nu een Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"nl"		"Je bent nu een {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"nl"		"Gezondheid: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"nl"		"{1} is geteleporteerd naar het menselijke spawn!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"nl"		"Je hebt 10%% snelheidsboost ontvangen voor het doden van een mens."
+	}
+
+	"Max Speed Reached"
+	{
+		"nl"		"Je hebt al de maximale snelheid!"
+	}
+
+	"Zombie Info Display"
+	{
+		"nl"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"nl"		"{1} (KRITIEKE GEZONDHEID!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"nl"		"Gas-zombie: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"nl"		"Gas-zombie: {1} (KRITIEKE GEZONDHEID!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"nl"		"TNT-zombie: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"nl"		"TNT-zombie: {1} (KRITIEKE GEZONDHEID!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"nl"		"Barricadegesondheid: {1}"
+	}
+
+}

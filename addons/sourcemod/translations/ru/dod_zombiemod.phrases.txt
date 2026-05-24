@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"ru"		"Игра начнётся через 15 секунд!"
+	}
+
+	"First Real Player Restart"
+	{
+		"ru"		"Игрок {1} подключился! Перезапуск раунда..."
+	}
+
+	"Win Limit Reached"
+	{
+		"ru"		"Достигнут лимит побед! Смена карты..."
+	}
+
+	"Rounds Played"
+	{
+		"ru"		"Сыграно раундов: {1} из {2} до смены карты."
+	}
+
+	"Last Human Beaconed"
+	{
+		"ru"		"Последний выживший обнаружен!"
+	}
+
+	"Equip Menu Title"
+	{
+		"ru"		"Меню снаряжения"
+	}
+
+	"Equip Menu Primary"
+	{
+		"ru"		"Снаряжение - Выбор основного оружия"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"ru"		"Снаряжение - Выбор пистолета"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"ru"		"Снаряжение - Выбор дополнительного снаряжения"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"ru"		"Снаряжение - Изменить категорию"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"ru"		"Снаряжение - Запомнить выбор?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"ru"		"Оставить текущее оружие"
+	}
+
+	"Equip Main Create Class"
+	{
+		"ru"		"Создать класс"
+	}
+
+	"Equip Main Change Category"
+	{
+		"ru"		"Изменить категорию"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"ru"		"Выбрать навык"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"ru"		"Дополнительные патроны для пистолета (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"ru"		"Дополнительные патроны для основного оружия (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"ru"		"Основное"
+	}
+
+	"Equip Category Pistol"
+	{
+		"ru"		"Пистолет"
+	}
+
+	"Equip Category Equipment"
+	{
+		"ru"		"Снаряжение"
+	}
+
+	"Equip Remember Yes"
+	{
+		"ru"		"Да"
+	}
+
+	"Equip Remember No"
+	{
+		"ru"		"Нет"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"ru"		"Меню снаряжения можно использовать только один раз за спавн!"
+	}
+
+	"Equip Time Expired"
+	{
+		"ru"		"Прошло 90 секунд, вы больше не можете экипироваться!"
+	}
+
+	"Class Change Blocked"
+	{
+		"ru"		"Прошло 90 секунд раунда, вы больше не можете менять класс!"
+	}
+
+	"Skill Menu Title"
+	{
+		"ru"		"Выбрать навык:"
+	}
+
+	"Skill No Skill"
+	{
+		"ru"		"Без навыка"
+	}
+
+	"Skill ESP"
+	{
+		"ru"		"ESP (Видеть класс зомби)"
+	}
+
+	"No Skill Selected"
+	{
+		"ru"		"Навык не выбран"
+	}
+
+	"ESP Skill Selected"
+	{
+		"ru"		"ESP выбран! Правая кнопка мыши с пистолетом для определения зомби"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"ru"		"ESP на перезарядке: {1} секунд"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"ru"		"Вы получили дополнительные патроны за убийство зомби."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"ru"		"Вы получили дополнительные патроны для пистолета за убийство зомби."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"ru"		"Вы получили 10%% сопротивления урону за убийство зомби."
+	}
+
+	"Reward Health"
+	{
+		"ru"		"Вы получили 10%% здоровья за убийство зомби."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"ru"		"Вы получили бонус {1}HP за убийство!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"ru"		"Вас задел смертельный выстрел, укройтесь!"
+	}
+
+	"Pickup Health"
+	{
+		"ru"		"+50 Здоровья!"
+	}
+
+	"Pickup Ammo"
+	{
+		"ru"		"Дополнительные патроны!"
+	}
+
+	"Pickup Speed"
+	{
+		"ru"		"Ускорение! (10 секунд)"
+	}
+
+	"Pickup Damage"
+	{
+		"ru"		"Усиление урона! (10 секунд)"
+	}
+
+	"Pickup Already Active"
+	{
+		"ru"		"Этот бонус уже активен!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"ru"		"Ускорение закончилось"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"ru"		"Усиление урона закончилось"
+	}
+
+	"Human Info Display"
+	{
+		"ru"		"Человек: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"ru"		"Игрок {1} теперь Зомби."
+	}
+
+	"Became Zombie"
+	{
+		"ru"		"Теперь вы {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"ru"		"Здоровье: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"ru"		"{1} телепортировался на спавн людей!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"ru"		"Вы получили 10%% ускорения за убийство человека."
+	}
+
+	"Max Speed Reached"
+	{
+		"ru"		"У вас уже максимальная скорость!"
+	}
+
+	"Zombie Info Display"
+	{
+		"ru"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"ru"		"{1} (КРИТИЧЕСКОЕ ЗДОРОВЬЕ!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"ru"		"Газовый зомби: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"ru"		"Газовый зомби: {1} (КРИТИЧЕСКОЕ ЗДОРОВЬЕ!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"ru"		"TNT-зомби: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"ru"		"TNT-зомби: {1} (КРИТИЧЕСКОЕ ЗДОРОВЬЕ!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"ru"		"Здоровье баррикады: {1}"
+	}
+
+}

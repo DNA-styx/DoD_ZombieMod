@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"jp"		"ゲームは15秒後に始まります！"
+	}
+
+	"First Real Player Restart"
+	{
+		"jp"		"プレイヤー {1} が参加しました！ラウンドを再開します..."
+	}
+
+	"Win Limit Reached"
+	{
+		"jp"		"勝利制限に達しました！マップを変更します..."
+	}
+
+	"Rounds Played"
+	{
+		"jp"		"プレイ済みラウンド：{1} / {2}（マップ変更前）"
+	}
+
+	"Last Human Beaconed"
+	{
+		"jp"		"最後の生存者が発見されました！"
+	}
+
+	"Equip Menu Title"
+	{
+		"jp"		"装備メニュー"
+	}
+
+	"Equip Menu Primary"
+	{
+		"jp"		"装備 - メイン武器を選択"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"jp"		"装備 - ピストルを選択"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"jp"		"装備 - 追加装備を選択"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"jp"		"装備 - カテゴリを変更"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"jp"		"装備 - 選択を記憶しますか？"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"jp"		"現在の武器を保持"
+	}
+
+	"Equip Main Create Class"
+	{
+		"jp"		"カスタムクラスを作成"
+	}
+
+	"Equip Main Change Category"
+	{
+		"jp"		"カテゴリを変更"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"jp"		"スキルを選択"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"jp"		"ピストル追加弾薬 (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"jp"		"メイン武器追加弾薬 (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"jp"		"メイン"
+	}
+
+	"Equip Category Pistol"
+	{
+		"jp"		"ピストル"
+	}
+
+	"Equip Category Equipment"
+	{
+		"jp"		"装備"
+	}
+
+	"Equip Remember Yes"
+	{
+		"jp"		"はい"
+	}
+
+	"Equip Remember No"
+	{
+		"jp"		"いいえ"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"jp"		"装備メニューはスポーンごとに1回のみ使用できます！"
+	}
+
+	"Equip Time Expired"
+	{
+		"jp"		"90秒が経過しました。もう装備できません！"
+	}
+
+	"Class Change Blocked"
+	{
+		"jp"		"ラウンドの90秒が経過しました。クラスを変更できません！"
+	}
+
+	"Skill Menu Title"
+	{
+		"jp"		"スキルを選択："
+	}
+
+	"Skill No Skill"
+	{
+		"jp"		"スキルなし"
+	}
+
+	"Skill ESP"
+	{
+		"jp"		"ESP（ゾンビのクラスを表示）"
+	}
+
+	"No Skill Selected"
+	{
+		"jp"		"スキルが選択されていません"
+	}
+
+	"ESP Skill Selected"
+	{
+		"jp"		"ESPを選択しました！ピストルで右クリックしてゾンビを識別"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"jp"		"ESPクールダウン中：{1}秒"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"jp"		"ゾンビを倒してメイン追加弾薬を獲得しました。"
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"jp"		"ゾンビを倒してピストル追加弾薬を獲得しました。"
+	}
+
+	"Reward Damage Resistance"
+	{
+		"jp"		"ゾンビを倒して10%%のダメージ耐性を獲得しました。"
+	}
+
+	"Reward Health"
+	{
+		"jp"		"ゾンビを倒して10%%のHPを獲得しました。"
+	}
+
+	"Crit Kill Bonus"
+	{
+		"jp"		"キルで{1}HPボーナスを獲得しました！"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"jp"		"致命的な射撃を受けました、身を隠してください！"
+	}
+
+	"Pickup Health"
+	{
+		"jp"		"+50 HP！"
+	}
+
+	"Pickup Ammo"
+	{
+		"jp"		"追加弾薬！"
+	}
+
+	"Pickup Speed"
+	{
+		"jp"		"スピードブースト！（10秒）"
+	}
+
+	"Pickup Damage"
+	{
+		"jp"		"ダメージブースト！（10秒）"
+	}
+
+	"Pickup Already Active"
+	{
+		"jp"		"このブーストはすでに有効です！"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"jp"		"スピードブーストが終了しました"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"jp"		"ダメージブーストが終了しました"
+	}
+
+	"Human Info Display"
+	{
+		"jp"		"人間：{1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"jp"		"プレイヤー {1} はゾンビになりました。"
+	}
+
+	"Became Zombie"
+	{
+		"jp"		"あなたは {1} になりました！"
+	}
+
+	"Zombie Self Info"
+	{
+		"jp"		"HP：{1}"
+	}
+
+	"Player Teleported"
+	{
+		"jp"		"{1} が人間のスポーンにテレポートしました！"
+	}
+
+	"Reward Speed Boost"
+	{
+		"jp"		"人間を倒して10%%のスピードブーストを獲得しました。"
+	}
+
+	"Max Speed Reached"
+	{
+		"jp"		"すでに最大速度に達しています！"
+	}
+
+	"Zombie Info Display"
+	{
+		"jp"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"jp"		"{1} (HP危機的！)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"jp"		"ガスゾンビ：{1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"jp"		"ガスゾンビ：{1} (HP危機的！)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"jp"		"TNTゾンビ：{1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"jp"		"TNTゾンビ：{1} (HP危機的！)"
+	}
+
+	"Barrier Health Display"
+	{
+		"jp"		"バリケードHP：{1}"
+	}
+
+}

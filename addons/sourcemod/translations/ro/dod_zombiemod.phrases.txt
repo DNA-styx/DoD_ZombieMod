@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"ro"		"Jocul începe în 15 secunde!"
+	}
+
+	"First Real Player Restart"
+	{
+		"ro"		"Jucătorul {1} s-a alăturat! Se repornește runda..."
+	}
+
+	"Win Limit Reached"
+	{
+		"ro"		"Limita de victorii atinsă! Se schimbă harta..."
+	}
+
+	"Rounds Played"
+	{
+		"ro"		"Runde jucate: {1} din {2} înainte de schimbarea hărții."
+	}
+
+	"Last Human Beaconed"
+	{
+		"ro"		"Ultimul supraviețuitor a fost localizat!"
+	}
+
+	"Equip Menu Title"
+	{
+		"ro"		"Meniu echipament"
+	}
+
+	"Equip Menu Primary"
+	{
+		"ro"		"Echipament - Selectează arma primară"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"ro"		"Echipament - Selectează pistolul"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"ro"		"Echipament - Selectează echipament suplimentar"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"ro"		"Echipament - Schimbă categoria"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"ro"		"Echipament - Reții alegerea?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"ro"		"Păstrează armele actuale"
+	}
+
+	"Equip Main Create Class"
+	{
+		"ro"		"Creează clasă personalizată"
+	}
+
+	"Equip Main Change Category"
+	{
+		"ro"		"Schimbă categoria"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"ro"		"Selectează abilitate"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"ro"		"Muniție suplimentară pentru pistol (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"ro"		"Muniție suplimentară primară (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"ro"		"Primar"
+	}
+
+	"Equip Category Pistol"
+	{
+		"ro"		"Pistol"
+	}
+
+	"Equip Category Equipment"
+	{
+		"ro"		"Echipament"
+	}
+
+	"Equip Remember Yes"
+	{
+		"ro"		"Da"
+	}
+
+	"Equip Remember No"
+	{
+		"ro"		"Nu"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"ro"		"Poți folosi meniul de echipament o singură dată pe spawn!"
+	}
+
+	"Equip Time Expired"
+	{
+		"ro"		"Au trecut 90 de secunde, nu te mai poți echipa!"
+	}
+
+	"Class Change Blocked"
+	{
+		"ro"		"Au trecut 90 de secunde din rundă, nu mai poți schimba clasa!"
+	}
+
+	"Skill Menu Title"
+	{
+		"ro"		"Selectează abilitate:"
+	}
+
+	"Skill No Skill"
+	{
+		"ro"		"Fără abilitate"
+	}
+
+	"Skill ESP"
+	{
+		"ro"		"ESP (Vezi clasa zombi)"
+	}
+
+	"No Skill Selected"
+	{
+		"ro"		"Nicio abilitate selectată"
+	}
+
+	"ESP Skill Selected"
+	{
+		"ro"		"ESP selectat! Click dreapta cu pistolul pentru a identifica zombi"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"ro"		"ESP în așteptare: {1} secunde"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"ro"		"Ai primit muniție primară suplimentară pentru uciderea unui zombi."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"ro"		"Ai primit muniție suplimentară pentru pistol pentru uciderea unui zombi."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"ro"		"Ai primit 10%% rezistență la daune pentru uciderea unui zombi."
+	}
+
+	"Reward Health"
+	{
+		"ro"		"Ai primit 10%% viață pentru uciderea unui zombi."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"ro"		"Ai primit un bonus de {1}HP pentru uciderea ta!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"ro"		"Ai fost lovit de un glonț fatal, adăpostește-te!"
+	}
+
+	"Pickup Health"
+	{
+		"ro"		"+50 Viață!"
+	}
+
+	"Pickup Ammo"
+	{
+		"ro"		"Muniție suplimentară!"
+	}
+
+	"Pickup Speed"
+	{
+		"ro"		"Boost viteză! (10 secunde)"
+	}
+
+	"Pickup Damage"
+	{
+		"ro"		"Boost daune! (10 secunde)"
+	}
+
+	"Pickup Already Active"
+	{
+		"ro"		"Acest boost este deja activ!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"ro"		"Boost viteză expirat"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"ro"		"Boost daune expirat"
+	}
+
+	"Human Info Display"
+	{
+		"ro"		"Uman: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"ro"		"Jucătorul {1} este acum un Zombi."
+	}
+
+	"Became Zombie"
+	{
+		"ro"		"Ești acum un {1}!"
+	}
+
+	"Zombie Self Info"
+	{
+		"ro"		"Viață: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"ro"		"{1} s-a teleportat la spawn-ul uman!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"ro"		"Ai primit 10%% boost de viteză pentru uciderea unui uman."
+	}
+
+	"Max Speed Reached"
+	{
+		"ro"		"Ai deja viteza maximă!"
+	}
+
+	"Zombie Info Display"
+	{
+		"ro"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"ro"		"{1} (VIAȚĂ CRITICĂ!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"ro"		"Zombi Gaz: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"ro"		"Zombi Gaz: {1} (VIAȚĂ CRITICĂ!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"ro"		"Zombi TNT: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"ro"		"Zombi TNT: {1} (VIAȚĂ CRITICĂ!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"ro"		"Viața baricadei: {1}"
+	}
+
+}

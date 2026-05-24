@@ -1,0 +1,293 @@
+"Phrases"
+{
+	"Game Commencing"
+	{
+		"tr"		"Oyun 15 saniye içinde başlıyor!"
+	}
+
+	"First Real Player Restart"
+	{
+		"tr"		"Oyuncu {1} katıldı! Tur yeniden başlatılıyor..."
+	}
+
+	"Win Limit Reached"
+	{
+		"tr"		"Kazanma limiti doldu! Harita değiştiriliyor..."
+	}
+
+	"Rounds Played"
+	{
+		"tr"		"Oynanan turlar: {1} / {2} harita değişiminden önce."
+	}
+
+	"Last Human Beaconed"
+	{
+		"tr"		"Son hayatta kalan tespit edildi!"
+	}
+
+	"Equip Menu Title"
+	{
+		"tr"		"Ekipman Menüsü"
+	}
+
+	"Equip Menu Primary"
+	{
+		"tr"		"Ekipman - Birincil Silah Seç"
+	}
+
+	"Equip Menu Pistol"
+	{
+		"tr"		"Ekipman - Tabanca Seç"
+	}
+
+	"Equip Menu Equipment"
+	{
+		"tr"		"Ekipman - Ekstra Ekipman Seç"
+	}
+
+	"Equip Menu Change Category"
+	{
+		"tr"		"Ekipman - Kategori Değiştir"
+	}
+
+	"Equip Menu Remember Choice"
+	{
+		"tr"		"Ekipman - Seçim hatırlansın mı?"
+	}
+
+	"Equip Main Keep Weapons"
+	{
+		"tr"		"Mevcut Silahları Koru"
+	}
+
+	"Equip Main Create Class"
+	{
+		"tr"		"Özel Sınıf Oluştur"
+	}
+
+	"Equip Main Change Category"
+	{
+		"tr"		"Kategori Değiştir"
+	}
+
+	"Equip Main Select Skill"
+	{
+		"tr"		"Yetenek Seç"
+	}
+
+	"Equip Item Pistol Ammo"
+	{
+		"tr"		"Ekstra Tabanca Mermisi (200%%)"
+	}
+
+	"Equip Item Primary Ammo"
+	{
+		"tr"		"Ekstra Birincil Mermi (200%%)"
+	}
+
+	"Equip Category Primary"
+	{
+		"tr"		"Birincil"
+	}
+
+	"Equip Category Pistol"
+	{
+		"tr"		"Tabanca"
+	}
+
+	"Equip Category Equipment"
+	{
+		"tr"		"Ekipman"
+	}
+
+	"Equip Remember Yes"
+	{
+		"tr"		"Evet"
+	}
+
+	"Equip Remember No"
+	{
+		"tr"		"Hayır"
+	}
+
+	"Equip Once Per Spawn"
+	{
+		"tr"		"Ekipman menüsünü spawn başına yalnızca bir kez kullanabilirsiniz!"
+	}
+
+	"Equip Time Expired"
+	{
+		"tr"		"90 saniye geçti, artık ekipman alamazsınız!"
+	}
+
+	"Class Change Blocked"
+	{
+		"tr"		"Turun 90 saniyesi geçti, artık sınıf değiştiremezsiniz!"
+	}
+
+	"Skill Menu Title"
+	{
+		"tr"		"Yetenek Seç:"
+	}
+
+	"Skill No Skill"
+	{
+		"tr"		"Yetenek Yok"
+	}
+
+	"Skill ESP"
+	{
+		"tr"		"ESP (Zombie Sınıfını Gör)"
+	}
+
+	"No Skill Selected"
+	{
+		"tr"		"Yetenek Seçilmedi"
+	}
+
+	"ESP Skill Selected"
+	{
+		"tr"		"ESP seçildi! Zombileri tanımlamak için tabancayla sağ tıklayın"
+	}
+
+	"ESP Identify Cooldown"
+	{
+		"tr"		"ESP bekleme süresi: {1} saniye"
+	}
+
+	"Reward Primary Ammo"
+	{
+		"tr"		"Bir zombie öldürdüğünüz için ekstra birincil mermi aldınız."
+	}
+
+	"Reward Pistol Ammo"
+	{
+		"tr"		"Bir zombie öldürdüğünüz için ekstra tabanca mermisi aldınız."
+	}
+
+	"Reward Damage Resistance"
+	{
+		"tr"		"Bir zombie öldürdüğünüz için 10%% hasar direnci aldınız."
+	}
+
+	"Reward Health"
+	{
+		"tr"		"Bir zombie öldürdüğünüz için 10%% can aldınız."
+	}
+
+	"Crit Kill Bonus"
+	{
+		"tr"		"Öldürmeniz için {1}HP bonus aldınız!"
+	}
+
+	"Fatal Shot Warning"
+	{
+		"tr"		"Ölümcül bir kurşun yedınız, saklanın!"
+	}
+
+	"Pickup Health"
+	{
+		"tr"		"+50 Can!"
+	}
+
+	"Pickup Ammo"
+	{
+		"tr"		"Ekstra Mermi!"
+	}
+
+	"Pickup Speed"
+	{
+		"tr"		"Hız Artışı! (10 saniye)"
+	}
+
+	"Pickup Damage"
+	{
+		"tr"		"Hasar Artışı! (10 saniye)"
+	}
+
+	"Pickup Already Active"
+	{
+		"tr"		"Bu artış zaten aktif!"
+	}
+
+	"Pickup Expired Speed"
+	{
+		"tr"		"Hız artışı sona erdi"
+	}
+
+	"Pickup Expired Damage"
+	{
+		"tr"		"Hasar artışı sona erdi"
+	}
+
+	"Human Info Display"
+	{
+		"tr"		"İnsan: {1}"
+	}
+
+	"Player Became Zombie"
+	{
+		"tr"		"Oyuncu {1} artık bir Zombie."
+	}
+
+	"Became Zombie"
+	{
+		"tr"		"Artık bir {1} oldunuz!"
+	}
+
+	"Zombie Self Info"
+	{
+		"tr"		"Can: {1} HP"
+	}
+
+	"Player Teleported"
+	{
+		"tr"		"{1} İnsan doğma noktasına ışınlandı!"
+	}
+
+	"Reward Speed Boost"
+	{
+		"tr"		"Bir insan öldürdüğünüz için 10%% hız artışı aldınız."
+	}
+
+	"Max Speed Reached"
+	{
+		"tr"		"Zaten maksimum hızdasınız!"
+	}
+
+	"Zombie Info Display"
+	{
+		"tr"		"{1} ({2} HP)"
+	}
+
+	"Critical Zombie Display"
+	{
+		"tr"		"{1} (KRİTİK CAN!)"
+	}
+
+	"Gas Zombie Display"
+	{
+		"tr"		"Gaz Zombie: {1} ({2} HP)"
+	}
+
+	"Critical Gas Zombie Display"
+	{
+		"tr"		"Gaz Zombie: {1} (KRİTİK CAN!)"
+	}
+
+	"TNT Zombie Display"
+	{
+		"tr"		"TNT Zombie: {1} ({2} HP)"
+	}
+
+	"Critical TNT Zombie Display"
+	{
+		"tr"		"TNT Zombie: {1} (KRİTİK CAN!)"
+	}
+
+	"Barrier Health Display"
+	{
+		"tr"		"Barikat Canı: {1}"
+	}
+
+}
