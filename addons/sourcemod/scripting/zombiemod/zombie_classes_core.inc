@@ -61,13 +61,13 @@ void ZombieClasses_OnPluginStart()
 	/* Initialize per-client arrays */
 	for (int i = 0; i <= MAXPLAYERS; i++)
 	{
-		g_iZombieClass[i]         = view_as<int>(ZombieClass_Normal);
-		g_hGasCloudTimers[i]      = INVALID_HANDLE;
+		g_iZombieClass[i]              = view_as<int>(ZombieClass_Normal);
+		g_hGasCloudTimers[i]           = INVALID_HANDLE;
 		g_fGasAbilityNextUse[i]        = 0.0;
 		g_fGasCooldownMessageNext[i]   = 0.0;
-		g_hGhostAlphaTimers[i]    = INVALID_HANDLE;
-		g_fGhostAlpha[i]          = GHOST_ALPHA_MIN;
-		g_bGhostAlphaIncreasing[i] = true;
+		g_hGhostAlphaTimers[i]         = INVALID_HANDLE;
+		g_fGhostAlpha[i]               = GHOST_ALPHA_MIN;
+		g_bGhostAlphaIncreasing[i]     = true;
 	}
 
 	/* Register built-in classes in ZombieClass enum order.
@@ -139,7 +139,7 @@ void ZombieClasses_OnMapStart()
 	// Precache teleport sound
 	PrecacheSound(TELEPORT_SOUND, true);
 	PrecacheSound(GAS_FAIL_SOUND, true);
-	
+
 	// Cache Allied spawn points for teleporter
 	g_AlliedSpawns.Clear();
 	CacheAlliedSpawns();
@@ -174,7 +174,7 @@ void ZombieClasses_OnRoundEnd()
 public Action Timer_EnableTeleport(Handle timer)
 {
 	g_bTeleportActive = true;
-	
+
 	return Plugin_Stop;
 }
 
@@ -190,14 +190,14 @@ void ZombieClasses_OnClientDisconnect(int client)
 
 	for (int c = 0; c < view_as<int>(ZombieClass_Size); c++)
 		g_fClassLastPicked[client][c] = 0.0;
-	
+
 	// Clean up any active gas timer
 	if (g_hGasCloudTimers[client] != INVALID_HANDLE)
 	{
 		KillTimer(g_hGasCloudTimers[client]);
 		g_hGasCloudTimers[client] = INVALID_HANDLE;
 	}
-	
+
 	// Clean up any active ghost alpha timer
 	if (g_hGhostAlphaTimers[client] != INVALID_HANDLE)
 	{
@@ -215,7 +215,7 @@ void ZombieClasses_OnSpawn(int client)
 	// Only assign class for zombies
 	if (GetClientTeam(client) != Team_Axis)
 		return;
-	
+
 	// Check if classes are enabled
 	int chance = g_ConVarInts[ConVar_Class_Chance];
 	if (chance <= 0)
@@ -224,7 +224,7 @@ void ZombieClasses_OnSpawn(int client)
 		ApplyZombieClassEffects(client);
 		return;
 	}
-	
+
 	// Bots always get random class immediately
 	if (IsFakeClient(client))
 	{
@@ -232,13 +232,13 @@ void ZombieClasses_OnSpawn(int client)
 		ApplyZombieClassEffects(client);
 		return;
 	}
-	
+
 	// Real players: Start as Normal and show class selection menu
 	g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
-	
+
 	// Teleport chance still applies immediately (before menu selection)
 	CheckAndApplyTeleport(client);
-	
+
 	// Show class selection menu (30 second timeout)
 	CreateTimer(1.0, Timer_ShowZombieClassMenu, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -263,7 +263,12 @@ void AssignRandomZombieClass(int client)
 
 void ApplyZombieClassEffects(int client)
 {
-	// Activate Ghost effect if Ghost class
+	// Always deactivate ghost effect first — the previous class may have been Ghost.
+	// Without this, a Ghost-then-any-other-class transition leaves the player
+	// semi-transparent for the rest of their life.
+	DeactivateGhostEffect(client);
+
+	// Activate Ghost effect if new class is Ghost
 	if (g_iZombieClass[client] == view_as<int>(ZombieClass_Ghost))
 	{
 		ActivateGhostEffect(client);
@@ -288,7 +293,7 @@ void CheckAndApplyTeleport(int client)
 					// Get player name
 					char name[MAX_NAME_LENGTH];
 					GetClientName(client, name, sizeof(name));
-					
+
 					// Announce to all players
 					ZM_PrintToChatAll("%t", "Player Teleported", name);
 				}
@@ -332,24 +337,24 @@ void CreateGasCloudAtDeath(int client)
 	// Get death location
 	float location[3];
 	GetClientAbsOrigin(client, location);
-	
+
 	// Create gas cloud entity
 	int gascloud = CreateEntityByName("env_smokestack");
-	
+
 	if (gascloud == -1)
 	{
 		LogError("[Zombie Classes] Failed to create gas cloud entity");
 		return;
 	}
-	
+
 	// Format location and color strings
 	char originData[64];
-	Format(originData, sizeof(originData), "%f %f %f", 
+	Format(originData, sizeof(originData), "%f %f %f",
 		location[0], location[1], location[2] + 10.0);  // Slightly elevated
-	
+
 	char colorData[64];
 	Format(colorData, sizeof(colorData), "%i %i %i", GAS_COLOR_R, GAS_COLOR_G, GAS_COLOR_B);
-	
+
 	// Configure gas cloud visual
 	DispatchKeyValue(gascloud, "Origin", originData);
 	DispatchKeyValue(gascloud, "BaseSpread", "50");      // Spread area
@@ -363,11 +368,11 @@ void CreateGasCloudAtDeath(int client)
 	DispatchKeyValue(gascloud, "RenderColor", colorData);
 	DispatchKeyValue(gascloud, "RenderAmt", "100");      // Opacity
 	DispatchKeyValue(gascloud, "SmokeMaterial", "particle/particle_smokegrenade1.vmt");
-	
+
 	// Spawn and activate
 	DispatchSpawn(gascloud);
 	AcceptEntityInput(gascloud, "TurnOn");
-	
+
 	// Create data pack for damage timer
 	Handle pack = CreateDataPack();
 	WritePackCell(pack, client);  // Original zombie who died
@@ -376,15 +381,15 @@ void CreateGasCloudAtDeath(int client)
 	WritePackFloat(pack, location[2]);
 	WritePackCell(pack, gascloud);  // Gas cloud entity
 	WritePackFloat(pack, GetGameTime());  // Start time
-	
+
 	// Start damage timer
-	CreateTimer(GAS_TICK_RATE, Timer_GasDamage, pack, 
+	CreateTimer(GAS_TICK_RATE, Timer_GasDamage, pack,
 		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE | TIMER_DATA_HNDL_CLOSE);
-	
+
 	// Schedule gas cloud removal
 	Handle cleanupPack = CreateDataPack();
 	WritePackCell(cleanupPack, gascloud);
-	
+
 	CreateTimer(GAS_DURATION, Timer_RemoveGas, cleanupPack, TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -509,38 +514,38 @@ public Action Timer_GasDamage(Handle timer, Handle pack)
 	location[2] = ReadPackFloat(pack);
 	int gascloud = ReadPackCell(pack);
 	float startTime = ReadPackFloat(pack);
-	
+
 	// Check if gas cloud still exists
 	if (!IsValidEntity(gascloud))
 		return Plugin_Stop;
-	
+
 	// Check if duration exceeded
 	float elapsed = GetGameTime() - startTime;
-	
+
 	if (elapsed >= GAS_DURATION)
 		return Plugin_Stop;
-	
+
 	// Validate the original attacker (zombie who created the gas)
 	// If they disconnected or are no longer valid, use 0 (world damage)
 	bool validAttacker = (client > 0 && client <= MaxClients && IsClientInGame(client));
 	int attacker = validAttacker ? client : 0;
-	
+
 	// Damage all humans in radius
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (!IsClientInGame(i) || !IsPlayerAlive(i))
 			continue;
-			
+
 		// Only damage humans (Allies)
 		if (GetClientTeam(i) != Team_Allies)
 			continue;
-		
+
 		// Check distance from gas center
 		float playerPos[3];
 		GetClientAbsOrigin(i, playerPos);
-		
+
 		float distance = GetVectorDistance(location, playerPos);
-		
+
 		if (distance <= GAS_RADIUS)
 		{
 			// Deal damage (DMG_NERVEGAS = poison damage type)
@@ -548,7 +553,7 @@ public Action Timer_GasDamage(Handle timer, Handle pack)
 			SDKHooks_TakeDamage(i, gascloud, attacker, float(GAS_DAMAGE), DMG_NERVEGAS);
 		}
 	}
-	
+
 	return Plugin_Continue;
 }
 
@@ -561,16 +566,16 @@ public Action Timer_RemoveGas(Handle timer, Handle pack)
 	ResetPack(pack);
 	int gascloud = ReadPackCell(pack);
 	CloseHandle(pack);
-	
+
 	if (IsValidEntity(gascloud))
 	{
 		// Turn off gas emission
 		AcceptEntityInput(gascloud, "TurnOff");
-		
+
 		// Kill entity after visual fade
 		CreateTimer(3.0, Timer_KillGasEntity, gascloud, TIMER_FLAG_NO_MAPCHANGE);
 	}
-	
+
 	return Plugin_Stop;
 }
 
@@ -591,7 +596,7 @@ void CacheAlliedSpawns()
 {
 	int entity = -1;
 	float origin[3];
-	
+
 	// Find all Allied spawn points
 	while ((entity = FindEntityByClassname(entity, "info_player_allies")) != -1)
 	{
@@ -605,56 +610,56 @@ bool TeleportToRandomAlliedSpawn(int client)
 	// Check if mod is active and round hasn't ended
 	if (!g_bModActive || g_bRoundEnded)
 		return false;
-	
+
 	// Check if teleport is active (delay has passed)
 	if (!g_bTeleportActive)
 		return false;
-	
+
 	int spawnCount = g_AlliedSpawns.Length;
-	
+
 	if (spawnCount == 0)
 		return false;
-	
+
 	// Pick random spawn point
 	int index = GetRandomInt(0, spawnCount - 1);
 	float spawnPos[3];
 	g_AlliedSpawns.GetArray(index, spawnPos);
-	
+
 	// Use exact Allied spawn position (known good spawn point)
 	TeleportEntity(client, spawnPos, NULL_VECTOR, NULL_VECTOR);
-	
+
 	// Play spark sound to nearby players
 	EmitAmbientSound(TELEPORT_SOUND, spawnPos, SOUND_FROM_WORLD, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
-	
+
 	// Create green sparks shooting upward
 	CreateTeleportSparkEffect(spawnPos);
-	
+
 	return true;  // Successfully teleported
 }
 
 void CreateTeleportSparkEffect(float position[3])
 {
 	int spark = CreateEntityByName("env_spark");
-	
+
 	if (spark == -1)
 		return;
-	
+
 	// Set spark properties
 	DispatchKeyValue(spark, "spawnflags", "128");     // Shoot upward
 	DispatchKeyValue(spark, "MaxDelay", "0");         // No delay
 	DispatchKeyValue(spark, "Magnitude", "2");        // Size
 	DispatchKeyValue(spark, "TrailLength", "2");      // Trail length
-	
+
 	// Teleport to position
 	TeleportEntity(spark, position, NULL_VECTOR, NULL_VECTOR);
-	
+
 	// Spawn and activate
 	DispatchSpawn(spark);
 	ActivateEntity(spark);
-	
+
 	// Trigger spark once
 	AcceptEntityInput(spark, "StartSpark");
-	
+
 	// Remove after 1 second
 	CreateTimer(1.0, Timer_RemoveTeleportSpark, EntIndexToEntRef(spark), TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -662,13 +667,13 @@ void CreateTeleportSparkEffect(float position[3])
 public Action Timer_RemoveTeleportSpark(Handle timer, int ref)
 {
 	int spark = EntRefToEntIndex(ref);
-	
+
 	if (spark != INVALID_ENT_REFERENCE && IsValidEntity(spark))
 	{
 		AcceptEntityInput(spark, "StopSpark");
 		RemoveEntity(spark);
 	}
-	
+
 	return Plugin_Stop;
 }
 
@@ -680,11 +685,11 @@ void ActivateGhostEffect(int client)
 {
 	// Set render mode to support alpha transparency
 	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
-	
+
 	// Initialize alpha values
 	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
 	g_bGhostAlphaIncreasing[client] = true;
-	
+
 	// Make weapon invisible (same alpha as body)
 	int weapon = GetPlayerWeaponSlot(client, 2);  // Slot 2 = melee (spade)
 	if (weapon > 0 && IsValidEntity(weapon))
@@ -692,10 +697,10 @@ void ActivateGhostEffect(int client)
 		SetEntityRenderMode(weapon, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(weapon, 255, 255, 255, RoundToNearest(GHOST_ALPHA_MIN));
 	}
-	
+
 	// Create ghost alpha oscillation timer
 	int userid = GetClientUserId(client);
-	g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid, 
+	g_hGhostAlphaTimers[client] = CreateTimer(GHOST_ALPHA_INTERVAL, Timer_GhostAlpha, userid,
 		TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -707,15 +712,15 @@ void DeactivateGhostEffect(int client)
 		KillTimer(g_hGhostAlphaTimers[client]);
 		g_hGhostAlphaTimers[client] = INVALID_HANDLE;
 	}
-	
+
 	// Reset alpha values
 	g_fGhostAlpha[client] = GHOST_ALPHA_MIN;
 	g_bGhostAlphaIncreasing[client] = true;
-	
+
 	// Reset player render mode to normal
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
-	
+
 	// Reset weapon render mode
 	int weapon = GetPlayerWeaponSlot(client, 2);
 	if (weapon > 0 && IsValidEntity(weapon))
@@ -728,17 +733,17 @@ void DeactivateGhostEffect(int client)
 public Action Timer_GhostAlpha(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
-	
+
 	// Stop timer if client invalid or no longer zombie or no longer ghost class
-	if (!client || !IsClientInGame(client) || 
-	    GetClientTeam(client) != Team_Axis || 
+	if (!client || !IsClientInGame(client) ||
+	    GetClientTeam(client) != Team_Axis ||
 	    g_iZombieClass[client] != view_as<int>(ZombieClass_Ghost))
 	{
 		if (client)
 			g_hGhostAlphaTimers[client] = INVALID_HANDLE;
 		return Plugin_Stop;
 	}
-	
+
 	// Oscillate alpha between min and max
 	if (g_bGhostAlphaIncreasing[client])
 	{
@@ -752,19 +757,21 @@ public Action Timer_GhostAlpha(Handle timer, int userid)
 		if (g_fGhostAlpha[client] <= GHOST_ALPHA_MIN)
 			g_bGhostAlphaIncreasing[client] = true;
 	}
-	
+
 	int alpha = RoundToNearest(g_fGhostAlpha[client]);
-	
+
 	// Apply alpha to player
 	SetEntityRenderColor(client, 255, 255, 255, alpha);
-	
-	// Apply same alpha to weapon
+
+	// Apply same alpha to weapon — re-apply render mode each tick in case
+	// the weapon entity was replaced after ActivateGhostEffect was called
 	int weapon = GetPlayerWeaponSlot(client, 2);
 	if (weapon > 0 && IsValidEntity(weapon))
 	{
+		SetEntityRenderMode(weapon, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(weapon, 255, 255, 255, alpha);
 	}
-	
+
 	return Plugin_Continue;
 }
 
@@ -779,12 +786,12 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 		// Verify client is still a zombie
 		if (!IsClientInGame(client) || GetClientTeam(client) != Team_Axis)
 			return 0;
-		
+
 		// Get class choice from menu
 		char info[8];
 		menu.GetItem(selection, info, sizeof(info));
 		int choice = StringToInt(info);
-		
+
 		// Apply class based on selection
 		switch (choice)
 		{
@@ -815,10 +822,10 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 				g_iZombieClass[client] = view_as<int>(ZombieClass_Normal);
 			}
 		}
-		
+
 		// Apply class effects
 		ApplyZombieClassEffects(client);
-		
+
 		// Update HUD to show new class
 		HUD_ShowZombieSpawnInfo(GetClientUserId(client));
 	}
@@ -833,7 +840,7 @@ public int MenuHandler_ZombieClass(Menu menu, MenuAction action, int client, int
 			HUD_ShowZombieSpawnInfo(GetClientUserId(client));
 		}
 	}
-	
+
 	return 0;
 }
 
