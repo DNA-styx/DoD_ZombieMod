@@ -5,373 +5,644 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoD:S Zombie Mod</title>
     <style>
+        :root {
+            --bg:        #0d0d0f;
+            --surface:   #13131a;
+            --border:    #222230;
+            --accent:    #c0392b;
+            --accent2:   #e74c3c;
+            --green:     #27ae60;
+            --yellow:    #d4ac0d;
+            --blue:      #2e86c1;
+            --purple:    #7d3c98;
+            --text:      #b8b8c8;
+            --text-dim:  #606070;
+            --text-hi:   #e8e8f0;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
             margin: 0;
-            padding: 20px;
+            padding: 16px;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #e0e0e0;
-            line-height: 1.6;
+            font-size: 14px;
+            line-height: 1.55;
         }
+
         .container {
-            max-width: 900px;
+            max-width: 820px;
             margin: 0 auto;
-            background-color: #242424;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
+
+        /* ── Header ── */
+        .header {
+            text-align: center;
+            padding: 24px 0 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
         h1 {
-            color: #ff4444;
-            text-align: center;
-            font-size: 2.5em;
-            margin-top: 0;
-            margin-bottom: 10px;
+            margin: 0 0 4px;
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            color: var(--accent2);
         }
+
         .subtitle {
-            text-align: center;
-            color: #888;
-            font-size: 1.1em;
-            margin-bottom: 30px;
+            color: var(--text-dim);
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
         }
-        h2 {
-            color: #ff6666;
-            border-bottom: 2px solid #ff4444;
-            padding-bottom: 8px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.8em;
+
+        /* ── Language bar ── */
+        .lang-bar {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 10px 0 0;
         }
-        h3 {
-            color: #ff8888;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 1.3em;
-        }
-        p {
-            margin: 10px 0;
-            color: #cccccc;
-        }
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        li {
-            padding: 8px 0;
-            padding-left: 30px;
-            position: relative;
-            color: #cccccc;
-        }
-        li:before {
-            content: "▸";
-            color: #ff4444;
-            font-weight: bold;
-            position: absolute;
-            left: 10px;
-        }
-        .highlight {
-            background-color: #2a2a2a;
-            border-left: 4px solid #ff4444;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .highlight-green {
-            background-color: #1a2a1a;
-            border-left: 4px solid #44ff44;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .highlight-yellow {
-            background-color: #2a2a1a;
-            border-left: 4px solid #ffaa44;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .highlight-blue {
-            background-color: #1a1a2a;
-            border-left: 4px solid #4488ff;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .highlight-red {
-            background-color: #2a1a1a;
-            border-left: 4px solid #ff4444;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .highlight-purple {
-            background-color: #2a1a2a;
-            border-left: 4px solid #aa44ff;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        .important {
-            color: #ff6666;
-            font-weight: bold;
-        }
-        .green-text {
-            color: #44ff44;
-            font-weight: bold;
-        }
-        .yellow-text {
-            color: #ffaa44;
-            font-weight: bold;
-        }
-        .blue-text {
-            color: #4488ff;
-            font-weight: bold;
-        }
-        .red-text {
-            color: #ff4444;
-            font-weight: bold;
-        }
-        .purple-text {
-            color: #aa44ff;
-            font-weight: bold;
-        }
-        .discord, .github {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #2a2a2a;
-            border-radius: 8px;
-        }
-        .discord-link, .github-link {
+
+        .lang-bar a {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 3px 9px;
+            font-size: 0.72em;
+            font-weight: 700;
+            letter-spacing: 1px;
             text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            margin: 5px;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            transition: color 0.15s, border-color 0.15s;
         }
-        .discord-link {
-            background-color: #5865F2;
-            color: white;
+
+        .lang-bar a:hover {
+            color: var(--text-hi);
+            border-color: #444;
         }
-        .discord-link:hover {
-            background-color: #4752C4;
+
+        .lang-bar a.active {
+            color: var(--accent2);
+            border-color: var(--accent);
         }
-        .github-link {
-            background-color: #238636;
-            color: white;
+
+        /* ── Sections ── */
+        .section {
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--surface);
+            overflow: hidden;
         }
-        .github-link:hover {
-            background-color: #2ea043;
+
+        .section-header {
+            padding: 10px 16px;
+            background: #17171f;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
         }
-        .zombie-class {
-            display: inline-block;
-            padding: 4px 10px;
+
+        .section-body {
+            padding: 14px 16px;
+        }
+
+        .section-body p {
+            margin: 6px 0;
+            color: var(--text);
+        }
+
+        /* ── Two-column grid for classes and pickups ── */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 14px 16px;
+        }
+
+        .card {
+            padding: 10px 12px;
             border-radius: 3px;
-            font-size: 0.9em;
-            font-weight: bold;
-            margin: 0 5px;
+            border-left: 3px solid var(--border);
+            background: #0f0f18;
         }
-        .class-gas {
-            background-color: #1a3a1a;
-            color: #66ff66;
+
+        .card.green  { border-color: var(--green); }
+        .card.yellow { border-color: var(--yellow); }
+        .card.blue   { border-color: var(--blue); }
+        .card.red    { border-color: var(--accent); }
+        .card.purple { border-color: var(--purple); }
+
+        .card-title {
+            font-size: 0.78em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
         }
-        .class-tnt {
-            background-color: #3a1a1a;
-            color: #ff6666;
+
+        .card-title.green  { color: var(--green); }
+        .card-title.yellow { color: var(--yellow); }
+        .card-title.blue   { color: var(--blue); }
+        .card-title.red    { color: var(--accent2); }
+        .card-title.purple { color: #a569bd; }
+
+        .card p { margin: 3px 0; font-size: 0.92em; }
+
+        /* ── Lists ── */
+        ul {
+            list-style: none;
+            margin: 6px 0;
+            padding: 0;
         }
-        .class-ghost {
-            background-color: #2a2a3a;
-            color: #aaaaff;
+
+        li {
+            padding: 4px 0 4px 18px;
+            position: relative;
+            color: var(--text);
         }
+
+        li:before {
+            content: "–";
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+        }
+
+        /* ── Two-col strategy ── */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .strategy-col {
+            padding: 14px 16px;
+        }
+
+        .strategy-col:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .strategy-col h4 {
+            margin: 0 0 8px;
+            font-size: 0.72em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        /* ── Inline emphasis ── */
+        .hi     { color: var(--accent2);  font-weight: 600; }
+        .hi-g   { color: #2ecc71;         font-weight: 600; }
+        .hi-b   { color: #5dade2;         font-weight: 600; }
+        .hi-p   { color: #a569bd;         font-weight: 600; }
+        .hi-y   { color: #f4d03f;         font-weight: 600; }
+        .hi-r   { color: var(--accent2);  font-weight: 600; }
+
+        /* ── Rewards row ── */
+        .reward-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 6px 0;
+        }
+
+        .reward-pill {
+            padding: 3px 10px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--text-hi);
+            background: #0f0f18;
+        }
+
+        /* ── Links ── */
+        .links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 14px 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-weight: 700;
+            font-size: 0.88em;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-gh  { background: #1a4a24; color: #6bcf7f; border: 1px solid #2d7a40; }
+        .btn-dc  { background: #2c2f7a; color: #a0a8ff; border: 1px solid #4a50c8; }
+
+        /* ── Footer ── */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            color: #666;
-            font-size: 0.9em;
-        }
-        .new-badge {
-            display: inline-block;
-            background-color: #ff4444;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 0.7em;
-            font-weight: bold;
-            margin-left: 8px;
-            vertical-align: middle;
+            padding: 12px 0 4px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+            color: var(--text-dim);
+            font-size: 0.78em;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧟 Zombie Mod 🧟</h1>
-        <div class="subtitle">Day of Defeat: Source - v0.9.18 BETA</div>
-        
-        <h2>📋 How It Works</h2>
-        <p>At the start of each round, <span class="important">one player becomes a zombie</span>. Everyone else is human.</p>
-        <p>When a zombie kills a human, <span class="important">that human becomes a zombie</span>.</p>
-        <p>Humans have guns, zombies have melee only</p>
-        <p>The round ends when all humans are dead, or time runs out.</p>
-        <p>Zombies can <span class="important">break down most objects and doors</span></p>
-        
-        <h2>⚔️ Combat & Features</h2>
-        
-        <h3>🎯 Critical Headshots</h3>
-        <div class="highlight">
-            <p><span class="important">Pistol headshots</span> deal critical damage to zombies!</p>
-            <p>Finish them off for bonus rewards!</p>
-        </div>
-        
-        <h3>🎁 Kill Rewards</h3>
-        <div class="highlight">
-            <p>Killing zombies earns you rewards:</p>
-            <ul>
-                <li><span class="important">+15 Health</span> (up to max 150 HP)</li>
-                <li><span class="important">+1 Pistol Clip</span> (Colt/P38, max 3 clips)</li>
-                <li><span class="important">+0.02 Speed Boost</span> (stacks, max +0.25 total)</li>
-            </ul>
-            <p><strong>Finish Critical Zombies:</strong> Double rewards!</p>
-        </div>
-        
-        <h3>🔍 Human Skills & Abilities</h3>
-        <div class="highlight-blue">
-            <p><strong>Barricade Builder</strong> — available to all humans automatically:</p>
-            <ul>
-                <li>Right-click with <strong>knife</strong> while aiming at a prop to pick it up</li>
-                <li>Right-click again to release — build barricades, block doorways, slow zombies</li>
-            </ul>
-            <p><strong>ESP Skill</strong> — selectable from the equipment menu:</p>
-            <ul>
-                <li><span class="blue-text">See zombie class names</span> when aiming at them</li>
-                <li>Right-click with <strong>pistol (Colt)</strong> to broadcast zombie class info to team</li>
-                <li>Ghost zombies remain hidden even with ESP</li>
-            </ul>
-        </div>
-        
-        <h3>📦 Supply Drops (Pickups)</h3>
-        <div class="highlight">
-            <p>Pickups spawn randomly with a <span class="important">sky beam</span>:</p>
-        </div>
-        
-        <div class="highlight-green">
-            <p><span class="green-text">🟢 Green Beam = Health Pickup</span></p>
-            <p>Restores <span class="important">Health</span></p>
-        </div>
-        
-        <div class="highlight-yellow">
-            <p><span class="yellow-text">🟡 Yellow Beam = Ammo Pickup</span></p>
-            <p>Gives extra ammo for all weapons</p>
-        </div>
-        
-        <div class="highlight-blue">
-            <p><span class="blue-text">🔵 Blue Beam = Speed Pickup</span></p>
-            <p>Grants <span class="important">speed boost</span></p>
-        </div>
-        
-        <div class="highlight-red">
-            <p><span class="red-text">🔴 Red Beam = Damage Pickup</span></p>
-            <p>Increases <span class="important">damage applied to Zombies</span></p>
-        </div>
-        
-        <p style="color: #888; font-size: 0.9em; margin-top: 10px;"><em>Pickups auto-destroy after 30 seconds if not collected or Zombie gets to them first</em></p>
-        
-        <h3>🧟 Special Zombie Classes</h3>
-        <div class="highlight">
-            <p>Zombies have a <span class="important">50% chance</span> to spawn as a special class with unique abilities!</p>
-            <p><strong>Players:</strong> Choose your class from the menu when you spawn as zombie</p>
-            <p><strong>Bots:</strong> Get random classes automatically</p>
-        </div>
-        
-        <div class="highlight-green">
-            <p><span class="class-gas">GAS ZOMBIE</span></p>
-            <p><span class="green-text">Active Ability:</span> Right-click to spawn gas cloud at aim position!</p>
-            <ul>
-                <li><strong>Cooldown:</strong> 15 seconds between uses</li>
-                <li><strong>Tactical:</strong> Block doorways, cover retreat, area denial</li>
-            </ul>
-            <p><span class="green-text">Death Ability:</span> Creates toxic gas cloud on death</p>
-        </div>
-        
-        <div class="highlight-red">
-            <p><span class="class-tnt">TNT ZOMBIE</span></p>
-            <p><span class="red-text">Explodes on death</span>, damaging nearby players and breaking props!</p>
-        </div>
-        
-        <div class="highlight-purple">
-            <p><span class="class-ghost">GHOST ZOMBIE</span></p>
-            <p><span class="purple-text">Nearly invisible!</span></p>
-            <p>No name/health display for humans (even with ESP)</p>
-        </div>
-        
-        <h3>🌀 Zombie Teleportation</h3>
-        <div class="highlight-blue">
-            <p><span class="blue-text">All zombies</span> have a <span class="important">chance</span> to teleport to human spawn on respawn!</p>
-        </div>
-        
-        <h2>💡 Strategy Tips</h2>
-        
-        <h3>For Humans:</h3>
-        <ul>
-            <li><span class="important">Build barricades</span> - right-click with knife to move props, block doorways and slow zombies</li>
-            <li><span class="important">Select ESP skill</span> - identify Gas/TNT zombies before they kill you</li>
-            <li><span class="important">Watch for gas clouds</span> - Gas zombies can deploy them with right-click!</li>
-            <li><span class="important">Keep distance from TNT zombies</span> - they explode on death</li>
-            <li><span class="important">Ghost zombies are nearly invisible</span> - listen for footsteps and movement</li>
-            <li><span class="important">Aim for headshots</span> - pistol crits zombies</li>
-            <li><span class="important">Grab pickups</span> - follow the colored beams for power-ups</li>
-            <li><span class="important">Stick together</span> - but spread out vs TNT zombies</li>
-            <li><span class="important">Manage your ammo</span> - pistols is limited</li>
-        </ul>
-        
-        <h3>For Zombies:</h3>
-        <ul>
-            <li><span class="important">Choose your class wisely</span> - each has different playstyles</li>
-            <li><span class="green-text">Gas Zombie:</span> Pre-place clouds before engaging, block escape routes</li>
-            <li><span class="red-text">TNT Zombie:</span> Rush into groups, coordinate with teammates for max damage</li>
-            <li><span class="purple-text">Ghost Zombie:</span> Ambush from dark corners, stay still to be invisible</li>
-            <li><span class="important">Use teleportation</span> - random chance to spawn behind enemy lines</li>
-            <li><span class="important">Coordinate attacks</span> - overwhelm isolated humans</li>
-        </ul>
-        
-        <h2>🎮 Humans Equipment & Skill Menu</h2>
-        <div class="highlight">
-            <p>At spawn, customize your loadout:</p>
-            <ul>
-                <li><strong>Primary Weapon:</strong> Rifle, SMG, MG, Sniper, etc.</li>
-                <li><strong>Pistol:</strong> Colt or P38 </li>
-                <li><strong>Equipment Bonus:</strong> Extra pistol ammo </li>
-                <li><strong>Human Skill:</strong> ESP and Third Party Plugin Skills</li>
-            </ul>
-        </div>
-        
-        <h2>📊 Zombie Info Display</h2>
-        <div class="highlight">
-            <p>Aim at a zombie to see their info:</p>
-            <ul>
-                <li><strong>Without ESP:</strong> just the Zombie Name and Health</li>
-                <li><strong>With ESP:</strong> as well as the Zombie Name and Heath you will see what Class they are!</li>
-                <li><strong>Ghost Zombies:</strong> No display (hidden from all humans)</li>
-            </ul>
-        </div>
-        
-        <div class="github">
-            <h2 style="margin-top: 0;">💻 Open Source Project</h2>
-            <p>View source code, report bugs, and contribute to development!</p>
-            <p></p><a href="https://github.com/DNA-styx/DoD_ZombieMod" class="github-link" target="_blank">📂 View on GitHub</a></p>
-            <p><a href="https://discord.gg/bemuuRKscw" class="discord-link" target="_blank">💬 Join Discord Server</a></p>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Long Live Root_</strong></p>
-            <p style="margin-top: 15px; font-size: 0.85em;">DoD:S Zombie Mod v0.9.18 BETA | By Andersso, Root, Colster | Updated by Claude.AI guided by DNA.styx</p>
+<div class="container">
+
+    <div class="header">
+        <h1>Zombie Mod</h1>
+        <div class="subtitle" data-i18n="subtitle">Day of Defeat: Source &nbsp;·&nbsp; v0.9.20 BETA</div>
+        <div class="lang-bar">
+            <a href="?lang=english"  data-lang="english">EN</a>
+            <a href="?lang=german"   data-lang="german">DE</a>
+            <a href="?lang=french"   data-lang="french">FR</a>
+            <a href="?lang=russian"  data-lang="russian">RU</a>
         </div>
     </div>
+
+    <!-- How It Works -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_how_it_works">How It Works</div>
+        <div class="section-body">
+            <p data-i18n="p_one_zombie">At the start of each round, <span class="hi">one player becomes a zombie</span>. Everyone else is human.</p>
+            <p data-i18n="p_zombie_kills">Zombies infect humans on kill. The round ends when all humans are dead or time runs out.</p>
+            <p data-i18n="p_basics">Humans are armed. Zombies fight melee-only but can break most objects and doors.</p>
+        </div>
+    </div>
+
+    <!-- Kill Rewards -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_kill_rewards">Kill Rewards</div>
+        <div class="section-body">
+            <p data-i18n="p_killing_earns">Each zombie kill rewards you. Finish a critical zombie for double.</p>
+            <div class="reward-row">
+                <span class="reward-pill" data-i18n="rp_health">+15 Health (max 150)</span>
+                <span class="reward-pill" data-i18n="rp_clip">+1 Pistol Clip (max 3)</span>
+                <span class="reward-pill" data-i18n="rp_speed">+0.02 Speed (max +0.25)</span>
+            </div>
+            <p data-i18n="p_headshots"><span class="hi">Pistol headshots</span> deal critical damage — finish them off for double rewards.</p>
+        </div>
+    </div>
+
+    <!-- Zombie Classes -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_zombie_classes">Zombie Classes</div>
+        <div class="grid-2">
+            <div class="card green">
+                <div class="card-title green" data-i18n="ct_gas">Gas Zombie</div>
+                <p data-i18n="cd_gas">Right-click to deploy a gas cloud. Cooldown 15s. Creates a cloud on death.</p>
+            </div>
+            <div class="card red">
+                <div class="card-title red" data-i18n="ct_tnt">TNT Zombie</div>
+                <p data-i18n="cd_tnt">Explodes on death, damaging nearby players and breaking props.</p>
+            </div>
+            <div class="card purple" style="grid-column: 1 / -1;">
+                <div class="card-title purple" data-i18n="ct_ghost">Ghost Zombie</div>
+                <p data-i18n="cd_ghost">Nearly invisible. No name or health display — hidden even from ESP.</p>
+            </div>
+        </div>
+        <div class="section-body" style="padding-top:0;">
+            <p data-i18n="p_class_chance"><span class="hi">50% chance</span> to spawn as a special class. Players choose from a menu; bots are assigned randomly.</p>
+            <p data-i18n="p_teleport">All zombies have a chance to <span class="hi">teleport to human spawn</span> on respawn.</p>
+        </div>
+    </div>
+
+    <!-- Supply Drops -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_supply_drops">Supply Drops</div>
+        <div class="grid-2">
+            <div class="card green">
+                <div class="card-title green" data-i18n="sd_green">Green Beam</div>
+                <p data-i18n="sd_green_desc">Health restore</p>
+            </div>
+            <div class="card yellow">
+                <div class="card-title yellow" data-i18n="sd_yellow">Yellow Beam</div>
+                <p data-i18n="sd_yellow_desc">Ammo for all weapons</p>
+            </div>
+            <div class="card blue">
+                <div class="card-title blue" data-i18n="sd_blue">Blue Beam</div>
+                <p data-i18n="sd_blue_desc">Speed boost</p>
+            </div>
+            <div class="card red">
+                <div class="card-title red" data-i18n="sd_red">Red Beam</div>
+                <p data-i18n="sd_red_desc">Damage boost vs zombies</p>
+            </div>
+        </div>
+        <div class="section-body" style="padding-top:0;">
+            <p data-i18n="p_pickup_note">Pickups spawn randomly with a sky beam. Auto-destroy after 30 seconds or if a zombie reaches them first.</p>
+        </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_skills">Skills &amp; Equipment</div>
+        <div class="section-body">
+            <p data-i18n="p_barricade"><span class="hi">Barricade Builder</span> (all humans) — right-click with knife to pick up and move props. Block doorways, slow zombies.</p>
+            <p data-i18n="p_esp"><span class="hi-b">ESP Skill</span> (selectable) — see zombie class when aiming at them. Right-click with pistol to broadcast class info to your team. Ghost zombies are hidden even with ESP.</p>
+            <p data-i18n="p_loadout">At spawn, choose your primary weapon, pistol (Colt or P38), equipment bonus, and skill.</p>
+        </div>
+    </div>
+
+    <!-- Strategy -->
+    <div class="section">
+        <div class="section-header" data-i18n="h_strategy">Strategy</div>
+        <div class="strategy-grid">
+            <div class="strategy-col">
+                <h4 data-i18n="h_for_humans">Humans</h4>
+                <ul>
+                    <li data-i18n="li_h_1">Build barricades to slow zombie advances</li>
+                    <li data-i18n="li_h_2">Use ESP to identify Gas and TNT zombies</li>
+                    <li data-i18n="li_h_3">Stay clear of dying TNT zombies</li>
+                    <li data-i18n="li_h_4">Listen for Ghost zombie movement</li>
+                    <li data-i18n="li_h_5">Pistol headshots deal critical damage</li>
+                    <li data-i18n="li_h_6">Follow beam colours to find pickups</li>
+                </ul>
+            </div>
+            <div class="strategy-col">
+                <h4 data-i18n="h_for_zombies">Zombies</h4>
+                <ul>
+                    <li data-i18n="li_z_1"><span class="hi-g">Gas:</span> Pre-place clouds, block escape routes</li>
+                    <li data-i18n="li_z_2"><span class="hi-r">TNT:</span> Rush groups for splash damage</li>
+                    <li data-i18n="li_z_3"><span class="hi-p">Ghost:</span> Ambush from dark corners</li>
+                    <li data-i18n="li_z_4">Coordinate attacks on isolated humans</li>
+                    <li data-i18n="li_z_5">Use teleport chance to flank spawn</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Links -->
+    <div class="section">
+        <div class="links">
+            <a href="https://github.com/DNA-styx/DoD_ZombieMod" class="btn btn-gh" target="_blank">GitHub</a>
+            <a href="https://discord.gg/bemuuRKscw" class="btn btn-dc" target="_blank">Discord</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div><strong style="color:#555;">Long Live Root_</strong></div>
+        <div style="margin-top:6px;" data-i18n="footer_version">DoD:S Zombie Mod v0.9.20 BETA &nbsp;·&nbsp; Andersso, Root, Colster &nbsp;·&nbsp; Updated by Claude.AI guided by DNA.styx</div>
+    </div>
+
+</div>
+<script>
+var translations = {
+
+    english: {
+        subtitle:       "Day of Defeat: Source \u00b7 v0.9.20 BETA",
+        h_how_it_works: "How It Works",
+        p_one_zombie:   "At the start of each round, <span class=\"hi\">one player becomes a zombie</span>. Everyone else is human.",
+        p_zombie_kills: "Zombies infect humans on kill. The round ends when all humans are dead or time runs out.",
+        p_basics:       "Humans are armed. Zombies fight melee-only but can break most objects and doors.",
+        h_kill_rewards: "Kill Rewards",
+        p_killing_earns:"Each zombie kill rewards you. Finish a critical zombie for double.",
+        rp_health:      "+15 Health (max 150)",
+        rp_clip:        "+1 Pistol Clip (max 3)",
+        rp_speed:       "+0.02 Speed (max +0.25)",
+        p_headshots:    "<span class=\"hi\">Pistol headshots</span> deal critical damage \u2014 finish them off for double rewards.",
+        h_zombie_classes:"Zombie Classes",
+        ct_gas:         "Gas Zombie",
+        cd_gas:         "Right-click to deploy a gas cloud. Cooldown 15s. Creates a cloud on death.",
+        ct_tnt:         "TNT Zombie",
+        cd_tnt:         "Explodes on death, damaging nearby players and breaking props.",
+        ct_ghost:       "Ghost Zombie",
+        cd_ghost:       "Nearly invisible. No name or health display \u2014 hidden even from ESP.",
+        p_class_chance: "<span class=\"hi\">50% chance</span> to spawn as a special class. Players choose from a menu; bots are assigned randomly.",
+        p_teleport:     "All zombies have a chance to <span class=\"hi\">teleport to human spawn</span> on respawn.",
+        h_supply_drops: "Supply Drops",
+        sd_green:       "Green Beam",
+        sd_green_desc:  "Health restore",
+        sd_yellow:      "Yellow Beam",
+        sd_yellow_desc: "Ammo for all weapons",
+        sd_blue:        "Blue Beam",
+        sd_blue_desc:   "Speed boost",
+        sd_red:         "Red Beam",
+        sd_red_desc:    "Damage boost vs zombies",
+        p_pickup_note:  "Pickups spawn randomly with a sky beam. Auto-destroy after 30 seconds or if a zombie reaches them first.",
+        h_skills:       "Skills &amp; Equipment",
+        p_barricade:    "<span class=\"hi\">Barricade Builder</span> (all humans) \u2014 right-click with knife to pick up and move props. Block doorways, slow zombies.",
+        p_esp:          "<span class=\"hi-b\">ESP Skill</span> (selectable) \u2014 see zombie class when aiming at them. Right-click with pistol to broadcast class info to your team. Ghost zombies are hidden even with ESP.",
+        p_loadout:      "At spawn, choose your primary weapon, pistol (Colt or P38), equipment bonus, and skill.",
+        h_strategy:     "Strategy",
+        h_for_humans:   "Humans",
+        li_h_1:         "Build barricades to slow zombie advances",
+        li_h_2:         "Use ESP to identify Gas and TNT zombies",
+        li_h_3:         "Stay clear of dying TNT zombies",
+        li_h_4:         "Listen for Ghost zombie movement",
+        li_h_5:         "Pistol headshots deal critical damage",
+        li_h_6:         "Follow beam colours to find pickups",
+        h_for_zombies:  "Zombies",
+        li_z_1:         "<span class=\"hi-g\">Gas:</span> Pre-place clouds, block escape routes",
+        li_z_2:         "<span class=\"hi-r\">TNT:</span> Rush groups for splash damage",
+        li_z_3:         "<span class=\"hi-p\">Ghost:</span> Ambush from dark corners",
+        li_z_4:         "Coordinate attacks on isolated humans",
+        li_z_5:         "Use teleport chance to flank spawn",
+        footer_version: "DoD:S Zombie Mod v0.9.20 BETA \u00b7 Andersso, Root, Colster \u00b7 Updated by Claude.AI guided by DNA.styx"
+    },
+
+    german: {
+        subtitle:       "Day of Defeat: Source \u00b7 v0.9.20 BETA",
+        h_how_it_works: "Spielablauf",
+        p_one_zombie:   "Zu Beginn jeder Runde wird <span class=\"hi\">ein Spieler zum Zombie</span>. Alle anderen sind Menschen.",
+        p_zombie_kills: "Zombies infizieren Menschen beim T\u00f6ten. Die Runde endet, wenn alle Menschen tot sind oder die Zeit abl\u00e4uft.",
+        p_basics:       "Menschen sind bewaffnet. Zombies k\u00e4mpfen nur im Nahkampf, k\u00f6nnen aber die meisten Objekte und T\u00fcren einschlagen.",
+        h_kill_rewards: "Kill-Belohnungen",
+        p_killing_earns:"Jeder Zombie-Kill belohnt dich. Kritische Zombies besiegen verdoppelt die Belohnung.",
+        rp_health:      "+15 Leben (max. 150)",
+        rp_clip:        "+1 Pistolenmagazin (max. 3)",
+        rp_speed:       "+0,02 Geschwindigkeit (max. +0,25)",
+        p_headshots:    "<span class=\"hi\">Pistolen-Kopfsch\u00fcsse</span> verursachen kritischen Schaden \u2014 besiege sie f\u00fcr doppelte Belohnungen.",
+        h_zombie_classes:"Zombie-Klassen",
+        ct_gas:         "Gas-Zombie",
+        cd_gas:         "Rechtsklick zum Einsetzen einer Gaswolke. Abk\u00fchlzeit 15s. Erstellt beim Tod eine Wolke.",
+        ct_tnt:         "TNT-Zombie",
+        cd_tnt:         "Explodiert beim Tod und besch\u00e4digt nahe Spieler und Objekte.",
+        ct_ghost:       "Geist-Zombie",
+        cd_ghost:       "Fast unsichtbar. Keine Namens- oder Gesundheitsanzeige \u2014 auch vor ESP verborgen.",
+        p_class_chance: "<span class=\"hi\">50% Chance</span>, als Sonderklasse zu spawnen. Spieler w\u00e4hlen aus einem Men\u00fc; Bots werden zuf\u00e4llig zugewiesen.",
+        p_teleport:     "Alle Zombies haben eine Chance, beim Respawn zum <span class=\"hi\">menschlichen Spawn zu teleportieren</span>.",
+        h_supply_drops: "Versorgungslieferungen",
+        sd_green:       "Gr\u00fcner Strahl",
+        sd_green_desc:  "Gesundheit wiederherstellen",
+        sd_yellow:      "Gelber Strahl",
+        sd_yellow_desc: "Munition f\u00fcr alle Waffen",
+        sd_blue:        "Blauer Strahl",
+        sd_blue_desc:   "Geschwindigkeitsboost",
+        sd_red:         "Roter Strahl",
+        sd_red_desc:    "Schadensboost gegen Zombies",
+        p_pickup_note:  "Aufnahmen erscheinen zuf\u00e4llig mit einem Himmelsstrahl. Werden nach 30 Sekunden zerst\u00f6rt oder wenn ein Zombie sie zuerst erreicht.",
+        h_skills:       "F\u00e4higkeiten &amp; Ausr\u00fcstung",
+        p_barricade:    "<span class=\"hi\">Barrikadenbauer</span> (alle Menschen) \u2014 Rechtsklick mit Messer zum Aufheben und Bewegen von Objekten. T\u00fcren blockieren, Zombies verlangsamen.",
+        p_esp:          "<span class=\"hi-b\">ESP-F\u00e4higkeit</span> (w\u00e4hlbar) \u2014 Zombie-Klasse beim Anvisieren sehen. Rechtsklick mit Pistole, um Klasseninfo ans Team zu senden. Geist-Zombies sind auch mit ESP verborgen.",
+        p_loadout:      "Beim Spawn Prim\u00e4rwaffe, Pistole (Colt oder P38), Ausr\u00fcstungsbonus und F\u00e4higkeit w\u00e4hlen.",
+        h_strategy:     "Strategie",
+        h_for_humans:   "Menschen",
+        li_h_1:         "Barrikaden bauen, um Zombie-Voranst\u00f6\u00dfe zu verlangsamen",
+        li_h_2:         "ESP nutzen, um Gas- und TNT-Zombies zu identifizieren",
+        li_h_3:         "Abstand zu sterbenden TNT-Zombies halten",
+        li_h_4:         "Auf Bewegungen von Geist-Zombies h\u00f6ren",
+        li_h_5:         "Pistolen-Kopfsch\u00fcsse verursachen kritischen Schaden",
+        li_h_6:         "Strahlenfarben folgen, um Aufnahmen zu finden",
+        h_for_zombies:  "Zombies",
+        li_z_1:         "<span class=\"hi-g\">Gas:</span> Wolken vorplatzieren, Fluchtwege blockieren",
+        li_z_2:         "<span class=\"hi-r\">TNT:</span> In Gruppen st\u00fcrmen f\u00fcr Fl\u00e4chenschaden",
+        li_z_3:         "<span class=\"hi-p\">Geist:</span> Aus dunklen Ecken \u00fcberfallen",
+        li_z_4:         "Angriffe auf isolierte Menschen koordinieren",
+        li_z_5:         "Teleportationschance nutzen, um Spawn zu flankieren",
+        footer_version: "DoD:S Zombie Mod v0.9.20 BETA \u00b7 Andersso, Root, Colster \u00b7 Aktualisiert von Claude.AI geleitet von DNA.styx"
+    },
+
+    french: {
+        subtitle:       "Day of Defeat: Source \u00b7 v0.9.20 BETA",
+        h_how_it_works: "Comment \u00e7a fonctionne",
+        p_one_zombie:   "Au d\u00e9but de chaque round, <span class=\"hi\">un joueur devient zombie</span>. Tous les autres sont humains.",
+        p_zombie_kills: "Les zombies infectent les humains en les tuant. Le round se termine quand tous les humains sont morts ou quand le temps est \u00e9coul\u00e9.",
+        p_basics:       "Les humains sont arm\u00e9s. Les zombies combattent uniquement en m\u00eal\u00e9e mais peuvent d\u00e9foncer la plupart des objets et des portes.",
+        h_kill_rewards: "R\u00e9compenses de kill",
+        p_killing_earns:"Chaque zombie tu\u00e9 vous r\u00e9compense. Achever un zombie critique double la r\u00e9compense.",
+        rp_health:      "+15 Sant\u00e9 (max 150)",
+        rp_clip:        "+1 Chargeur (max 3)",
+        rp_speed:       "+0,02 Vitesse (max +0,25)",
+        p_headshots:    "<span class=\"hi\">Les tirs \u00e0 la t\u00eate au pistolet</span> infligent des d\u00e9g\u00e2ts critiques \u2014 achevez-les pour doubler les r\u00e9compenses.",
+        h_zombie_classes:"Classes de zombies",
+        ct_gas:         "Zombie Gaz",
+        cd_gas:         "Clic droit pour d\u00e9ployer un nuage de gaz. Recharge 15s. Cr\u00e9e un nuage \u00e0 la mort.",
+        ct_tnt:         "Zombie TNT",
+        cd_tnt:         "Explose \u00e0 la mort, blessant les joueurs proches et cassant des objets.",
+        ct_ghost:       "Zombie Fant\u00f4me",
+        cd_ghost:       "Presque invisible. Aucun affichage de nom ou sant\u00e9 \u2014 cach\u00e9 m\u00eame \u00e0 l\u2019ESP.",
+        p_class_chance: "<span class=\"hi\">50% de chance</span> de spawner comme classe sp\u00e9ciale. Les joueurs choisissent dans un menu\u00a0; les bots sont assign\u00e9s al\u00e9atoirement.",
+        p_teleport:     "Tous les zombies ont une chance de <span class=\"hi\">se t\u00e9l\u00e9porter au spawn humain</span> lors de leur r\u00e9apparition.",
+        h_supply_drops: "Ravitaillements",
+        sd_green:       "Rayon vert",
+        sd_green_desc:  "Restaure la sant\u00e9",
+        sd_yellow:      "Rayon jaune",
+        sd_yellow_desc: "Munitions pour toutes les armes",
+        sd_blue:        "Rayon bleu",
+        sd_blue_desc:   "Bonus de vitesse",
+        sd_red:         "Rayon rouge",
+        sd_red_desc:    "Bonus de d\u00e9g\u00e2ts contre les zombies",
+        p_pickup_note:  "Les ramassages apparaissent al\u00e9atoirement avec un rayon c\u00e9leste. D\u00e9truits apr\u00e8s 30 secondes ou si un zombie les atteint en premier.",
+        h_skills:       "Comp\u00e9tences &amp; \u00c9quipement",
+        p_barricade:    "<span class=\"hi\">Constructeur de barricades</span> (tous les humains) \u2014 clic droit avec le couteau pour ramasser et d\u00e9placer des objets. Bloquer les passages, ralentir les zombies.",
+        p_esp:          "<span class=\"hi-b\">Comp\u00e9tence ESP</span> (s\u00e9lectionnable) \u2014 voir la classe du zombie en le visant. Clic droit avec pistolet pour diffuser les infos de classe \u00e0 l\u2019\u00e9quipe. Les zombies fant\u00f4mes sont cach\u00e9s m\u00eame avec l\u2019ESP.",
+        p_loadout:      "Au spawn, choisissez votre arme principale, pistolet (Colt ou P38), bonus d\u2019\u00e9quipement et comp\u00e9tence.",
+        h_strategy:     "Strat\u00e9gie",
+        h_for_humans:   "Humains",
+        li_h_1:         "Construire des barricades pour ralentir les zombies",
+        li_h_2:         "Utiliser l\u2019ESP pour identifier les zombies Gaz et TNT",
+        li_h_3:         "S\u2019\u00e9loigner des zombies TNT mourants",
+        li_h_4:         "\u00c9couter les mouvements des zombies fant\u00f4mes",
+        li_h_5:         "Les tirs \u00e0 la t\u00eate au pistolet infligent des d\u00e9g\u00e2ts critiques",
+        li_h_6:         "Suivre les rayons color\u00e9s pour trouver les ramassages",
+        h_for_zombies:  "Zombies",
+        li_z_1:         "<span class=\"hi-g\">Gaz\u00a0:</span> Pr\u00e9-placer les nuages, bloquer les routes de fuite",
+        li_z_2:         "<span class=\"hi-r\">TNT\u00a0:</span> Foncer dans les groupes pour les d\u00e9g\u00e2ts de zone",
+        li_z_3:         "<span class=\"hi-p\">Fant\u00f4me\u00a0:</span> Tendre des embuscades depuis les coins sombres",
+        li_z_4:         "Coordonner les attaques sur les humains isol\u00e9s",
+        li_z_5:         "Utiliser la t\u00e9l\u00e9portation pour contourner le spawn",
+        footer_version: "DoD:S Zombie Mod v0.9.20 BETA \u00b7 Andersso, Root, Colster \u00b7 Mis \u00e0 jour par Claude.AI guid\u00e9 par DNA.styx"
+    },
+
+    russian: {
+        subtitle:       "Day of Defeat: Source \u00b7 v0.9.20 BETA",
+        h_how_it_works: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442",
+        p_one_zombie:   "\u0412 \u043d\u0430\u0447\u0430\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0440\u0430\u0443\u043d\u0434\u0430 <span class=\"hi\">\u043e\u0434\u0438\u043d \u0438\u0433\u0440\u043e\u043a \u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u0437\u043e\u043c\u0431\u0438</span>. \u0412\u0441\u0435 \u043e\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0435 \u2014 \u043b\u044e\u0434\u0438.",
+        p_zombie_kills: "\u0417\u043e\u043c\u0431\u0438 \u0437\u0430\u0440\u0430\u0436\u0430\u044e\u0442 \u043b\u044e\u0434\u0435\u0439 \u043f\u0440\u0438 \u0443\u0431\u0438\u0439\u0441\u0442\u0432\u0435. \u0420\u0430\u0443\u043d\u0434 \u0437\u0430\u043a\u0430\u043d\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044f, \u043a\u043e\u0433\u0434\u0430 \u0432\u0441\u0435 \u043b\u044e\u0434\u0438 \u043c\u0435\u0440\u0442\u0432\u044b \u0438\u043b\u0438 \u0432\u0440\u0435\u043c\u044f \u0438\u0441\u0442\u0435\u043a\u0430\u0435\u0442.",
+        p_basics:       "\u041b\u044e\u0434\u0438 \u0432\u043e\u043e\u0440\u0443\u0436\u0435\u043d\u044b. \u0417\u043e\u043c\u0431\u0438 \u0434\u0435\u0440\u0443\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0432 \u0440\u0443\u043a\u043e\u043f\u0430\u0448\u043d\u043e\u043c \u0431\u043e\u044e, \u043d\u043e \u043c\u043e\u0433\u0443\u0442 \u043b\u043e\u043c\u0430\u0442\u044c \u0431\u043e\u043b\u044c\u0448\u0438\u043d\u0441\u0442\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432 \u0438 \u0434\u0432\u0435\u0440\u0435\u0439.",
+        h_kill_rewards: "\u041d\u0430\u0433\u0440\u0430\u0434\u044b \u0437\u0430 \u0443\u0431\u0438\u0439\u0441\u0442\u0432\u0430",
+        p_killing_earns:"\u041a\u0430\u0436\u0434\u044b\u0439 \u0443\u0431\u0438\u0442\u044b\u0439 \u0437\u043e\u043c\u0431\u0438 \u043f\u0440\u0438\u043d\u043e\u0441\u0438\u0442 \u043d\u0430\u0433\u0440\u0430\u0434\u0443. \u0414\u043e\u0431\u0438\u0442\u044c \u043a\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0433\u043e \u0437\u043e\u043c\u0431\u0438 \u2014 \u0443\u0434\u0432\u043e\u0435\u043d\u043d\u0430\u044f \u043d\u0430\u0433\u0440\u0430\u0434\u0430.",
+        rp_health:      "+15 \u0417\u0434\u043e\u0440\u043e\u0432\u044c\u0435 (\u043c\u0430\u043a\u0441. 150)",
+        rp_clip:        "+1 \u041c\u0430\u0433\u0430\u0437\u0438\u043d (\u043c\u0430\u043a\u0441. 3)",
+        rp_speed:       "+0,02 \u0421\u043a\u043e\u0440\u043e\u0441\u0442\u044c (\u043c\u0430\u043a\u0441. +0,25)",
+        p_headshots:    "<span class=\"hi\">\u0412\u044b\u0441\u0442\u0440\u0435\u043b\u044b \u0432 \u0433\u043e\u043b\u043e\u0432\u0443 \u0438\u0437 \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442\u0430</span> \u043d\u0430\u043d\u043e\u0441\u044f\u0442 \u043a\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0443\u0440\u043e\u043d \u2014 \u0434\u043e\u0431\u0435\u0439\u0442\u0435 \u0434\u043b\u044f \u0434\u0432\u043e\u0439\u043d\u043e\u0439 \u043d\u0430\u0433\u0440\u0430\u0434\u044b.",
+        h_zombie_classes:"\u041a\u043b\u0430\u0441\u0441\u044b \u0437\u043e\u043c\u0431\u0438",
+        ct_gas:         "\u0417\u043e\u043c\u0431\u0438-\u0433\u0430\u0437",
+        cd_gas:         "\u041f\u0440\u0430\u0432\u044b\u0439 \u043a\u043b\u0438\u043a \u2014 \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0433\u0430\u0437\u043e\u0432\u043e\u0435 \u043e\u0431\u043b\u0430\u043a\u043e. \u041f\u0435\u0440\u0435\u0437\u0430\u0440\u044f\u0434\u043a\u0430 15\u0441. \u0421\u043e\u0437\u0434\u0430\u0451\u0442 \u043e\u0431\u043b\u0430\u043a\u043e \u043f\u0440\u0438 \u0441\u043c\u0435\u0440\u0442\u0438.",
+        ct_tnt:         "\u0417\u043e\u043c\u0431\u0438-\u0422\u041d\u0422",
+        cd_tnt:         "\u0412\u0437\u0440\u044b\u0432\u0430\u0435\u0442\u0441\u044f \u043f\u0440\u0438 \u0441\u043c\u0435\u0440\u0442\u0438, \u043d\u0430\u043d\u043e\u0441\u044f \u0443\u0440\u043e\u043d \u0431\u043b\u0438\u0436\u0430\u0439\u0448\u0438\u043c \u0438\u0433\u0440\u043e\u043a\u0430\u043c \u0438 \u043b\u043e\u043c\u0430\u044f \u043e\u0431\u044a\u0435\u043a\u0442\u044b.",
+        ct_ghost:       "\u0417\u043e\u043c\u0431\u0438-\u043f\u0440\u0438\u0437\u0440\u0430\u043a",
+        cd_ghost:       "\u041f\u043e\u0447\u0442\u0438 \u043d\u0435\u0432\u0438\u0434\u0438\u043c. \u041d\u0435\u0442 \u043e\u0442\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f \u2014 \u0441\u043a\u0440\u044b\u0442 \u0434\u0430\u0436\u0435 \u043e\u0442 ESP.",
+        p_class_chance: "<span class=\"hi\">50% \u0448\u0430\u043d\u0441</span> \u043f\u043e\u044f\u0432\u0438\u0442\u044c\u0441\u044f \u043a\u0430\u043a \u043e\u0441\u043e\u0431\u044b\u0439 \u043a\u043b\u0430\u0441\u0441. \u0418\u0433\u0440\u043e\u043a\u0438 \u0432\u044b\u0431\u0438\u0440\u0430\u044e\u0442 \u0438\u0437 \u043c\u0435\u043d\u044e; \u0431\u043e\u0442\u0430\u043c \u043a\u043b\u0430\u0441\u0441 \u043d\u0430\u0437\u043d\u0430\u0447\u0430\u0435\u0442\u0441\u044f \u0441\u043b\u0443\u0447\u0430\u0439\u043d\u043e.",
+        p_teleport:     "\u0412\u0441\u0435 \u0437\u043e\u043c\u0431\u0438 \u0438\u043c\u0435\u044e\u0442 \u0448\u0430\u043d\u0441 <span class=\"hi\">\u0442\u0435\u043b\u0435\u043f\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u0441\u044f \u043a \u0441\u043f\u0430\u0432\u043d\u0443 \u043b\u044e\u0434\u0435\u0439</span> \u043f\u0440\u0438 \u0432\u043e\u0437\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0438.",
+        h_supply_drops: "\u041f\u043e\u0441\u0442\u0430\u0432\u043a\u0438 \u0441\u043d\u0430\u0440\u044f\u0436\u0435\u043d\u0438\u044f",
+        sd_green:       "\u0417\u0435\u043b\u0451\u043d\u044b\u0439 \u043b\u0443\u0447",
+        sd_green_desc:  "\u0412\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u0437\u0434\u043e\u0440\u043e\u0432\u044c\u044f",
+        sd_yellow:      "\u0416\u0451\u043b\u0442\u044b\u0439 \u043b\u0443\u0447",
+        sd_yellow_desc: "\u041f\u0430\u0442\u0440\u043e\u043d\u044b \u0434\u043b\u044f \u0432\u0441\u0435\u0433\u043e \u043e\u0440\u0443\u0436\u0438\u044f",
+        sd_blue:        "\u0421\u0438\u043d\u0438\u0439 \u043b\u0443\u0447",
+        sd_blue_desc:   "\u0411\u043e\u043d\u0443\u0441 \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u0438",
+        sd_red:         "\u041a\u0440\u0430\u0441\u043d\u044b\u0439 \u043b\u0443\u0447",
+        sd_red_desc:    "\u0411\u043e\u043d\u0443\u0441 \u0443\u0440\u043e\u043d\u0430 \u043f\u043e \u0437\u043e\u043c\u0431\u0438",
+        p_pickup_note:  "\u041f\u043e\u0434\u0431\u043e\u0440\u044b \u043f\u043e\u044f\u0432\u043b\u044f\u044e\u0442\u0441\u044f \u0441\u043b\u0443\u0447\u0430\u0439\u043d\u043e \u0441 \u043d\u0435\u0431\u0435\u0441\u043d\u044b\u043c \u043b\u0443\u0447\u043e\u043c. \u0423\u043d\u0438\u0447\u0442\u043e\u0436\u0430\u044e\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 30 \u0441\u0435\u043a\u0443\u043d\u0434 \u0438\u043b\u0438 \u0435\u0441\u043b\u0438 \u0437\u043e\u043c\u0431\u0438 \u0434\u043e\u0431\u0435\u0440\u0451\u0442\u0441\u044f \u043f\u0435\u0440\u0432\u044b\u043c.",
+        h_skills:       "\u041d\u0430\u0432\u044b\u043a\u0438 &amp; \u0421\u043d\u0430\u0440\u044f\u0436\u0435\u043d\u0438\u0435",
+        p_barricade:    "<span class=\"hi\">\u0421\u0442\u0440\u043e\u0438\u0442\u0435\u043b\u044c \u0431\u0430\u0440\u0440\u0438\u043a\u0430\u0434</span> (\u0432\u0441\u0435 \u043b\u044e\u0434\u0438) \u2014 \u043f\u0440\u0430\u0432\u044b\u0439 \u043a\u043b\u0438\u043a \u0441 \u043d\u043e\u0436\u043e\u043c, \u0447\u0442\u043e\u0431\u044b \u043f\u043e\u0434\u043d\u044f\u0442\u044c \u0438 \u043f\u0435\u0440\u0435\u0434\u0432\u0438\u043d\u0443\u0442\u044c \u043e\u0431\u044a\u0435\u043a\u0442. \u0411\u043b\u043e\u043a\u0438\u0440\u0443\u0439\u0442\u0435 \u043f\u0440\u043e\u0445\u043e\u0434\u044b, \u0437\u0430\u043c\u0435\u0434\u043b\u044f\u0439\u0442\u0435 \u0437\u043e\u043c\u0431\u0438.",
+        p_esp:          "<span class=\"hi-b\">\u041d\u0430\u0432\u044b\u043a ESP</span> (\u0432\u044b\u0431\u0438\u0440\u0430\u0435\u0442\u0441\u044f) \u2014 \u0432\u0438\u0434\u0435\u0442\u044c \u043a\u043b\u0430\u0441\u0441 \u0437\u043e\u043c\u0431\u0438 \u043f\u0440\u0438 \u043f\u0440\u0438\u0446\u0435\u043b\u0438\u0432\u0430\u043d\u0438\u0438. \u041f\u0440\u0430\u0432\u044b\u0439 \u043a\u043b\u0438\u043a \u0441 \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442\u043e\u043c \u2014 \u043f\u0435\u0440\u0435\u0434\u0430\u0442\u044c \u0438\u043d\u0444\u043e \u043e \u043a\u043b\u0430\u0441\u0441\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0435. \u0417\u043e\u043c\u0431\u0438-\u043f\u0440\u0438\u0437\u0440\u0430\u043a\u0438 \u0441\u043a\u0440\u044b\u0442\u044b \u0434\u0430\u0436\u0435 \u0441 ESP.",
+        p_loadout:      "\u041f\u0440\u0438 \u043f\u043e\u044f\u0432\u043b\u0435\u043d\u0438\u0438 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u0435 \u043e\u0440\u0443\u0436\u0438\u0435, \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442 (Colt \u0438\u043b\u0438 P38), \u0431\u043e\u043d\u0443\u0441 \u0441\u043d\u0430\u0440\u044f\u0436\u0435\u043d\u0438\u044f \u0438 \u043d\u0430\u0432\u044b\u043a.",
+        h_strategy:     "\u0421\u0442\u0440\u0430\u0442\u0435\u0433\u0438\u044f",
+        h_for_humans:   "\u041b\u044e\u0434\u0438",
+        li_h_1:         "\u0421\u0442\u0440\u043e\u0438\u0442\u044c \u0431\u0430\u0440\u0440\u0438\u043a\u0430\u0434\u044b \u0434\u043b\u044f \u0437\u0430\u043c\u0435\u0434\u043b\u0435\u043d\u0438\u044f \u0437\u043e\u043c\u0431\u0438",
+        li_h_2:         "\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c ESP \u0434\u043b\u044f \u043e\u043f\u0440\u0435\u0434\u0435\u043b\u0435\u043d\u0438\u044f \u0437\u043e\u043c\u0431\u0438-\u0433\u0430\u0437 \u0438 \u0437\u043e\u043c\u0431\u0438-\u0422\u041d\u0422",
+        li_h_3:         "\u0414\u0435\u0440\u0436\u0430\u0442\u044c\u0441\u044f \u043f\u043e\u0434\u0430\u043b\u044c\u0448\u0435 \u043e\u0442 \u0443\u043c\u0438\u0440\u0430\u044e\u0449\u0438\u0445 \u0437\u043e\u043c\u0431\u0438-\u0422\u041d\u0422",
+        li_h_4:         "\u0421\u043b\u0443\u0448\u0430\u0442\u044c \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u044f \u0437\u043e\u043c\u0431\u0438-\u043f\u0440\u0438\u0437\u0440\u0430\u043a\u043e\u0432",
+        li_h_5:         "\u0412\u044b\u0441\u0442\u0440\u0435\u043b\u044b \u0432 \u0433\u043e\u043b\u043e\u0432\u0443 \u0438\u0437 \u043f\u0438\u0441\u0442\u043e\u043b\u0435\u0442\u0430 \u043d\u0430\u043d\u043e\u0441\u044f\u0442 \u043a\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0443\u0440\u043e\u043d",
+        li_h_6:         "\u0421\u043b\u0435\u0434\u0438\u0442\u044c \u0437\u0430 \u0446\u0432\u0435\u0442\u043e\u043c \u043b\u0443\u0447\u0435\u0439, \u0447\u0442\u043e\u0431\u044b \u043d\u0430\u0439\u0442\u0438 \u043f\u043e\u0434\u0431\u043e\u0440\u044b",
+        h_for_zombies:  "\u0417\u043e\u043c\u0431\u0438",
+        li_z_1:         "<span class=\"hi-g\">\u0413\u0430\u0437:</span> \u0417\u0430\u0440\u0430\u043d\u0435\u0435 \u0440\u0430\u0441\u0441\u0442\u0430\u0432\u043b\u044f\u0442\u044c \u043e\u0431\u043b\u0430\u043a\u0430, \u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043f\u0443\u0442\u0438 \u043e\u0442\u0441\u0442\u0443\u043f\u043b\u0435\u043d\u0438\u044f",
+        li_z_2:         "<span class=\"hi-r\">\u0422\u041d\u0422:</span> \u0412\u0440\u044b\u0432\u0430\u0442\u044c\u0441\u044f \u0432 \u0433\u0440\u0443\u043f\u043f\u044b \u0434\u043b\u044f \u0444\u043b\u0430\u043d\u0433\u043e\u0432\u043e\u0433\u043e \u0443\u0440\u043e\u043d\u0430",
+        li_z_3:         "<span class=\"hi-p\">\u041f\u0440\u0438\u0437\u0440\u0430\u043a:</span> \u0417\u0430\u0441\u0430\u0434\u044b \u0438\u0437 \u0442\u0451\u043c\u043d\u044b\u0445 \u0443\u0433\u043b\u043e\u0432",
+        li_z_4:         "\u041a\u043e\u043e\u0440\u0434\u0438\u043d\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0430\u0442\u0430\u043a\u0438 \u043d\u0430 \u0438\u0437\u043e\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0445 \u043b\u044e\u0434\u0435\u0439",
+        li_z_5:         "\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0442\u0435\u043b\u0435\u043f\u043e\u0440\u0442\u0430\u0446\u0438\u044e \u0434\u043b\u044f \u0444\u043b\u0430\u043d\u0433\u043e\u0432\u0430\u043d\u0438\u044f \u0441\u043f\u0430\u0432\u043d\u0430",
+        footer_version: "DoD:S Zombie Mod v0.9.20 BETA \u00b7 Andersso, Root, Colster \u00b7 \u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u043e Claude.AI \u043f\u043e\u0434 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e\u043c DNA.styx"
+    }
+
+};
+
+function getLang() {
+    var params = new URLSearchParams(window.location.search);
+    var lang   = (params.get('lang') || 'english').toLowerCase();
+    return translations[lang] ? lang : 'english';
+}
+
+function applyTranslations(lang) {
+    var t   = translations[lang];
+    var els = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < els.length; i++) {
+        var key = els[i].getAttribute('data-i18n');
+        if (t[key] !== undefined) els[i].innerHTML = t[key];
+    }
+    document.documentElement.setAttribute('lang', lang);
+}
+
+function markActiveLang(lang) {
+    var links = document.querySelectorAll('.lang-bar a[data-lang]');
+    for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('data-lang') === lang) {
+            links[i].classList.add('active');
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var lang = getLang();
+    applyTranslations(lang);
+    markActiveLang(lang);
+});
+</script>
 </body>
 </html>
