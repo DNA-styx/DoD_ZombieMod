@@ -181,12 +181,9 @@ bool FindPickupSpawnLocation(float position[3])
 		}
 	}
 	
-	
 	// Need at least one human to spawn near
 	if (aliveCount == 0)
-	{
 		return false;
-	}
 	
 	// Try multiple times to find a valid location
 	for (int attempt = 0; attempt < SPAWN_MAX_ATTEMPTS; attempt++)
@@ -211,58 +208,49 @@ bool FindPickupSpawnLocation(float position[3])
 		{
 			// Verify location is accessible (not in wall)
 			if (IsLocationAccessible(position))
-			{
 				return true;
-			}
-			else
-			{
-			}
-		}
-		else
-		{
 		}
 	}
 	
 	return false;
 }
 
+/* Traces straight down to find the ground, updating position in place.
+ * Uses the global trace buffer — no handle allocation or cleanup needed. */
 bool TraceToGround(float position[3])
 {
 	float endPos[3];
 	endPos[0] = position[0];
 	endPos[1] = position[1];
 	endPos[2] = position[2] - 500.0;  // Trace down 500 units
-	
-	Handle trace = TR_TraceRayFilterEx(position, endPos, MASK_SOLID, RayType_EndPoint, TraceFilter_World);
-	
-	if (TR_DidHit(trace))
+
+	TR_TraceRayFilter(position, endPos, MASK_SOLID, RayType_EndPoint, TraceFilter_World);
+
+	if (TR_DidHit())
 	{
-		TR_GetEndPosition(position, trace);
+		TR_GetEndPosition(position);
 		position[2] += 5.0;  // Slightly above ground
-		CloseHandle(trace);
 		return true;
 	}
-	
-	CloseHandle(trace);
+
 	return false;
 }
 
+/* Checks if there is enough clear space at position for a pickup.
+ * Uses the global trace buffer — no handle allocation or cleanup needed. */
 bool IsLocationAccessible(float position[3])
 {
-	// Check if there's enough space for the powerup (simple hull trace)
 	float mins[3] = {-16.0, -16.0, 0.0};
 	float maxs[3] = {16.0, 16.0, 32.0};
-	
-	Handle trace = TR_TraceHullFilterEx(position, position, mins, maxs, MASK_SOLID, TraceFilter_World);
-	bool accessible = !TR_DidHit(trace);
-	CloseHandle(trace);
-	
-	return accessible;
+
+	TR_TraceHullFilter(position, position, mins, maxs, MASK_SOLID, TraceFilter_World);
+
+	return !TR_DidHit();
 }
 
+/* Filter: only hits world geometry (entity 0). */
 public bool TraceFilter_World(int entity, int contentsMask)
 {
-	// Only hit world geometry, not players or props
 	return entity == 0;
 }
 
@@ -370,14 +358,11 @@ public Action Timer_CreatePickupDelayed(Handle timer, DataPack pack)
 
 void CreatePickup(float position[3], PickupType type)
 {
-	
 	// Create visual prop (prop_physics_override like original DoD_Dropmanager)
 	int pickup = CreateEntityByName("prop_physics_override");
 	
 	if (pickup == -1)
-	{
 		return;
-	}
 	
 	// Set model
 	SetEntityModel(pickup, PICKUP_MODEL);
@@ -446,13 +431,9 @@ void CreatePickup(float position[3], PickupType type)
 		
 		// Store sprite reference in pickup
 		SetEntPropEnt(pickup, Prop_Data, "m_hEffectEntity", sprite);
-		
-	}
-	else
-	{
 	}
 	
-	// Create a trigger for touch detection
+	// Create trigger for touch detection
 	int trigger = CreateEntityByName("trigger_multiple");
 	if (trigger != -1)
 	{
@@ -483,10 +464,6 @@ void CreatePickup(float position[3], PickupType type)
 		
 		// Hook the trigger
 		SDKHook(trigger, SDKHook_StartTouch, OnPickupTouched);
-		
-	}
-	else
-	{
 	}
 	
 	// Auto-destroy after lifetime from ConVar
@@ -545,12 +522,9 @@ public Action Timer_RemovePickup(Handle timer, int ref)
 
 public Action OnPickupTouched(int trigger, int client)
 {
-	
 	// Validate client
 	if (client < 1 || client > MaxClients || !IsClientInGame(client) || !IsPlayerAlive(client))
-	{
 		return Plugin_Continue;
-	}
 	
 	int team = GetClientTeam(client);
 	
@@ -570,10 +544,7 @@ public Action OnPickupTouched(int trigger, int client)
 	}
 	
 	if (pickup == -1)
-	{
 		return Plugin_Continue;
-	}
-	
 	
 	// Humans get the pickup
 	if (team == Team_Allies)
@@ -597,7 +568,6 @@ public Action OnPickupTouched(int trigger, int client)
 	// Zombies destroy it
 	else if (team == Team_Axis)
 	{
-		
 		// Remove sprite
 		int sprite = GetEntPropEnt(pickup, Prop_Data, "m_hEffectEntity");
 		if (sprite != -1 && IsValidEntity(sprite))
