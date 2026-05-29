@@ -65,17 +65,12 @@ public Action Timer_ShowZombieInfo(Handle timer)
 
 void ShowZombieInfoToHuman(int client)
 {
-	// Get who the client is aiming at
-	int target = GetClientAimTarget(client, false);
-	
-	// Not aiming at a valid entity
-	if (target <= 0 || target > MaxClients)
+	// Get the first player the client has line of sight to
+	int target = GetPlayerInLineOfSight(client);
+
+	if (target == -1)
 		return;
-	
-	// Not aiming at a valid player
-	if (!IsClientInGame(target) || !IsPlayerAlive(target))
-		return;
-	
+
 	// Not aiming at a zombie
 	if (GetClientTeam(target) != Team_Axis)
 		return;
@@ -139,17 +134,12 @@ void ShowZombieInfoToHuman(int client)
 
 void ShowHumanNameToZombie(int client)
 {
-	// Get who the zombie is aiming at
-	int target = GetClientAimTarget(client, false);
-	
-	// Not aiming at a valid entity
-	if (target <= 0 || target > MaxClients)
+	// Get the first player the zombie has line of sight to
+	int target = GetPlayerInLineOfSight(client);
+
+	if (target == -1)
 		return;
-	
-	// Not aiming at a valid player
-	if (!IsClientInGame(target) || !IsPlayerAlive(target))
-		return;
-	
+
 	// Not aiming at a human
 	if (GetClientTeam(target) != Team_Allies)
 		return;

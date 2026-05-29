@@ -196,7 +196,7 @@ void SelectZombie()
 
 /**
  * Counts the number of real (non-bot, non-SourceTV) players on the server
- * 
+ *
  * @return              Number of real players
  */
 int GetRealPlayerCount()
@@ -210,4 +210,42 @@ int GetRealPlayerCount()
 		}
 	}
 	return count;
+}
+
+// ============================================================================
+// TRACE HELPERS
+// ============================================================================
+
+/* Filter: passes through the tracing client, stops at everything else.
+ * Used by GetPlayerInLineOfSight. */
+public bool TraceFilter_SkipClient(int entity, int contentsMask, int client)
+{
+	return entity != client;
+}
+
+/* Returns the client index of the first player the looker can see along
+ * their crosshair, or -1 if the view is blocked by geometry or not aimed
+ * at a player.
+ * Uses the global trace buffer — no handle allocation or cleanup needed. */
+int GetPlayerInLineOfSight(int looker)
+{
+	float eyePos[3], eyeAngles[3];
+	GetClientEyePosition(looker, eyePos);
+	GetClientEyeAngles(looker, eyeAngles);
+
+	TR_TraceRayFilter(eyePos, eyeAngles, MASK_SHOT, RayType_Infinite,
+		TraceFilter_SkipClient, looker);
+
+	if (!TR_DidHit())
+		return -1;
+
+	int entity = TR_GetEntityIndex();
+
+	if (entity < 1 || entity > MaxClients)
+		return -1;
+
+	if (!IsClientInGame(entity) || !IsPlayerAlive(entity))
+		return -1;
+
+	return entity;
 }
