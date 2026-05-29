@@ -43,16 +43,26 @@
 void ZM_PrintToChat(int client, const char[] format, any ...)
 {
 	char buffer[256];
+	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 3);
 	PrintToChat(client, "\x04[ZM]\x01 %s", buffer);
 }
 
-/* Broadcast a message to all clients with the standard [ZM] prefix */
+/* Broadcast a message to all clients with the standard [ZM] prefix.
+ * Iterates clients so %t translates into each player's own language,
+ * matching the behaviour of SourceMod's stock PrintToChatAll. */
 void ZM_PrintToChatAll(const char[] format, any ...)
 {
 	char buffer[256];
-	VFormat(buffer, sizeof(buffer), format, 2);
-	PrintToChatAll("\x04[ZM]\x01 %s", buffer);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && !IsFakeClient(i))
+		{
+			SetGlobalTransTarget(i);
+			VFormat(buffer, sizeof(buffer), format, 2);
+			PrintToChat(i, "\x04[ZM]\x01 %s", buffer);
+		}
+	}
 }
 
 // ============================================================================

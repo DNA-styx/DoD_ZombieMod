@@ -8,7 +8,7 @@
  * Human skill plugins:  register via ZM_RegisterHumanSkill()
  * Zombie class plugins: register via ZM_RegisterZombieClass()
  *
- * Version: 1.3.1
+ * Version: 1.3.3
  * =============================================================================
  */
 
@@ -253,6 +253,7 @@ stock bool ZM_IsLoaded()
 stock void ZM_Chat(int client, const char[] format, any ...)
 {
 	char buffer[256];
+	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 3);
 	PrintToChat(client, "\x04[ZM]\x01 %s", buffer);
 }
@@ -261,14 +262,24 @@ stock void ZM_Chat(int client, const char[] format, any ...)
  * Broadcast a chat message to all players with the standard [ZM] prefix.
  * Use this instead of PrintToChatAll with raw colour codes.
  *
+ * Iterates clients so %t translates into each player's own language,
+ * matching the behaviour of SourceMod's stock PrintToChatAll.
+ *
  * @param format    Format string (supports %t for translations, %s, %d etc.)
  * @param ...       Format arguments
  */
 stock void ZM_ChatAll(const char[] format, any ...)
 {
 	char buffer[256];
-	VFormat(buffer, sizeof(buffer), format, 2);
-	PrintToChatAll("\x04[ZM]\x01 %s", buffer);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && !IsFakeClient(i))
+		{
+			SetGlobalTransTarget(i);
+			VFormat(buffer, sizeof(buffer), format, 2);
+			PrintToChat(i, "\x04[ZM]\x01 %s", buffer);
+		}
+	}
 }
 
 // ============================================================================

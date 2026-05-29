@@ -117,22 +117,24 @@ void RebuildSkillMenu()
 	if (g_DynamicSkillMenu != null)
 		delete g_DynamicSkillMenu;
 	
-	/* Build fresh menu */
-	g_DynamicSkillMenu = new Menu(Menu_SkillSelect_Handler);
-	g_DynamicSkillMenu.SetTitle("%t", "Skill Menu Title");
+	/* Build fresh menu with display handlers so title and translated items
+	 * render in each client's own language rather than being baked at build time */
+	g_DynamicSkillMenu = new Menu(Menu_SkillSelect_Handler, MenuAction_Select | MenuAction_Cancel | MenuAction_Display | MenuAction_DisplayItem);
+	
+	/* Store the phrase key as the title — translated per-client in MenuAction_Display */
+	g_DynamicSkillMenu.SetTitle("Skill Menu Title");
 	g_DynamicSkillMenu.ExitBackButton = true;
 	
-	/* No Skill option — always first */
-	char display[128];
-	Format(display, sizeof(display), "%t", "Skill No Skill");
-	g_DynamicSkillMenu.AddItem("0", display);
+	/* No Skill option — info field "0", display field holds the phrase key */
+	g_DynamicSkillMenu.AddItem("0", "Skill No Skill");
 	
-	/* Registered skills follow */
+	/* Registered skills — plain strings from the registering plugin, no translation */
 	for (int i = 0; i < g_SkillCount; i++)
 	{
 		char skillID[8];
-		IntToString(i + 1, skillID, sizeof(skillID));  /* Skills start at ID 1 */
+		IntToString(i + 1, skillID, sizeof(skillID));
 		
+		char display[128];
 		Format(display, sizeof(display), "%s (%s)", 
 			g_RegisteredSkills[i].name, 
 			g_RegisteredSkills[i].description);
@@ -153,6 +155,29 @@ public int Menu_SkillSelect_Handler(Menu menu, MenuAction action, int param1, in
 {
 	switch (action)
 	{
+		case MenuAction_Display:
+		{
+			/* Translate title into the viewing client's language */
+			char title[64];
+			SetGlobalTransTarget(param1);
+			Format(title, sizeof(title), "%t", "Skill Menu Title");
+			Panel panel = view_as<Panel>(param2);
+			panel.SetTitle(title);
+		}
+		case MenuAction_DisplayItem:
+		{
+			/* Only item 0 ("No Skill") is a translation key; all others are
+			 * plain strings from the registering plugin and need no translation */
+			char info[8];
+			menu.GetItem(param2, info, sizeof(info));
+			if (StringToInt(info) == 0)
+			{
+				char display[128];
+				SetGlobalTransTarget(param1);
+				Format(display, sizeof(display), "%t", "Skill No Skill");
+				RedrawMenuItem(display);
+			}
+		}
 		case MenuAction_Select:
 		{
 			int client = param1;
