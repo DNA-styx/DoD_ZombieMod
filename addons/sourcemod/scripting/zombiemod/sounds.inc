@@ -10,7 +10,9 @@
  * The sound file should be exactly 60 seconds long. A repeating one-shot
  * timer restarts it every 60 seconds to create a seamless loop.
  *
- * ConVar: dod_zombiemod_sounds_enabled (1=on, 0=off)
+ * Ambience is suppressed per-map via zombiemod_whitelist.cfg:
+ *   "Ambience" "1"  — suppress ZM track, leave map audio alone
+ *   "Ambience" "0"  — play ZM track (default when key is absent)
  * =============================================================================
  */
 
@@ -42,14 +44,15 @@ void Sounds_OnMapStart()
 
 void Sounds_OnRoundStart()
 {
-	if (!g_ConVarBools[ConVar_Sounds_Enabled])
+	/* Only play ambience when the mod is actually active */
+	if (!g_bModActive)
 		return;
 
 	if (g_szSounds[Sound_Ambience][0] == '\0')
 		return;
 
-	/* Per-map override — some maps have their own ambient sounds */
-	if (!g_bWhiteListed[WhiteList_Ambience])
+	/* Per-map override — Ambience "1" in whitelist means leave map audio alone */
+	if (g_bWhiteListed[WhiteList_Ambience])
 		return;
 
 	Sounds_PlayAmbience();
@@ -117,8 +120,8 @@ public Action Timer_AmbienceLoop(Handle timer)
 {
 	g_hAmbienceTimer = null;
 
-	/* Only loop if the round is still active */
-	if (!g_bModActive || g_bRoundEnded || !g_ConVarBools[ConVar_Sounds_Enabled])
+	/* Stop if the mod has gone inactive (round end, not enough players, etc.) */
+	if (!g_bModActive)
 		return Plugin_Stop;
 
 	Sounds_PlayAmbience();

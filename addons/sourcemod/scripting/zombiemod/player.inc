@@ -531,6 +531,7 @@ public void Event_PlayerDamage(Event event, const char[] name, bool dontBroadcas
 					
 					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieCritical]);
 					
+					StopSound(attacker, SNDCHAN_AUTO, g_szSounds[Sound_FinishHim]);
 					EmitSoundToClient(attacker, g_szSounds[Sound_FinishHim]);
 					
 					ZM_PrintToChat(client, "%t", "Fatal Shot Warning");

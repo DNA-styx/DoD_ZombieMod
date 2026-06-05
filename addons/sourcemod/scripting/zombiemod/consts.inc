@@ -30,13 +30,14 @@
  */
 
 #define PLUGIN_NAME "DoD:S Zombie Mod"
-#define PLUGIN_VERSION "0.9.68 BETA"
+#define PLUGIN_VERSION "0.9.62 BETA"
 #define SCOREBOARD_MAX_ELEMENTS 5
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS 33
 #define MAX_SPAWNPOINTS 64
 #define MAX_HEALTH 100.0
 #define SOUND_BLIP "buttons/blip1.wav"
+#define ZM_PREFIX "Zombie Mod Prefix"
 enum
 {
 	Pistol_Invalid = -1, 

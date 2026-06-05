@@ -1,7 +1,7 @@
 # DoD:S Zombie Mod — Server Operator Guide
 
-**Version:** 0.9.60 BETA  
-**Last Updated:** 2026-05-16
+**Version:** 0.9.62 BETA  
+**Last Updated:** 2026-05-30
 
 ---
 
@@ -38,7 +38,7 @@ All plugins reside in `addons/sourcemod/plugins/`.
 
 | Plugin | Version | Description |
 |---|---|---|
-| `dod_zombiemod.smx` | 0.9.60 BETA | Main plugin. Required by all others. |
+| `dod_zombiemod.smx` | 0.9.62 BETA | Main plugin. Required by all others. |
 
 ### Human Skills
 
@@ -116,12 +116,11 @@ All config files are generated to `cfg/sourcemod/zombiemod/` on first load. Valu
 | `dod_zombiemod_teleport_chance` | `25` | Percentage chance a zombie teleports to a human spawn on respawn. Set to `0` to disable. |
 | `dod_zombiemod_zombie_show_weapon` | `1` | Show the spade weapon on zombie spawn. Set to `0` to hide. |
 
-#### Visuals / Audio
+#### Visuals
 
 | ConVar | Default | Description |
 |---|---|---|
 | `dod_zombiemod_barrier_health_display` | `1` | Show prop health to the zombie damaging it. |
-| `dod_zombiemod_sounds_enabled` | `1` | Play the ambient sound track during active rounds. |
 
 ---
 
@@ -181,10 +180,12 @@ By default the mod removes objectives, environmental entities, and team blockers
         "Environment"   "1"   // Preserve lighting and env_sun
         "TriggerHurts"  "1"   // Preserve trigger_hurt volumes
         "TeamBlockers"  "1"   // Preserve func_team_wall entities
-        "Ambience"      "1"   // 1 = play ZM ambient track, 0 = leave map audio alone
+        "Ambience"      "1"   // Suppress ZM ambient track, leave map audio alone
     }
 }
 ```
+
+All keys default to `0` when absent. The ZM ambient track plays on any map that does not explicitly set `"Ambience" "1"`.
 
 ---
 
@@ -350,6 +351,9 @@ The class chance ConVar (`dod_zombiemod_class_chance`) must be greater than `0`.
 
 **Teleport does not trigger.**  
 Teleports are disabled for the first 60 seconds of each round regardless of ConVar setting. After that window, `dod_zombiemod_teleport_chance` controls the probability per respawn.
+
+**Ambient track does not play on a specific map.**  
+Check `zombiemod_whitelist.cfg`. If the map has `"Ambience" "1"`, the ZM track is suppressed on that map by design. Remove or set to `"0"` to restore it.
 
 ---
 

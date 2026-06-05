@@ -73,7 +73,7 @@ enum
 	WhiteList_Environment, 
 	WhiteList_TriggerHurts, 
 	WhiteList_TeamBlockers,
-	WhiteList_Ambience,     /* 1 = play ZM ambience, 0 = leave map sounds alone */
+	WhiteList_Ambience,     /* 1 = suppress ZM ambience, leave map audio alone */
 
 	WhiteList_Size
 }
@@ -208,20 +208,20 @@ void LoadConfig()
 		
 		if (KvJumpToKey(kv, mapName, false))
 		{
-			g_bWhiteListed[WhiteList_Objectives]   = view_as<bool>(KvGetNum(kv, "Objectives", false));
-			g_bWhiteListed[WhiteList_Environment]  = view_as<bool>(KvGetNum(kv, "Environment", false));
+			g_bWhiteListed[WhiteList_Objectives]   = view_as<bool>(KvGetNum(kv, "Objectives",   false));
+			g_bWhiteListed[WhiteList_Environment]  = view_as<bool>(KvGetNum(kv, "Environment",  false));
 			g_bWhiteListed[WhiteList_TriggerHurts] = view_as<bool>(KvGetNum(kv, "TriggerHurts", false));
 			g_bWhiteListed[WhiteList_TeamBlockers] = view_as<bool>(KvGetNum(kv, "TeamBlockers", false));
-			g_bWhiteListed[WhiteList_Ambience]     = view_as<bool>(KvGetNum(kv, "Ambience", true));
+			/* Ambience "1" = suppress ZM track; default 0 = play ZM track */
+			g_bWhiteListed[WhiteList_Ambience]     = view_as<bool>(KvGetNum(kv, "Ambience",     false));
 		}
 		else
 		{
+			/* Map not in whitelist — all flags off, ZM ambience plays by default */
 			for (int i = 0; i < WhiteList_Size; i++)
 			{
 				g_bWhiteListed[i] = false;
 			}
-			/* Ambience defaults to on for maps not in the whitelist */
-			g_bWhiteListed[WhiteList_Ambience] = true;
 		}
 		
 		CloseHandle(kv);
