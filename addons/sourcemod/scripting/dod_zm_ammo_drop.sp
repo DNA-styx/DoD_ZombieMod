@@ -11,7 +11,7 @@
  *   Based on DoD:S DropManager by zadroot
  *   https://github.com/zadroot/DoD_Dropmanager
  *
- * Version 1.1.0
+ * Version 1.1.1
  */
 
 #include <sourcemod>
@@ -24,7 +24,7 @@
 // ====[ CONSTANTS ]============================================================
 
 #define PLUGIN_NAME    "DoD:S ZM Ammo Drop"
-#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_VERSION "1.1.1"
 
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS    33
@@ -134,11 +134,12 @@ public void OnPluginStart()
 	g_iAmmoOffset = FindSendPropInfo("CDODPlayer", "m_iAmmo");
 
 	// Create plugin convars
-	g_cvLifeTime     = CreateConVar("zm_ammodrop_lifetime",      "45", "Number of seconds a dropped ammo box stays on the ground. 0 = never remove.",                                                         FCVAR_NOTIFY, true, 0.0);
-	g_cvClipSize     = CreateConVar("zm_ammodrop_clipsize",       "2", "Number of primary weapon clips a dropped ammo box contains.",                                                                         FCVAR_NOTIFY, true, 1.0, true, 5.0);
-	g_cvPickupRule   = CreateConVar("zm_ammodrop_pickuprule",     "1", "Determines who can pick up dropped ammo boxes: 0 = everyone (Zombies can destroy the box by touching it), 1 = teammates only, 2 = enemies only.", FCVAR_NOTIFY, true, 0.0, true, 2.0);
-	g_cvGrenades     = CreateConVar("zm_ammodrop_grenades",       "2", "Number of grenades to give on ammo box pickup. 0 = disabled.",                                                                        FCVAR_NOTIFY, true, 0.0);
-	g_cvRifleGrenades = CreateConVar("zm_ammodrop_riflegrenades", "4", "Number of rifle grenades to give on pickup (Garand/BAR carriers only). 0 = disabled.",                                               FCVAR_NOTIFY, true, 0.0);
+	CreateConVar("zm_ammodrop_version",    PLUGIN_VERSION, "DoD:S ZM Ammo Drop version.",                                                                                                                        FCVAR_NOTIFY|FCVAR_DONTRECORD);
+	g_cvLifeTime     = CreateConVar("zm_ammodrop_lifetime",      "45", "Number of seconds a dropped ammo box stays on the ground. 0 = never remove.",                                                         _, true, 0.0);
+	g_cvClipSize     = CreateConVar("zm_ammodrop_clipsize",       "2", "Number of primary weapon clips a dropped ammo box contains.",                                                                         _, true, 1.0, true, 5.0);
+	g_cvPickupRule   = CreateConVar("zm_ammodrop_pickuprule",     "1", "Determines who can pick up dropped ammo boxes: 0 = everyone (Zombies can destroy the box by touching it), 1 = teammates only, 2 = enemies only.", _, true, 0.0, true, 2.0);
+	g_cvGrenades     = CreateConVar("zm_ammodrop_grenades",       "2", "Number of grenades to give on ammo box pickup. 0 = disabled.",                                                                        _, true, 0.0);
+	g_cvRifleGrenades = CreateConVar("zm_ammodrop_riflegrenades", "4", "Number of rifle grenades to give on pickup (Garand/BAR carriers only). 0 = disabled.",                                               _, true, 0.0);
 
 	// Hook player death event
 	HookEvent("player_death", OnPlayerDeath);
