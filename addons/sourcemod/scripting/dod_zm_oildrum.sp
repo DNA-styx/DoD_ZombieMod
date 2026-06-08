@@ -11,7 +11,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.4.1"
+#define PLUGIN_VERSION "1.4.0"
 #define PLUGIN_NAME "DoD:S ZM - Human Skill - Oil Drum Spawner"
 
 // ── Models ──────────────────────────────────────────────────
@@ -28,7 +28,7 @@ public Plugin myinfo =
     author = "KTM, Converted for ZM by ChatGPT & claude.ai guided by DNA.styx",
     description = "Human skill: Pistol right-click to deploy explosive oil drums",
     version = PLUGIN_VERSION,
-    url = "https://github.com/DNA-styx/DoD_ZombieMod_Plugins"
+    url = "https://github.com/DNA-styx/DoD_ZombieMod"
 };
 
 // ── Globals ─────────────────────────────────────────────────
@@ -52,11 +52,15 @@ int redColor[4] = {200, 25, 25, 255};
 // ── Plugin Start ────────────────────────────────────────────
 public void OnPluginStart()
 {
+    CreateConVar("zm_oildrum_version", PLUGIN_VERSION,
+        "DoD:S ZM Oil Drum Spawner version",
+        FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_REPLICATED);
+
     gC_Cooldown = CreateConVar(
         "zm_drum_cooldown",
         "15.0",
         "Cooldown between drum spawns (seconds)",
-        FCVAR_NOTIFY,
+        _,
         true, 1.0);
 
     gC_Health = CreateConVar(
