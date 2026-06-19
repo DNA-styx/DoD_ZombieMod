@@ -519,8 +519,13 @@ public Action Timer_EndGame(Handle timer)
 	return Plugin_Continue;
 }
 
-public Action Timer_RestartRound(Handle timer)
+public Action Timer_RestartRound(Handle timer, int data)
 {
+	/* When fired by the first-real-player join path, `data` carries that player's
+	 * userid so we can force them onto Allies and exclude them from the zombie
+	 * draw. From every other call site `data` is 0 (a normal restart). */
+	int forcedHuman = data ? GetClientOfUserId(data) : 0;
+	
 	if (g_ConVarInts[ConVar_MinPlayers] <= GetTeamClientCount(Team_Allies) + GetTeamClientCount(Team_Axis))
 	{
 		g_iLastHuman = g_iBeaconTicks = g_bBlockChangeClass = false;
@@ -530,7 +535,7 @@ public Action Timer_RestartRound(Handle timer)
 		// Start teleport delay timer now that mod is active
 		ZombieClasses_OnModActive();
 		
-		SelectZombie();
+		SelectZombie(forcedHuman > 0 ? forcedHuman : -1);
 		
 		for (int i = 1; i <= MaxClients; i++)
 		{
@@ -546,6 +551,19 @@ public Action Timer_RestartRound(Handle timer)
 					ChangeClientTeam(i, Team_Allies);
 				}
 			}
+		}
+		
+		/* Guarantee the first joining human lands on Allies and is never the
+		 * zombie. The loop above already moves playable-team non-zombies to
+		 * Allies, but this is explicit so the outcome never depends on the
+		 * player's transient team state when the timer fires. */
+		if (forcedHuman > 0 && forcedHuman <= MaxClients
+			&& IsClientInGame(forcedHuman)
+			&& forcedHuman != g_iZombie
+			&& GetClientTeam(forcedHuman) != Team_Allies)
+		{
+			SetPlayerState(forcedHuman, PlayerState_ObserverMode);
+			ChangeClientTeam(forcedHuman, Team_Allies);
 		}
 		
 		/* Guard against SelectZombie failure (no eligible clients).

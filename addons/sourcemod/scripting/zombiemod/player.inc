@@ -78,23 +78,30 @@ public void OnClientPutInServer(int client)
 
 public void OnClientPostAdminCheck(int client)
 {
-	/* Check if this is the first real player joining a bot-only game */
-	if (g_bModActive && !g_bRoundEnded && !IsFakeClient(client))
+	/* Latch the first real player so their first playable-team spawn triggers
+	 * the human-side restart. Gated only on "first human" — deliberately NOT on
+	 * g_bRoundEnded or g_bModActive. A bot-only server restarts constantly, so
+	 * those flags are almost always mid-flux at connect (diagnosed: the latch was
+	 * being blocked by g_bRoundEnded == true). The spawn handler waits for a
+	 * playable-team spawn, and Timer_RestartRound's MinPlayers gate still decides
+	 * whether the mod actually activates. */
+	if (!IsFakeClient(client) && GetRealPlayerCount() == 1)
 	{
-		if (GetRealPlayerCount() == 1)
-		{
-			g_bRoundEnded = true;
-			
-			ZM_PrintToChatAll("%t", "First Real Player Restart", client);
-			
-			CreateTimer(3.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
-		}
+		g_iFirstPlayerPending = GetClientUserId(client);
 	}
 }
 
 public void OnClientDisconnect_Post(int client)
 {
-	/* Clear pending restart flag if this player disconnects before spawning */
+	/* Clear the pending first-player restart latch if the latched player is no
+	 * longer connected. Checking the latch via GetClientOfUserId (returns 0 for
+	 * an absent userid, never throws) avoids calling GetClientUserId on the
+	 * disconnecting client, whose slot is already freed in _Post. */
+	if (g_iFirstPlayerPending != 0 && GetClientOfUserId(g_iFirstPlayerPending) == 0)
+	{
+		g_iFirstPlayerPending = 0;
+	}
+	
 	// Clean up zombie class data
 	ZombieClasses_OnClientDisconnect(client);
 
@@ -197,6 +204,25 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 		
 		g_ClientInfo_Float[client][ClientInfo_Health] = MAX_HEALTH;
 		g_ClientInfo_Bool[client][ClientInfo_WeaponCanUse] = true;
+		
+		/* First real player on a bot-only game has now picked a team and class
+		 * and spawned, so they are ready to play. Fire the deferred round restart
+		 * after a short settle delay so the spawn fully resolves before teams are
+		 * reassigned. Their userid is passed as timer data; Timer_RestartRound uses
+		 * it to force this player onto Allies and keep them out of the zombie draw.
+		 * Returns early to skip the normal per-spawn setup (incl. the zombie class
+		 * menu) for this transitional spawn — the restart respawns everyone. */
+		if (g_iFirstPlayerPending && g_iFirstPlayerPending == clientUserId
+			&& GetClientTeam(client) > Team_Spectator)
+		{
+			g_iFirstPlayerPending = 0;
+			g_bRoundEnded = true;
+			
+			ZM_PrintToChatAll("%t", "First Real Player Restart", client);
+			
+			CreateTimer(1.0, Timer_RestartRound, clientUserId, TIMER_FLAG_NO_MAPCHANGE);
+			return;
+		}
 		
 		if (!g_bModActive)
 		{

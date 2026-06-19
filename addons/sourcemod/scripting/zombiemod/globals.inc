@@ -16,6 +16,7 @@ bool g_bModActive;
 bool g_bUseSteamTools;
 #endif
 bool g_bRoundEnded;
+int g_iFirstPlayerPending;  /* userid of the first real player who has connected but not yet spawned on a bot-only, mod-active game; 0 = none. Triggers a one-time round restart on their first spawn. */
 bool g_bBlockChangeClass;
 int g_iZombie;
 int g_iLastHuman;

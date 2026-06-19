@@ -166,13 +166,13 @@ int GetHumanCount()
 	return numHumans;
 }
 
-void SelectZombie()
+void SelectZombie(int exclude = -1)
 {
 	Handle clientArray = CreateArray();
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (i != g_iZombie && IsClientInGame(i) && !IsClientSourceTV(i) && GetClientTeam(i) > Team_Spectator)
+		if (i != g_iZombie && i != exclude && IsClientInGame(i) && !IsClientSourceTV(i) && GetClientTeam(i) > Team_Spectator)
 		{
 			PushArrayCell(clientArray, i);
 		}
